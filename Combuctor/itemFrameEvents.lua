@@ -25,8 +25,23 @@ function FrameEvents:OnEnable()
 	self:RegisterMessage('COMBUCTOR_SLOT_UPDATE', 'UpdateSlot')
 	self:RegisterEvent('ITEM_LOCK_CHANGED', 'UpdateSlotLock')
 
+	-- register questlog change event to update quest starting item texture 
+	self:RegisterEvent('QUEST_ACCEPTED', 'QuestLogUpdate')
+	self:RegisterEvent('UNIT_QUEST_LOG_CHANGED', 'QuestLogUpdate')
+
 	self:RegisterMessage('COMBUCTOR_BANK_OPENED', 'UpdateBankFrames')
 	self:RegisterMessage('COMBUCTOR_BANK_CLOSED', 'UpdateBankFrames')
+end
+
+function FrameEvents:QuestLogUpdate(msg, ...)
+	local arg1, arg2 = ...
+
+	if not (msg == 'UNIT_QUEST_LOG_CHANGED' and arg1 ~= 'player') then
+		-- just update everything
+		for f in self:GetFrames() do
+			f:Regenerate()
+		end
+	end
 end
 
 function FrameEvents:UpdateSlot(msg, ...)

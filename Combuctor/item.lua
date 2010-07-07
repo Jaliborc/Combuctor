@@ -47,6 +47,10 @@ function ItemSlot:Create()
 	border:Hide()
 	item.border = border
 
+	-- prepare bang texture for quest-starting items
+	local questBorder = _G[item:GetName() .. 'IconQuestTexture']
+	item.questBorder = questBorder
+
 	--hack, make sure the cooldown model stays visible
 	item.cooldown = _G[item:GetName() .. 'Cooldown']
 
@@ -182,6 +186,17 @@ function ItemSlot:Update()
 	if not self:IsVisible() then return end
 
 	local texture, count, locked, quality, readable, lootable, link = self:GetItemSlotInfo()
+
+	-- set bang texture on quest-starting item
+	local isQuestItem, questId, isActive = GetContainerItemQuestInfo(self:GetBag(), self:GetID())
+	local questBorder = self.questBorder
+
+	if ( questId and not isActive) then
+		questBorder:SetTexture(TEXTURE_ITEM_QUEST_BANG)
+		questBorder:Show()
+	else
+		questBorder:Hide()
+	end
 
 	self:SetItem(link)
 	self:SetTexture(texture)
