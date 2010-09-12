@@ -1,0 +1,3 @@
+[submodule "Combuctor/libs/LibItemSearch-1.0"]
+	path = Combuctor/libs/LibItemSearch-1.0
+	url = git@github.com:Tuller/LibItemSearch-1.0.git
