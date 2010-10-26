@@ -46,6 +46,9 @@ function ItemSlot:Create()
 	border:SetBlendMode('ADD')
 	border:Hide()
 	item.border = border
+	
+	--add a quality border texture
+	item.questBorder = _G[item:GetName() .. 'IconQuestTexture']
 
 	--hack, make sure the cooldown model stays visible
 	item.cooldown = _G[item:GetName() .. 'Cooldown']
@@ -228,22 +231,8 @@ function ItemSlot:UpdateSlotColor()
 			return
 		end
 
-		if self:IsAmmoBagSlot() then
-			local r, g, b = self:GetAmmoSlotColor()
-			SetItemButtonTextureVertexColor(self, r, g, b)
-			self:GetNormalTexture():SetVertexColor(r, g, b)
-			return
-		end
-
 		if self:IsTradeBagSlot() then
 			local r, g, b = self:GetTradeSlotColor()
-			SetItemButtonTextureVertexColor(self, r, g, b)
-			self:GetNormalTexture():SetVertexColor(r, g, b)
-			return
-		end
-
-		if self:IsShardBagSlot() then
-			local r, g, b = self:GetShardSlotColor()
 			SetItemButtonTextureVertexColor(self, r, g, b)
 			self:GetNormalTexture():SetVertexColor(r, g, b)
 			return
@@ -281,24 +270,38 @@ end
 --colors the item border based on the quality of the item.  hides it for common/poor items
 function ItemSlot:SetBorderQuality(quality)
 	local border = self.border
+	local qBorder = self.questBorder
+
+	if self:HighlightingQuestItems() then
+		local isQuestItem, isQuestStarter = self:IsQuestItem()
+		if isQuestItem then
+			qBorder:SetTexture(TEXTURE_ITEM_QUEST_BORDER)
+			qBorder:SetAlpha(self:GetHighlightAlpha())
+			qBorder:Show()
+			border:Hide()
+			return
+		end
+
+		if isQuestStarter then
+			qBorder:SetTexture(TEXTURE_ITEM_QUEST_BANG)
+			qBorder:SetAlpha(self:GetHighlightAlpha())
+			qBorder:Show()
+			border:Hide()
+			return
+		end
+	end
 
 	if self:HighlightingItemsByQuality() then
 		if self:GetItem() and quality and quality > 1 then
 			local r, g, b = GetItemQualityColor(quality)
 			border:SetVertexColor(r, g, b, self:GetHighlightAlpha())
 			border:Show()
+			qBorder:Hide()
 			return
 		end
 	end
 
-	if self:HighlightingQuestItems() then
-		if self:IsQuestItem() then
-			border:SetVertexColor(1, 1, 0, self:GetHighlightAlpha())
-			border:Show()
-			return
-		end
-	end
-
+	qBorder:Hide()
 	border:Hide()
 end
 
@@ -406,12 +409,16 @@ local QUEST_ITEM_SEARCH = string.format('t:%s|%s', select(12, GetAuctionItemClas
 function ItemSlot:IsQuestItem()
 	local itemLink = self:GetItem()
 	if not itemLink then
-		return false
+		return false, false
 	end
 
-	return ItemSearch:Find(itemLink, QUEST_ITEM_SEARCH)
+	if self:IsCached() then
+		return ItemSearch:Find(itemLink, QUEST_ITEM_SEARCH), false
+	else
+		local isQuestItem, questID, isActive = GetContainerItemQuestInfo(self:GetBag(), self:GetID())
+		return isQuestItem, (questID and not isActive)
+	end
 end
-
 
 --[[ Item Slot Coloring ]]--
 

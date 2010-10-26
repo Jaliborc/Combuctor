@@ -170,6 +170,12 @@ function ItemFrame:UpdateSlotCooldowns()
 	end
 end
 
+function ItemFrame:UpdateBorder()
+	for _,item in pairs(self.items) do
+		item:UpdateBorder()
+	end
+end
+
 
 --[[ Mass Item Changes ]]--
 

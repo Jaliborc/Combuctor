@@ -24,9 +24,19 @@ function FrameEvents:OnEnable()
 	self:RegisterMessage('COMBUCTOR_SLOT_REMOVE', 'RemoveItem')
 	self:RegisterMessage('COMBUCTOR_SLOT_UPDATE', 'UpdateSlot')
 	self:RegisterEvent('ITEM_LOCK_CHANGED', 'UpdateSlotLock')
+	self:RegisterEvent('UNIT_QUEST_LOG_CHANGED', 'UpdateBorder')
+	self:RegisterEvent('QUEST_ACCEPTED', 'UpdateBorder')
 
 	self:RegisterMessage('COMBUCTOR_BANK_OPENED', 'UpdateBankFrames')
 	self:RegisterMessage('COMBUCTOR_BANK_CLOSED', 'UpdateBankFrames')
+end
+
+function FrameEvents:UpdateBorder(msg, ...)
+	for f in self:GetFrames() do
+		if f:GetPlayer() == currentPlayer then
+			f:UpdateBorder(...)
+		end
+	end
 end
 
 function FrameEvents:UpdateSlot(msg, ...)
