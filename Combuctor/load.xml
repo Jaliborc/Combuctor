@@ -6,6 +6,7 @@
 	<Script file="localization\localization.ruRU.lua"/>
 	<Script file="Combuctor.lua"/>
 
+    <Include file="db\db.xml"/>
 	<Include file="info\load.xml"/>
 
 	<Script file="sets.lua"/>
