@@ -1,8 +1,0 @@
-## Interface: 40000
-## Title: Combuctor Config
-## Author: Tuller
-## Notes: An options menu for Combuctor
-## Dependencies: Combuctor
-## LoadOnDemand: 1
-panel.lua
-general.lua
