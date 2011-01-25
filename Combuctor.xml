@@ -504,15 +504,8 @@
 				<Scripts>
 					<OnLoad>
 						self:SetFrameLevel(self:GetFrameLevel() + 4)
-						self:SetNormalTexture('Interface\\AddOns\\Combuctor\\textures\\Rescale')
 						self:GetNormalTexture():SetVertexColor(1, 0.82, 0)
 					</OnLoad>
-					<OnEnter>
-						self:GetNormalTexture():SetVertexColor(1, 1, 1)
-					</OnEnter>
-					<OnLeave>
-						self:GetNormalTexture():SetVertexColor(1, 0.82, 0)
-					</OnLeave>
 					<OnMouseDown>
 						self:GetParent():StartSizing()
 					</OnMouseDown>
@@ -520,6 +513,10 @@
 						self:GetParent():StopMovingOrSizing()
 					</OnMouseUp>
 				</Scripts>
+
+				<NormalTexture file="Interface\ChatFrame\UI-ChatIM-SizeGrabber-Up" setAllPoints="true"/>
+				<PushedTexture file="Interface\ChatFrame\UI-ChatIM-SizeGrabber-Down" setAllPoints="true"/>
+				<HighlightTexture file="Interface\ChatFramecd \UI-ChatIM-SizeGrabber-Highlight" alphaMode="ADD" setAllPoints="true"/>
 			</Button>
 		</Frames>
 

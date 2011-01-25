@@ -7,6 +7,8 @@
 	Why not use a normal dropdown?  It takes a lot of memory
 --]]
 
+if not BagnonDB then return end
+
 local currentFrame
 local dropdown
 local info = {}
