@@ -3,9 +3,8 @@
 		used for setting what quality of items to show
 --]]
 
-local FilterButton = Combuctor:NewClass('Button')
+local FilterButton = LibStub('Classy-1.0'):New('Button')
 local SIZE = 20
-local _G = getfenv(0)
 
 function FilterButton:Create(parent, quality)
 	local button = self:Bind(CreateFrame('Button', nil, parent, 'UIRadioButtonTemplate'))
@@ -71,7 +70,7 @@ end
 	QualityFilter, A group of filter buttons
 --]]
 
-local QualityFilter = Combuctor:NewClass('Frame')
+local QualityFilter = LibStub('Classy-1.0'):New('Frame')
 Combuctor.QualityFilter = QualityFilter
 
 function QualityFilter:New(parent)

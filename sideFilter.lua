@@ -5,7 +5,7 @@
 
 --[[ A side filter button, switches parent filters on click ]]--
 
-local SideFilterButton = Combuctor:NewClass('CheckButton')
+local SideFilterButton = LibStub('Classy-1.0'):New('CheckButton')
 do
 	local id = 1
 	function SideFilterButton:New(parent, reversed)
@@ -69,7 +69,7 @@ end
 	Side Filter Object
 --]]
 
-local SideFilter = Combuctor:NewClass('Frame')
+local SideFilter = LibStub('Classy-1.0'):New('Frame')
 Combuctor.SideFilter = SideFilter
 
 local CombuctorSets = Combuctor:GetModule('Sets')

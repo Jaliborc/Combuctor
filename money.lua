@@ -3,7 +3,7 @@
 		A money frame object
 --]]
 
-local MoneyFrame = Combuctor:NewClass('Frame')
+local MoneyFrame = LibStub('Classy-1.0'):New('Frame')
 Combuctor.MoneyFrame = MoneyFrame
 
 local L = LibStub('AceLocale-3.0'):GetLocale('Combuctor')

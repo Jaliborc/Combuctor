@@ -116,7 +116,7 @@ do
 end
 
 
-local InventoryFrame  = Combuctor:NewClass('Frame')
+local InventoryFrame = LibStub('Classy-1.0'):New('Frame')
 Combuctor.Frame = InventoryFrame
 
 --local references

@@ -3,7 +3,7 @@
 		Used to filter within categories
 --]]
 
-local BottomTab = Combuctor:NewClass('Button')
+local BottomTab = LibStub('Classy-1.0'):New('Button')
 local CombuctorSets = Combuctor:GetModule('Sets')
 
 function BottomTab:New(parent, id)
@@ -51,7 +51,7 @@ end
 	Side Filter Object
 --]]
 
-local BottomFilter = Combuctor:NewClass('Frame')
+local BottomFilter = LibStub('Classy-1.0'):New('Frame')
 Combuctor.BottomFilter = BottomFilter
 
 function BottomFilter:New(parent)

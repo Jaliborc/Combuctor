@@ -3,7 +3,7 @@
 		A thingy that displays items
 --]]
 
-local ItemFrame = Combuctor:NewClass('Button')
+local ItemFrame = LibStub('Classy-1.0'):New('Button')
 Combuctor.ItemFrame = ItemFrame
 
 --local bindings

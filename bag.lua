@@ -3,7 +3,7 @@
 		A bag button object
 --]]
 
-local Bag = Combuctor:NewClass('Button')
+local Bag = LibStub('Classy-1.0'):New('Button')
 Combuctor.Bag = Bag
 
 --local bindings

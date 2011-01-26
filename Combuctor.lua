@@ -289,20 +289,3 @@ end
 function Combuctor:GetMaxItemScale()
 	return self.db.global.maxScale
 end
-
---utility function: create a widget class
-function Combuctor:NewClass(type, parentClass)
-	local class = CreateFrame(type)
-	class.mt = {__index = class}
-
-	if parentClass then
-		class = setmetatable(class, {__index = parentClass})
-		class.super = parentClass
-	end
-
-	function class:Bind(o)
-		return setmetatable(o, self.mt)
-	end
-
-	return class
-end

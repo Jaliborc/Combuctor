@@ -4,8 +4,7 @@
 --]]
 
 local Combuctor = LibStub('AceAddon-3.0'):GetAddon('Combuctor')
-local ItemSlot = Combuctor:NewClass('Button')
-ItemSlot:Hide()
+local ItemSlot = LibStub('Classy-1.0'):New('Button')
 Combuctor.ItemSlot = ItemSlot
 
 local ItemSearch = LibStub('LibItemSearch-1.0')
