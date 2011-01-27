@@ -3,11 +3,9 @@
 		A bag button object
 --]]
 
-local Bag = LibStub('Classy-1.0'):New('Button')
-Combuctor.Bag = Bag
-
---local bindings
-local L = LibStub('AceLocale-3.0'):GetLocale('Combuctor')
+local AddonName, Addon = ...
+local Bag = LibStub('Classy-1.0'):New('Button'); Addon.Bag = Bag
+local L = LibStub('AceLocale-3.0'):GetLocale(AddonName)
 
 --[[ Constructor/Destructor ]]--
 
@@ -18,9 +16,9 @@ local unused = {}
 local id = 1
 
 function Bag:New()
-	local bag = self:Bind(CreateFrame('Button', format('CombuctorBag%d', id)))
+	local bag = self:Bind(CreateFrame('Button', string.format('%sBag%d', AddonName, id)))
 	local name = bag:GetName()
-	bag:SetWidth(SIZE); bag:SetHeight(SIZE)
+	bag:SetSize(SIZE, SIZE)
 
 	local icon = bag:CreateTexture(name .. 'IconTexture', 'BORDER')
 	icon:SetAllPoints(bag)
@@ -106,7 +104,7 @@ end
 
 --[[ Frame Events ]]--
 
-function Bag:OnEvent(event)
+function Bag:OnEvent(event, ...)
 	if event == 'BANKFRAME_OPENED' or event == 'BANKFRAME_CLOSED' then
 		self:Update()
 	elseif not self:IsCached() then
@@ -264,9 +262,13 @@ function Bag:PurchaseSlot()
 			button1 = TEXT(YES),
 			button2 = TEXT(NO),
 
-			OnAccept = function(self) PurchaseSlot() end,
+			OnAccept = function(self) 
+				PurchaseSlot() 
+			end,
 
-			OnShow = function(self) MoneyFrame_Update(self:GetName().. 'MoneyFrame', GetBankSlotCost(GetNumBankSlots())) end,
+			OnShow = function(self) 
+				MoneyFrame_Update(self:GetName().. 'MoneyFrame', GetBankSlotCost(GetNumBankSlots())) 
+			end,
 
 			hasMoneyFrame = 1,
 			timeout = 0,

@@ -3,7 +3,11 @@
 		Used for setting what types of items to show
 --]]
 
---[[ A side filter button, switches parent filters on click ]]--
+local Combuctor = select(2, ...)
+
+--[[ 
+	A side filter button, switches parent filters on click 
+--]]
 
 local SideFilterButton = LibStub('Classy-1.0'):New('CheckButton')
 do
@@ -69,10 +73,7 @@ end
 	Side Filter Object
 --]]
 
-local SideFilter = LibStub('Classy-1.0'):New('Frame')
-Combuctor.SideFilter = SideFilter
-
-local CombuctorSets = Combuctor:GetModule('Sets')
+local SideFilter = LibStub('Classy-1.0'):New('Frame'); Combuctor.SideFilter = SideFilter
 
 function SideFilter:New(parent, reversed)
 	local f = self:Bind(CreateFrame('Frame', nil, parent))
@@ -105,7 +106,7 @@ function SideFilter:UpdateFilters()
 	local numFilters = 0
 	local parent = self:GetParent()
 
-	for _,set in CombuctorSets:GetParentSets() do
+	for _,set in Combuctor.Set:GetParentSets() do
 		if parent:HasSet(set.name) then
 			numFilters = numFilters + 1
 			self.buttons[numFilters]:Set(set)

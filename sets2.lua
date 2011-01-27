@@ -50,7 +50,9 @@
 	iterator = CombuctorSet:GetAll()
 --]]
 
-local CombuctorSet = Combuctor:NewModule('Sets', 'AceEvent-3.0')
+local Combuctor = select(2, ...)
+local CombuctorSet = {}; Combuctor.Set = CombuctorSet
+local CombuctorSet.__index = CombuctorSet
 
 
 --[[ local set methods ]]--

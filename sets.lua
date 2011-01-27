@@ -2,7 +2,8 @@
 	Combuctor Set API
 --]]
 
-local CombuctorSet = Combuctor:NewModule('Sets', 'AceEvent-3.0')
+local Combuctor = select(2, ...)
+local CombuctorSet = {}; Combuctor.Set = CombuctorSet
 local sets = {}
 
 --[[
@@ -15,6 +16,10 @@ local sets = {}
 --function setRule(player, bagType)
 --	return bagType == 0
 --end
+
+local sendMessage = function(msg, ...)
+	Combuctor:SendMessage(msg, ...)
+end
 
 
 --[[
@@ -36,11 +41,11 @@ function CombuctorSet:Register(name, icon, rule)
 		if not(set.icon == icon and set.rule == rule) then
 			set.icon = icon
 			set.rule = rule
-			CombuctorSet:SendMessage('COMBUCTOR_SET_UPDATE', name, icon, rule)
+			sendMessage('COMBUCTOR_SET_UPDATE', name, icon, rule)
 		end
 	else
 		table.insert(sets, {['name'] = name, ['icon'] = icon, ['rule'] = rule})
-		CombuctorSet:SendMessage('COMBUCTOR_SET_ADD', name, icon, rule)
+		sendMessage('COMBUCTOR_SET_ADD', name, icon, rule)
 	end
 end
 
@@ -65,11 +70,11 @@ function CombuctorSet:RegisterSubSet(name, parent, icon, rule)
 		if not(set.icon == icon and set.rule == rule) then
 			set.icon = icon
 			set.rule = rule
-			CombuctorSet:SendMessage('COMBUCTOR_SUBSET_UPDATE', name, parent, icon, rule)
+			sendMessage('COMBUCTOR_SUBSET_UPDATE', name, parent, icon, rule)
 		end
 	else
 		table.insert(sets, {['parent'] = parent, ['name'] = name, ['icon'] = icon, ['rule'] = rule})
-		CombuctorSet:SendMessage('COMBUCTOR_SUBSET_ADD', name, parent, icon, rule)
+		sendMessage('COMBUCTOR_SUBSET_ADD', name, parent, icon, rule)
 	end
 end
 
@@ -97,7 +102,7 @@ local function removeSetAndChildren(parent)
 	end
 
 	if found then
-		CombuctorSet:SendMessage('COMBUCTOR_SET_REMOVE', parent)
+		sendMessage('COMBUCTOR_SET_REMOVE', parent)
 	end
 end
 
@@ -106,7 +111,7 @@ function CombuctorSet:Unregister(name, parent)
 		for i,set in pairs(sets) do
 			if set.name == name and set.parent == parent then
 				table.remove(sets, i)
-				CombuctorSet:SendMessage('COMBUCTOR_SUBSET_REMOVE', name, parent)
+				sendMessage('COMBUCTOR_SUBSET_REMOVE', name, parent)
 				break
 			end
 		end
@@ -176,3 +181,5 @@ function CombuctorSet:GetChildSets(parent)
 --	assert(self:Get(parent), format('Cannot find a parent set named \'%s\'', parent))
 	return getChildSetIterator, parent, 0
 end
+
+Combuctor:NewModule('Sets', CombuctorSet)

@@ -10,6 +10,7 @@
 	<Include file="info\load.xml"/>
 
 	<Script file="sets.lua"/>
+
 	<Script file="item.lua"/>
 	<Script file="itemFrameEvents.lua"/>
 	<Script file="itemFrame.lua"/>
