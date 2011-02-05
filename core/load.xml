@@ -1,0 +1,10 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/">
+	<Script file="module.lua"/>
+	<Script file="envoy.lua"/>
+
+	<Script file="itemEvents.lua"/>
+
+	<Script file="playerInfo.lua"/>
+	<Script file="bagSlotInfo.lua"/>
+	<Script file="itemSlotInfo.lua"/>
+</Ui>
