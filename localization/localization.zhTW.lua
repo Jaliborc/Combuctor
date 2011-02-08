@@ -37,8 +37,7 @@ L.ResetPositionTip = '<右鍵點選>重設位置'
 do
 	L.All = ALL
 
-	L.Weapon, L.Armor, L.Container, L.Consumable, L.Glyph, L.TradeGood, 
- 	L.Projectile, L.Quiver, L.Recipe, L.Gem, L.Misc, L.Quest = GetAuctionItemClasses()
+	L.Weapon, L.Armor, L.Container, L.Consumable, L.Glyph, L.TradeGood, L.Recipe, L.Gem, L.Misc, L.Quest = GetAuctionItemClasses()
 
 	L.Trinket = getglobal('INVTYPE_TRINKET')
 

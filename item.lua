@@ -405,7 +405,7 @@ function ItemSlot:GetHighlightAlpha()
 	return 0.5
 end
 
-local QUEST_ITEM_SEARCH = string.format('t:%s|%s', select(12, GetAuctionItemClasses()), 'quest')
+local QUEST_ITEM_SEARCH = string.format('t:%s|%s', select(10, GetAuctionItemClasses()), 'quest')
 function ItemSlot:IsQuestItem()
 	local itemLink = self:GetItem()
 	if not itemLink then
