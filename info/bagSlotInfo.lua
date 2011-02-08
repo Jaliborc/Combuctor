@@ -142,7 +142,7 @@ function BagSlotInfo:IsShardBag(player, bagSlot)
 end
 
 -- BAGTYPE_PROFESSION = Leather + Inscription + Herb + Enchanting + Engineering + Gem + Mining + Tackle Box
-local BAGTYPE_PROFESSION = 0x0008 + 0x0010 + 0x0020 + 0x0040 + 0x0080 + 0x0200 + 0x0400  + 0x1000 
+local BAGTYPE_PROFESSION = 0x0008 + 0x0010 + 0x0020 + 0x0040 + 0x0080 + 0x0200 + 0x0400  + 0x100000 
 
 function BagSlotInfo:IsTradeBag(player, bagSlot)
 	return bit.band(self:GetBagType(player, bagSlot), BAGTYPE_PROFESSION) > 0
