@@ -8,4 +8,5 @@
 	<Include file="libs\AceLocale-3.0\AceLocale-3.0.xml"/>
 	
 	<Script file="libs\LibItemSearch-1.0\LibItemSearch-1.0.lua"/>
+    <Script file="libs\Classy-1.0\Classy-1.0.lua"/>
 </Ui>
