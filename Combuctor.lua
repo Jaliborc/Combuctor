@@ -194,6 +194,12 @@ function Combuctor:HookBagEvents()
 			self:Toggle(BACKPACK_CONTAINER)
 		end
 	end
+	
+	if _G['ToggleAllBags'] then
+		ToggleAllBags = function()
+			self:Toggle(BACKPACK_CONTAINER)
+		end
+	end
 
 	--closing the game menu triggers this function, and can be done in combat,
 	hooksecurefunc('CloseAllBags', function()
