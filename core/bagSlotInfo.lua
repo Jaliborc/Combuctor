@@ -161,11 +161,11 @@ end
 		0x0400 - Mining Bag
 		0x0800 - Unused
 		0x1000 - Vanity Pets
-		0x100000 - Tackle Box
+		0x8000 - Tackle Box
 --]]
 
 -- BAGTYPE_PROFESSION = Leather + Inscription + Herb + Enchanting + Engineering + Gem + Mining + Tackle Box
-local BAGTYPE_PROFESSION = 0x0008 + 0x0010 + 0x0020 + 0x0040 + 0x0080 + 0x0200 + 0x0400  + 0x100000 
+local BAGTYPE_PROFESSION = 0x0008 + 0x0010 + 0x0020 + 0x0040 + 0x0080 + 0x0200 + 0x0400  + 0x8000 
 
 function BagSlotInfo:GetBagType(player, bagSlot)
 	if not(type(player) == 'string' and tonumber(bagSlot)) then
