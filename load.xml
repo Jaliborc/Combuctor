@@ -7,7 +7,7 @@
 	<Script file="Combuctor.lua"/>
 
     <Include file="db\db.xml"/>
-	<Include file="info\load.xml"/>
+	<Include file="core\load.xml"/>
 
 	<Script file="sets.lua"/>
 

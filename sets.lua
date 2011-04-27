@@ -2,8 +2,8 @@
 	Combuctor Set API
 --]]
 
-local Combuctor = select(2, ...)
-local CombuctorSet = {}; Combuctor.Set = CombuctorSet
+local AddonName, Addon = ...
+local CombuctorSet = Addon:NewModule('Sets', Addon('Envoy'):New()); Addon.Set = CombuctorSet
 local sets = {}
 
 --[[
@@ -18,8 +18,10 @@ local sets = {}
 --end
 
 local sendMessage = function(msg, ...)
-	Combuctor:SendMessage(msg, ...)
+	CombuctorSet:Send(msg, ...)
 end
+CombuctorSet.RegisterMessage = CombuctorSet.Register
+CombuctorSet.UnregisterMessage = CombuctorSet.Unregister
 
 
 --[[
@@ -34,7 +36,7 @@ end
 
 function CombuctorSet:Register(name, icon, rule)
 	assert(name, 'Set must include a name')
-	assert(icon, format('No icon specified for set \'%s\'', name))
+	assert(icon, format('No icon specified for set \'%s\'', icon))
 	
 	local set = self:Get(name)
 	if set then
@@ -181,5 +183,3 @@ function CombuctorSet:GetChildSets(parent)
 --	assert(self:Get(parent), format('Cannot find a parent set named \'%s\'', parent))
 	return getChildSetIterator, parent, 0
 end
-
-Combuctor:NewModule('Sets', CombuctorSet)

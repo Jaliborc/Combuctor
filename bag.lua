@@ -6,6 +6,7 @@
 local AddonName, Addon = ...
 local Bag = LibStub('Classy-1.0'):New('Button'); Addon.Bag = Bag
 local L = LibStub('AceLocale-3.0'):GetLocale(AddonName)
+local BagSlotInfo = Addon('BagSlotInfo')
 
 --[[ Constructor/Destructor ]]--
 
@@ -16,7 +17,7 @@ local unused = {}
 local id = 1
 
 function Bag:New()
-	local bag = self:Bind(CreateFrame('Button', string.format('%sBag%d', AddonName, id)))
+	local bag = self:Bind(CreateFrame('Button', ('%sBag%d'):format(AddonName, id)))
 	local name = bag:GetName()
 	bag:SetSize(SIZE, SIZE)
 
@@ -337,31 +338,31 @@ end
 
 --returns true if the bag is loaded from offline data, and false otehrwise
 function Bag:IsCached()
-	return Combuctor.BagSlotInfo:IsCached(self:GetPlayer(), self:GetID())
+	return BagSlotInfo:IsCached(self:GetPlayer(), self:GetID())
 end
 
 --returns true if the given bag represents the backpack container
 function Bag:IsBackpack()
-	return Combuctor.BagSlotInfo:IsBackpack(self:GetID())
+	return BagSlotInfo:IsBackpack(self:GetID())
 end
 
 --returns true if the given bag represetns the main bank container
 function Bag:IsBank()
-	return Combuctor.BagSlotInfo:IsBank(self:GetID())
+	return BagSlotInfo:IsBank(self:GetID())
 end
 
 function Bag:IsKeyRing()
-	return Combuctor.BagSlotInfo:IsKeyRing(self:GetID())
+	return BagSlotInfo:IsKeyRing(self:GetID())
 end
 
 --returns true if the given bag slot is an inventory bag slot
 function Bag:IsInventoryBagSlot()
-	return Combuctor.BagSlotInfo:IsBackpackBag(self:GetID())
+	return BagSlotInfo:IsBackpackBag(self:GetID())
 end
 
 --returns true if the given bag slot is a purchasable bank bag slot
 function Bag:IsBankBagSlot()
-	return Combuctor.BagSlotInfo:IsBankBag(self:GetID())
+	return BagSlotInfo:IsBankBag(self:GetID())
 end
 
 --returns true if the given bagSlot is one the player can place a bag in, and false otherwise
@@ -371,19 +372,19 @@ end
 
 --returns true if the bag is a purchasable bank slot, and false otherwise
 function Bag:IsPurchasable()
-	return Combuctor.BagSlotInfo:IsPurchasable(self:GetPlayer(), self:GetID())
+	return BagSlotInfo:IsPurchasable(self:GetPlayer(), self:GetID())
 end
 
 --returns the inventory slot id representation of the given bag
 function Bag:GetInventorySlot()
-	return Combuctor.BagSlotInfo:ToInventorySlot(self:GetID())
+	return BagSlotInfo:ToInventorySlot(self:GetID())
 end
 
 function Bag:GetItemInfo()
-	local link, count, texture = Combuctor.BagSlotInfo:GetItemInfo(self:GetPlayer(), self:GetID())
+	local link, count, texture = BagSlotInfo:GetItemInfo(self:GetPlayer(), self:GetID())
 	return link, count, texture
 end
 
 function Bag:IsLocked()
-	return Combuctor.BagSlotInfo:IsLocked(self:GetPlayer(), self:GetID())
+	return BagSlotInfo:IsLocked(self:GetPlayer(), self:GetID())
 end

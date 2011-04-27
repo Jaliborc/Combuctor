@@ -3,35 +3,62 @@
 		A single event handler for the itemFrame object
 --]]
 
-local FrameEvents = Combuctor:NewModule('ItemFrameEvents', 'AceEvent-3.0')
+local AddonName, Addon = ...
+local FrameEvents = Addon:NewModule('ItemFrameEvents')
 local currentPlayer = UnitName('player')
 local frames = {}
 
+--[[ Events ]]--
 
---a widget for performing delayed updates
---if you ever see how many times the combuctor slot add/remove/update events are called, you'll know why this exists
-local Updater = CreateFrame('Frame')
-Updater:SetScript('OnUpdate', function(self)
-	FrameEvents:LayoutFrames()
-	self:Hide()
-end)
-Updater:Hide()
-
-function FrameEvents:OnEnable()
-	self:RegisterEvent('BAG_UPDATE_COOLDOWN', 'UpdateSlotCooldowns')
-
-	self:RegisterMessage('COMBUCTOR_SLOT_ADD', 'UpdateSlot')
-	self:RegisterMessage('COMBUCTOR_SLOT_REMOVE', 'RemoveItem')
-	self:RegisterMessage('COMBUCTOR_SLOT_UPDATE', 'UpdateSlot')
-	self:RegisterEvent('ITEM_LOCK_CHANGED', 'UpdateSlotLock')
-	self:RegisterEvent('UNIT_QUEST_LOG_CHANGED', 'UpdateBorder')
-	self:RegisterEvent('QUEST_ACCEPTED', 'UpdateBorder')
-
-	self:RegisterMessage('COMBUCTOR_BANK_OPENED', 'UpdateBankFrames')
-	self:RegisterMessage('COMBUCTOR_BANK_CLOSED', 'UpdateBankFrames')
+function FrameEvents:ITEM_LOCK_CHANGED(msg, ...)
+	--print(msg, ...)
+	self:UpdateSlotLock(...)
 end
 
-function FrameEvents:UpdateBorder(msg, ...)
+function FrameEvents:UNIT_QUEST_LOG_CHANGED(msg, ...)
+	--print(msg, ...)
+	self:UpdateBorder(...)
+end
+
+function FrameEvents:QUEST_ACCEPTED(msg, ...)
+	--print(msg, ...)
+	self:UpdateBorder(...)
+end
+
+function FrameEvents:ITEM_SLOT_ADD(msg, ...)
+	--print(msg, ...)
+	self:UpdateSlot(...)
+end
+
+function FrameEvents:ITEM_SLOT_REMOVE(msg, ...)
+	--print(msg, ...)
+	self:RemoveItem(...)
+end
+
+function FrameEvents:ITEM_SLOT_UPDATE(msg, ...)
+	--print(msg, ...)
+	self:UpdateSlot(...)
+end
+
+function FrameEvents:ITEM_SLOT_UPDATE_COOLDOWN(msg, ...)
+	--print(msg, ...)
+	self:UpdateSlotCooldown(...)
+end
+
+function FrameEvents:BANK_OPENED(msg, ...)
+	--print(msg, ...)
+	self:UpdateBankFrames(...)
+end
+
+function FrameEvents:BANK_CLOSED(msg, ...)
+	--print(msg, ...)
+	self:UpdateBankFrames(...)
+end
+
+
+--[[ Update Methods ]]--
+
+function FrameEvents:UpdateBorder(...)
 	for f in self:GetFrames() do
 		if f:GetPlayer() == currentPlayer then
 			f:UpdateBorder(...)
@@ -39,7 +66,7 @@ function FrameEvents:UpdateBorder(msg, ...)
 	end
 end
 
-function FrameEvents:UpdateSlot(msg, ...)
+function FrameEvents:UpdateSlot(...)
 	for f in self:GetFrames() do
 		if f:GetPlayer() == currentPlayer then
 			if f:UpdateSlot(...) then
@@ -49,7 +76,7 @@ function FrameEvents:UpdateSlot(msg, ...)
 	end
 end
 
-function FrameEvents:RemoveItem(msg, ...)
+function FrameEvents:RemoveItem(...)
 	for f in self:GetFrames() do
 		if f:GetPlayer() == currentPlayer then
 			if f:RemoveItem(...) then
@@ -59,7 +86,7 @@ function FrameEvents:RemoveItem(msg, ...)
 	end
 end
 
-function FrameEvents:UpdateSlotLock(msg, ...)
+function FrameEvents:UpdateSlotLock(...)
 	for f in self:GetFrames() do
 		if f:GetPlayer() == currentPlayer then
 			f:UpdateSlotLock(...)
@@ -67,10 +94,10 @@ function FrameEvents:UpdateSlotLock(msg, ...)
 	end
 end
 
-function FrameEvents:UpdateSlotCooldowns(msg, ...)
+function FrameEvents:UpdateSlotCooldown(...)
 	for f in self:GetFrames() do
 		if f:GetPlayer() == currentPlayer then
-			f:UpdateSlotCooldowns()
+			f:UpdateSlotCooldown(...)
 		end
 	end
 end
@@ -91,7 +118,7 @@ function FrameEvents:LayoutFrames()
 end
 
 function FrameEvents:RequestLayout()
-	Updater:Show()
+	self.Updater:Show()
 end
 
 function FrameEvents:GetFrames()
@@ -104,4 +131,40 @@ end
 
 function FrameEvents:Unregister(f)
 	frames[f] = nil
+end
+
+
+--[[ Initialization ]]--
+
+do
+	local f = CreateFrame('Frame'); f:Hide()
+	
+	f:SetScript('OnEvent', function(self, event, ...)
+		local method = FrameEvents[event]
+		if method then
+			method(FrameEvents, event, ...)
+		end
+	end)
+	
+	f:SetScript('OnUpdate', function(self, elapsed)
+		FrameEvents:LayoutFrames()
+		self:Hide()
+	end)
+	
+--	f:RegisterEvent('BAG_UPDATE_COOLDOWN')
+	f:RegisterEvent('ITEM_LOCK_CHANGED')
+	f:RegisterEvent('UNIT_QUEST_LOG_CHANGED')
+	f:RegisterEvent('QUEST_ACCEPTED')
+	
+	FrameEvents.Updater = f
+	
+	Addon('InventoryEvents'):RegisterMany(
+		FrameEvents, 
+		'ITEM_SLOT_ADD',
+		'ITEM_SLOT_REMOVE',
+		'ITEM_SLOT_UPDATE',
+		'ITEM_SLOT_UPDATE_COOLDOWN',
+		'BANK_OPENED',
+		'BANK_CLOSED'
+	)
 end

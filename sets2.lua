@@ -50,8 +50,8 @@
 	iterator = CombuctorSet:GetAll()
 --]]
 
-local Combuctor = select(2, ...)
-local CombuctorSet = {}; Combuctor.Set = CombuctorSet
+local AddonName, Addon = ...
+local CombuctorSet = {}; Addon.Set = CombuctorSet
 local CombuctorSet.__index = CombuctorSet
 
 

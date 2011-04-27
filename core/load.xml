@@ -2,7 +2,7 @@
 	<Script file="module.lua"/>
 	<Script file="envoy.lua"/>
 
-	<Script file="itemEvents.lua"/>
+	<Script file="inventoryEvents.lua"/>
 
 	<Script file="playerInfo.lua"/>
 	<Script file="bagSlotInfo.lua"/>

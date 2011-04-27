@@ -3,7 +3,7 @@
 		Used for setting what types of items to show
 --]]
 
-local Combuctor = select(2, ...)
+local AddonName, Addon = ...
 
 --[[ 
 	A side filter button, switches parent filters on click 
@@ -73,7 +73,7 @@ end
 	Side Filter Object
 --]]
 
-local SideFilter = LibStub('Classy-1.0'):New('Frame'); Combuctor.SideFilter = SideFilter
+local SideFilter = LibStub('Classy-1.0'):New('Frame'); Addon.SideFilter = SideFilter
 
 function SideFilter:New(parent, reversed)
 	local f = self:Bind(CreateFrame('Frame', nil, parent))

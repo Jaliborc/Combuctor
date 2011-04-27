@@ -7,6 +7,12 @@ local AddonName, Addon = ...
 local Envoy = Addon:NewModule('Envoy')
 
 
+local assert = function(condition, msg)
+	if not condition then
+		return error(msg, 3)
+	end
+end
+
 --ye old constructor
 local Envoy_MT = {__index = Envoy}
 
@@ -55,6 +61,7 @@ function Envoy:Register(obj, msg, method)
 end
 
 function Envoy:RegisterMany(obj, ...)
+	assert(obj and select('#', ...) > 0, 'Usage: Envoy:RegisterMany(obj, msg, [...])')
 	for i = 1, select('#', ...) do
 		self:Register(obj, (select(i, ...)))
 	end

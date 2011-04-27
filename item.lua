@@ -3,11 +3,12 @@
 		An item slot button
 --]]
 
-local Combuctor = LibStub('AceAddon-3.0'):GetAddon('Combuctor')
-local ItemSlot = LibStub('Classy-1.0'):New('Button')
-Combuctor.ItemSlot = ItemSlot
+local AddonName, Addon = ...
+local ItemSlot = LibStub('Classy-1.0'):New('Button'); Addon.ItemSlot = ItemSlot
 
 local ItemSearch = LibStub('LibItemSearch-1.0')
+local BagSlotInfo = Addon('BagSlotInfo')
+local ItemSlotInfo = Addon('ItemSlotInfo')
 
 --[[
 	The item widget
@@ -66,7 +67,7 @@ end
 
 --creates a new item slot for <id>
 function ItemSlot:ConstructNewItemSlot(id)
-	return CreateFrame('Button', 'CombuctorItem' .. id, nil, 'ContainerFrameItemButtonTemplate')
+	return CreateFrame('Button', ('%sItem%d'):format(AddonName, id), nil, 'ContainerFrameItemButtonTemplate')
 end
 
 --returns an available blizzard item slot for <id>
@@ -263,7 +264,7 @@ end
 
 --returns true if the slot is locked, and false otherwise
 function ItemSlot:IsLocked()
-	return Combuctor.ItemSlotInfo:IsLocked(self:GetPlayer(), self:GetBag(), self:GetID())
+	return ItemSlotInfo:IsLocked(self:GetPlayer(), self:GetBag(), self:GetID())
 end
 
 --colors the item border based on the quality of the item.  hides it for common/poor items
@@ -368,24 +369,24 @@ function ItemSlot:IsSlot(bag, slot)
 end
 
 function ItemSlot:IsCached()
-	return Combuctor.BagSlotInfo:IsCached(self:GetPlayer(), self:GetBag())
+	return BagSlotInfo:IsCached(self:GetPlayer(), self:GetBag())
 end
 
 function ItemSlot:IsBank()
-	return Combuctor.BagSlotInfo:IsBank(self:GetBag())
+	return BagSlotInfo:IsBank(self:GetBag())
 end
 
 function ItemSlot:IsBankSlot()
 	local bag = self:GetBag()
-	return Combuctor.BagSlotInfo:IsBank(bag) or Combuctor.BagSlotInfo:IsBankBag(bag)
+	return BagSlotInfo:IsBank(bag) or BagSlotInfo:IsBankBag(bag)
 end
 
 function ItemSlot:AtBank()
-	return Combuctor.PlayerInfo:AtBank()
+	return PlayerInfo:AtBank()
 end
 
 function ItemSlot:GetItemSlotInfo()
-	local texture, count, locked, quality, readable, lootable, link = Combuctor.ItemSlotInfo:GetItemInfo(self:GetPlayer(), self:GetBag(), self:GetID())
+	local texture, count, locked, quality, readable, lootable, link = ItemSlotInfo:GetItemInfo(self:GetPlayer(), self:GetBag(), self:GetID())
 	return texture, count, locked, quality, readable, lootable, link
 end
 
@@ -422,7 +423,7 @@ end
 --[[ Item Slot Coloring ]]--
 
 function ItemSlot:IsAmmoBagSlot()
-	return Combuctor.BagSlotInfo:IsAmmoBag(self:GetPlayer(), self:GetBag())
+	return BagSlotInfo:IsAmmoBag(self:GetPlayer(), self:GetBag())
 end
 
 function ItemSlot:GetAmmoSlotColor()
@@ -430,7 +431,7 @@ function ItemSlot:GetAmmoSlotColor()
 end
 
 function ItemSlot:IsTradeBagSlot()
-	return Combuctor.BagSlotInfo:IsTradeBag(self:GetPlayer(), self:GetBag())
+	return BagSlotInfo:IsTradeBag(self:GetPlayer(), self:GetBag())
 end
 
 function ItemSlot:GetTradeSlotColor()	
@@ -438,7 +439,7 @@ function ItemSlot:GetTradeSlotColor()
 end
 
 function ItemSlot:IsShardBagSlot()
-	return Combuctor.BagSlotInfo:IsShardBag(self:GetPlayer(), self:GetBag())
+	return BagSlotInfo:IsShardBag(self:GetPlayer(), self:GetBag())
 end
 
 function ItemSlot:GetShardSlotColor()
@@ -446,7 +447,7 @@ function ItemSlot:GetShardSlotColor()
 end
 
 function ItemSlot:IsKeyRingSlot()
-	return Combuctor.BagSlotInfo:IsKeyRing(self:GetBag())
+	return BagSlotInfo:IsKeyRing(self:GetBag())
 end
 
 function ItemSlot:GetKeyringSlotColor()

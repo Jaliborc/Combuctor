@@ -3,6 +3,8 @@
 		used for setting what quality of items to show
 --]]
 
+local AddonName, Addon = ...
+
 local FilterButton = LibStub('Classy-1.0'):New('Button')
 local SIZE = 20
 
@@ -70,8 +72,7 @@ end
 	QualityFilter, A group of filter buttons
 --]]
 
-local QualityFilter = LibStub('Classy-1.0'):New('Frame')
-Combuctor.QualityFilter = QualityFilter
+local QualityFilter = LibStub('Classy-1.0'):New('Frame'); Addon.QualityFilter = QualityFilter
 
 function QualityFilter:New(parent)
 	local f = self:Bind(CreateFrame('Frame', nil, parent))

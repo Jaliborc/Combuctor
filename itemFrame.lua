@@ -3,12 +3,14 @@
 		A thingy that displays items
 --]]
 
-local ItemFrame = LibStub('Classy-1.0'):New('Button')
-Combuctor.ItemFrame = ItemFrame
+local AddonName, Addon = ...
+local ItemFrame = LibStub('Classy-1.0'):New('Button'); Addon.ItemFrame = ItemFrame
 
 --local bindings
-local FrameEvents = Combuctor:GetModule('ItemFrameEvents')
 local ItemSearch = LibStub('LibItemSearch-1.0')
+local FrameEvents = Addon('ItemFrameEvents')
+local BagSlotInfo = Addon('BagSlotInfo')
+local ItemSlotInfo = Addon('ItemSlotInfo')
 
 --InvDataity functions
 local function ToIndex(bag, slot)
@@ -119,7 +121,7 @@ function ItemFrame:AddItem(bag, slot)
 		item:Update()
 		item:Highlight(self.highlightBag == bag)
 	else
-		local item = Combuctor.ItemSlot:New()
+		local item = Addon.ItemSlot:New()
 		item:Set(self, bag, slot)
 		item:Highlight(self.highlightBag == bag)
 
@@ -288,19 +290,19 @@ end
 --[[ Item Placement ]]--
 
 function ItemFrame:GetBagSize(bag)
-	return Combuctor.BagSlotInfo:GetSize(self:GetPlayer(), bag)
+	return BagSlotInfo:GetSize(self:GetPlayer(), bag)
 end
 
 function ItemFrame:GetBagType(bag)
-	return Combuctor.BagSlotInfo:GetBagType(self:GetPlayer(), bag)
+	return BagSlotInfo:GetBagType(self:GetPlayer(), bag)
 end
 
 function ItemFrame:IsBagCached(bag)
-	return Combuctor.BagSlotInfo:IsCached(self:GetPlayer(), bag)
+	return BagSlotInfo:IsCached(self:GetPlayer(), bag)
 end
 
 function ItemFrame:GetItemLink(bag, slot)
-	local link = select(7, Combuctor.ItemSlotInfo:GetItemInfo(self:GetPlayer(), bag, slot))
+	local link = select(7, ItemSlotInfo:GetItemInfo(self:GetPlayer(), bag, slot))
 	return link
 end
 

@@ -3,7 +3,7 @@
 		Used to filter within categories
 --]]
 
-local Combuctor = select(2, ...)
+local AddonName, Addon = ...
 
 --[[
 	BottomTab Object
@@ -51,7 +51,7 @@ end
 	Side Filter Object
 --]]
 
-local BottomFilter = LibStub('Classy-1.0'):New('Frame'); Combuctor.BottomFilter = BottomFilter
+local BottomFilter = LibStub('Classy-1.0'):New('Frame'); Addon.BottomFilter = BottomFilter
 
 function BottomFilter:New(parent)
 	local f = self:Bind(CreateFrame('Frame', parent:GetName() .. 'BottomFilter', parent))
@@ -77,7 +77,7 @@ function BottomFilter:UpdateFilters()
 	local numFilters = 0
 	local parent = self:GetParent()
 
-	for _,set in Combuctor.Set:GetChildSets(parent:GetCategory()) do
+	for _,set in Addon('Sets'):GetChildSets(parent:GetCategory()) do
 		if parent:HasSubSet(set.name, set.parent) then
 			numFilters = numFilters + 1
 			self.buttons[numFilters]:Set(set)

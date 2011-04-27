@@ -49,24 +49,27 @@
 			Switch to given subset
 --]]
 
-local FrameEvents = Combuctor:NewModule('FrameEvents', 'AceEvent-3.0')
+local AddonName, Addon = ...
+local FrameEvents = Addon:NewModule('FrameEvents')
 do
 	local frames = {}
 
-	function FrameEvents:OnEnable()
-		self:RegisterMessage('COMBUCTOR_SET_ADD', 'UpdateSets')
-		self:RegisterMessage('COMBUCTOR_SET_UPDATE', 'UpdateSets')
-		self:RegisterMessage('COMBUCTOR_SET_REMOVE', 'UpdateSets')
+	function FrameEvents:Load()
+		local CSet = Addon('Sets')
+	
+		CSet:RegisterMessage(self, 'COMBUCTOR_SET_ADD', 'UpdateSets')
+		CSet:RegisterMessage(self, 'COMBUCTOR_SET_UPDATE', 'UpdateSets')
+		CSet:RegisterMessage(self, 'COMBUCTOR_SET_REMOVE', 'UpdateSets')
 
-		self:RegisterMessage('COMBUCTOR_CONFIG_SET_ADD', 'UpdateSetConfig')
-		self:RegisterMessage('COMBUCTOR_CONFIG_SET_REMOVE', 'UpdateSetConfig')
+		CSet:RegisterMessage(self, 'COMBUCTOR_CONFIG_SET_ADD', 'UpdateSetConfig')
+		CSet:RegisterMessage(self, 'COMBUCTOR_CONFIG_SET_REMOVE', 'UpdateSetConfig')
 
-		self:RegisterMessage('COMBUCTOR_SUBSET_ADD', 'UpdateSubSets')
-		self:RegisterMessage('COMBUCTOR_SUBSET_UPDATE', 'UpdateSubSets')
-		self:RegisterMessage('COMBUCTOR_SUBSET_REMOVE', 'UpdateSubSets')
+		CSet:RegisterMessage(self, 'COMBUCTOR_SUBSET_ADD', 'UpdateSubSets')
+		CSet:RegisterMessage(self, 'COMBUCTOR_SUBSET_UPDATE', 'UpdateSubSets')
+		CSet:RegisterMessage(self, 'COMBUCTOR_SUBSET_REMOVE', 'UpdateSubSets')
 
-		self:RegisterMessage('COMBUCTOR_CONFIG_SUBSET_ADD', 'UpdateSubSetConfig')
-		self:RegisterMessage('COMBUCTOR_CONFIG_SUBSET_REMOVE', 'UpdateSubSetConfig')
+		CSet:RegisterMessage(self, 'COMBUCTOR_CONFIG_SUBSET_ADD', 'UpdateSubSetConfig')
+		CSet:RegisterMessage(self, 'COMBUCTOR_CONFIG_SUBSET_REMOVE', 'UpdateSubSetConfig')
 	end
 
 	function FrameEvents:UpdateSets(msg, name)
@@ -113,16 +116,17 @@ do
 	function FrameEvents:GetFrames()
 		return pairs(frames)
 	end
+	
+	FrameEvents:Load()
 end
 
 
-local InventoryFrame = LibStub('Classy-1.0'):New('Frame')
-Combuctor.Frame = InventoryFrame
+local InventoryFrame = LibStub('Classy-1.0'):New('Frame'); Addon.Frame = InventoryFrame
 
 --local references
 local _G = getfenv(0)
 local L = LibStub('AceLocale-3.0'):GetLocale('Combuctor')
-local CombuctorSet = Combuctor:GetModule('Sets')
+local CombuctorSet = Addon('Sets')
 
 --constants
 local BASE_WIDTH = 384
@@ -151,19 +155,19 @@ function InventoryFrame:New(titleText, settings, isBank, key)
 
 	f.title = _G[f:GetName() .. 'Title']
 
-	f.sideFilter = Combuctor.SideFilter:New(f, f:IsSideFilterOnLeft())
+	f.sideFilter = Addon.SideFilter:New(f, f:IsSideFilterOnLeft())
 
-	f.bottomFilter = Combuctor.BottomFilter:New(f)
+	f.bottomFilter = Addon.BottomFilter:New(f)
 
 	f.nameFilter = _G[f:GetName() .. 'Search']
 
-	f.qualityFilter = Combuctor.QualityFilter:New(f)
+	f.qualityFilter = Addon.QualityFilter:New(f)
 	f.qualityFilter:SetPoint('BOTTOMLEFT', 24, 65)
 
-	f.itemFrame = Combuctor.ItemFrame:New(f)
+	f.itemFrame = Addon.ItemFrame:New(f)
 	f.itemFrame:SetPoint('TOPLEFT', 24, -78)
 
-	f.moneyFrame = Combuctor.MoneyFrame:New(f)
+	f.moneyFrame = Addon.MoneyFrame:New(f)
 	f.moneyFrame:SetPoint('BOTTOMRIGHT', -40, 67)
 
 	--load what the title says
@@ -261,7 +265,7 @@ function InventoryFrame:UpdateBagFrame()
 	if self.sets.showBags then
 		for _,bagID in ipairs(self.sets.bags) do
 			if bagID ~= KEYRING_CONTAINER then
-				local bag = Combuctor.Bag:Get()
+				local bag = Addon.Bag:Get()
 				bag:Set(self, bagID)
 				table.insert(self.bagButtons, bag)
 			end
@@ -564,24 +568,23 @@ function InventoryFrame:SavePosition(point, parent, relPoint, x, y)
 	if point then
 		if self.sets.position then
 			self.sets.position[1] = point
-			self.sets.position[2] = parent
+			self.sets.position[2] = nil
 			self.sets.position[3] = relPoint
 			self.sets.position[4] = x
 			self.sets.position[5] = y
 		else
-			self.sets.position = {point, parent, relPoint, x, y}
+			self.sets.position = {point, nil, relPoint, x, y}
 		end
-		self:SetUserPlaced(true)
 	else
 		self.sets.position = nil
-		self:SetUserPlaced(false)
 	end
-	self:UpdateManagedPosition()
+	self:LoadPosition()
 end
 
 function InventoryFrame:LoadPosition()
 	if self.sets.position then
-		self:SetPoint(unpack(self.sets.position))
+		local point, parent, relPoint, x, y = unpack(self.sets.position)
+		self:SetPoint(point, self:GetParent(), relPoint, x, y)
 		self:SetUserPlaced(true)
 	else
 		self:SetUserPlaced(nil)
@@ -592,23 +595,27 @@ end
 function InventoryFrame:UpdateManagedPosition()
 	if self.sets.position then
 		if self:GetAttribute('UIPanelLayout-enabled') then
+			self:SetAttribute('UIPanelLayout-defined', false)
+			self:SetAttribute('UIPanelLayout-enabled', false)
+			self:SetAttribute('UIPanelLayout-whileDead', false)
+			self:SetAttribute('UIPanelLayout-area', nil)
+			self:SetAttribute('UIPanelLayout-pushable', nil)
+			
 			if self:IsShown() then
 				HideUIPanel(self)
-				self:SetAttribute('UIPanelLayout-enabled', nil)
 				ShowUIPanel(self)
-			else
-				self:SetAttribute('UIPanelLayout-enabled', nil)
 			end
 		end
-	else
-		if not self:GetAttribute('UIPanelLayout-enabled') then
-			if self:IsShown() then
-				HideUIPanel(self)
-				self:SetAttribute('UIPanelLayout-enabled', true)
-				ShowUIPanel(self)
-			else
-				self:SetAttribute('UIPanelLayout-enabled', true)
-			end
+	elseif not self:GetAttribute('UIPanelLayout-enabled') then
+		self:SetAttribute('UIPanelLayout-defined', true)
+		self:SetAttribute('UIPanelLayout-enabled', true)
+		self:SetAttribute('UIPanelLayout-whileDead', true)
+		self:SetAttribute('UIPanelLayout-area', 'left')
+		self:SetAttribute('UIPanelLayout-pushable', 1)
+
+		if self:IsShown() then
+			HideUIPanel(self)
+			ShowUIPanel(self)
 		end
 	end
 end
@@ -685,5 +692,5 @@ function InventoryFrame:IsBank()
 end
 
 function InventoryFrame:AtBank()
-	return Combuctor.PlayerInfo:AtBank()
+	return Addon('PlayerInfo'):AtBank()
 end

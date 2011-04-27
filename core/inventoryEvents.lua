@@ -44,7 +44,7 @@ local AddonName, Addon = ...
 
 --[[ Module Town ]]--
 
-local InventoryEvents = Addon:NewModule('InventoryEvents', Envoy:New())
+local InventoryEvents = Addon:NewModule('InventoryEvents', Addon('Envoy'):New())
 local AtBank = false
 
 function InventoryEvents:AtBank()
@@ -146,8 +146,8 @@ local function updateItemCooldown(bagId, slotId)
 		local start, duration, enable = GetContainerItemCooldown(bagId, slotId)
 		local onCooldown = (start > 0 and duration > 0 and enable > 0)
 
-		if data[4] ~= onCooldown then
-			data[4] = onCooldown
+		if item[4] ~= onCooldown then
+			item[4] = onCooldown
 			sendMessage('ITEM_SLOT_UPDATE_COOLDOWN', bagId, slotId, onCooldown)
 		end
 	end
@@ -191,19 +191,23 @@ end
 
 --[[ metamethods ]]--
 
-local function forEachItem(bagId, slotId, f, ...)
-	for slot = 1, getBagSize(bagId) do
-		f(bagId, slotId, ....)
+local function forEachItem(bagId, f, ...)
+	if not bagId and f then error('Usage: forEachItem(bagId, function, ...)', 2) end
+
+	for slotId = 1, getBagSize(bagId) do
+		f(bagId, slotId, ...)
 	end
 end
 
 local function forEachBag(f, ...)
+	if not f then error('Usage: forEachBag(function, ...)', 2) end
+	
 	if AtBank then
 		for bagId = 1, NUM_BAG_SLOTS + GetNumBankSlots() do
 			f(bagId, ...)
 		end
 	else
-		for bag = 1, NUM_BAG_SLOTS do
+		for bagId = 1, NUM_BAG_SLOTS do
 			f(bagId, ...)
 		end
 	end
@@ -232,28 +236,28 @@ do
 		self:RegisterEvent('BANKFRAME_CLOSED')
 
 		updateBagSize(KEYRING_CONTAINER)
-		updateItems(KEYRING_CONTAINER)
+		forEachItem(KEYRING_CONTAINER, updateItem)
 
 		updateBagSize(BACKPACK_CONTAINER)
-		updateItems(BACKPACK_CONTAINER)
+		forEachItem(BACKPACK_CONTAINER, updateItem)
 	end
 
 	function eventFrame:BAG_UPDATE(event, bagId)
 		forEachBag(updateBagType)
-		forEachBag(updateBagSizes)
+		forEachBag(updateBagSize)
 		forEachItem(bagId, updateItem)
 	end
 
 	function eventFrame:PLAYERBANKSLOTS_CHANGED(event, ...)
 		forEachBag(updateBagType)
-		forEachBag(updateBagSizes)
+		forEachBag(updateBagSize)
 		forEachItem(BANK_CONTAINER, updateItem)
 	end
 
 	function eventFrame:BANKFRAME_OPENED(event, ...)
 		AtBank = true
 		forEachBag(updateBagType)
-		forEachBag(updateBagSizes)
+		forEachBag(updateBagSize)
 		forEachItem(BANK_CONTAINER, updateItem)
 		sendMessage('BANK_OPENED')
 
