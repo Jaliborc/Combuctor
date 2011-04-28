@@ -207,11 +207,13 @@ function Combuctor:HookBagEvents()
 	end)
 
 	BankFrame:UnregisterAllEvents()
-	self:RegisterMessage('COMBUCTOR_BANK_OPENED', function()
+	
+	self('InventoryEvents'):Register(self, 'BANK_OPENED', function()
 		self:Show(BANK_CONTAINER, true)
 		self:Show(BACKPACK_CONTAINER, true)
 	end)
-	self:RegisterMessage('COMBUCTOR_BANK_CLOSED', function()
+	
+	self('InventoryEvents'):Register(self, 'BANK_CLOSED', function()
 		self:Hide(BANK_CONTAINER, true)
 		self:Hide(BACKPACK_CONTAINER, true)
 	end)
