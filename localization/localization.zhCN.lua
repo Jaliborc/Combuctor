@@ -30,21 +30,6 @@ L.BankToggle = '<右键点击> 显示银行'
 L.MoveTip = '<Alt+左键拖拽> 移动'
 L.ResetPositionTip = '<右键点击> 恢复初始位置'
 
---default sets (need to be here because of a flaw in how I save things
---these are automatically localized (aka, don't translate them :)
-do
-	L.All = ALL
-
-	L.Weapon, L.Armor, L.Container, L.Consumable, L.Glyph, L.TradeGood, 
- 	L.Projectile, L.Quiver, L.Recipe, L.Gem, L.Misc, L.Quest = GetAuctionItemClasses()
-
-	L.Trinket = getglobal('INVTYPE_TRINKET')
-
-	L.Devices, L.Explosives = select(10, GetAuctionItemSubClasses(6))
-
-	L.SimpleGem = select(8, GetAuctionItemSubClasses(7))
-end
-
 L.Normal = '常规'
 L.Equipment = '装备'
 L.Keys = '钥匙'

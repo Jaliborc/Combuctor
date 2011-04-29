@@ -187,14 +187,10 @@ function Combuctor:HookBagEvents()
 		self:Toggle(KEYRING_CONTAINER)
 	end
 
-	OpenAllBags = function(force)
-		if force then
-			self:Show(BACKPACK_CONTAINER)
-		else
-			self:Toggle(BACKPACK_CONTAINER)
-		end
+	OpenAllBags = function(frame)
+		self:Show(BACKPACK_CONTAINER)
 	end
-	
+
 	if _G['ToggleAllBags'] then
 		ToggleAllBags = function()
 			self:Toggle(BACKPACK_CONTAINER)

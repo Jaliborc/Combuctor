@@ -31,21 +31,6 @@ L.BankToggle = '<ПраваяКнопкаМыши> Показать окно б�
 L.MoveTip = '<Alt+ЛеваяКнопкаМыши> Переместить'
 L.ResetPositionTip = '<ПраваяКнопкаМыши> Позиция по умолчанию'
 
---default sets (need to be here because of a flaw in how I save things
---these are automatically localized (aka, don't translate them :)
-do
-	L.All = ALL
-
-	L.Weapon, L.Armor, L.Container, L.Consumable, L.Glyph, L.TradeGood, 
- 	L.Projectile, L.Quiver, L.Recipe, L.Gem, L.Misc, L.Quest = GetAuctionItemClasses()
-
-	L.Trinket = getglobal('INVTYPE_TRINKET')
-
-	L.Devices, L.Explosives = select(10, GetAuctionItemSubClasses(6))
-
-	L.SimpleGem = select(8, GetAuctionItemSubClasses(7))
-end
-
 L.Normal = 'Обычное'
 L.Equipment = 'Обмундирование'
 L.Keys = 'Ключи'

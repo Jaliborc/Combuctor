@@ -31,21 +31,6 @@ L.BankToggle = '<오른쪽 클릭>으로 은행 프레임 토글'
 L.MoveTip = '<앨트-왼쪽 드래그>로 이동'
 L.ResetPositionTip = '<오른쪽 클릭>으로 위치 초기화'
 
---default sets (need to be here because of a flaw in how I save things
---these are automatically localized (aka, don't translate them :)
-do
-	L.All = ALL
-
-	L.Weapon, L.Armor, L.Container, L.Consumable, L.Glyph, L.TradeGood, 
- 	L.Projectile, L.Quiver, L.Recipe, L.Gem, L.Misc, L.Quest = GetAuctionItemClasses()
-
-	L.Trinket = getglobal('INVTYPE_TRINKET')
-
-	L.Devices, L.Explosives = select(10, GetAuctionItemSubClasses(6))
-
-	L.SimpleGem = select(8, GetAuctionItemSubClasses(7))
-end
-
 L.Normal = '일반'
 L.Equipment = '장비'
 L.Keys = '열쇠'
