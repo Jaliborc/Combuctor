@@ -119,7 +119,6 @@ end
 
 local function updateItem(bagId, slotId)
 	local item = Slots(bagId, slotId)
-
 	if item then
 		local prevLink = item[1]
 		local prevCount = item[2]
@@ -201,7 +200,7 @@ end
 
 local function forEachBag(f, ...)
 	if not f then error('Usage: forEachBag(function, ...)', 2) end
-	
+
 	if AtBank then
 		for bagId = 1, NUM_BAG_SLOTS + GetNumBankSlots() do
 			f(bagId, ...)
@@ -248,17 +247,15 @@ do
 		forEachItem(bagId, updateItem)
 	end
 
-	function eventFrame:PLAYERBANKSLOTS_CHANGED(event, ...)
-		forEachBag(updateBagType)
-		forEachBag(updateBagSize)
-		forEachItem(BANK_CONTAINER, updateItem)
+	function eventFrame:PLAYERBANKSLOTS_CHANGED(event, slotId, ...)
+		updateItem(BANK_CONTAINER, slotId)
 	end
 
 	function eventFrame:BANKFRAME_OPENED(event, ...)
 		AtBank = true
 		forEachBag(updateBagType)
 		forEachBag(updateBagSize)
-		forEachItem(BANK_CONTAINER, updateItem)
+		forEachItem(BANK_CONTAINER, addItem)
 		sendMessage('BANK_OPENED')
 
 		--redefine event for each successive call
