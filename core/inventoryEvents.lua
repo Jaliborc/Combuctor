@@ -33,7 +33,7 @@
 		called when the type of a bag changes (aka, what items you can put in it changes)
 
 	Usage:
-		Addon('InventoryEvents'):Register(frame, 'message', 'method' or function)
+		Addon('InventoryEvents'):Register(frame, 'message' [, 'method' or function])
 		Addon('InventoryEvents'):Unregister(frame, 'message')
 		Addon('InventoryEvents'):UnregisterAlll(frame)
 		playerAtBank = Addon('InventoryEvents'):AtBank()
@@ -42,7 +42,9 @@
 
 local AddonName, Addon = ...
 
---[[ Module Town ]]--
+--[[ 
+	Module Town 
+--]]
 
 local InventoryEvents = Addon:NewModule('InventoryEvents', Addon('Envoy'):New())
 local AtBank = false
@@ -253,9 +255,9 @@ do
 
 	function eventFrame:BANKFRAME_OPENED(event, ...)
 		AtBank = true
+		forEachItem(BANK_CONTAINER, addItem)
 		forEachBag(updateBagType)
 		forEachBag(updateBagSize)
-		forEachItem(BANK_CONTAINER, addItem)
 		sendMessage('BANK_OPENED')
 
 		--redefine event for each successive call
