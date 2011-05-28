@@ -42,6 +42,7 @@
 
 local AddonName, Addon = ...
 
+
 --[[ 
 	Module Town 
 --]]
@@ -56,6 +57,7 @@ end
 local function sendMessage(msg, ...)
 	InventoryEvents:Send(msg, ...)
 end
+
 
 --[[
 	Update Functions
@@ -249,8 +251,20 @@ do
 		forEachItem(bagId, updateItem)
 	end
 
+	--[[
+		per http://wowprogramming.com/docs/events/PLAYERBANKSLOTS_CHANGED
+			slotID - The slot id that changes. 
+					 1-28 is the bank slots. 
+					 29-35 are the bank bags.
+	--]]
 	function eventFrame:PLAYERBANKSLOTS_CHANGED(event, slotId, ...)
-		updateItem(BANK_CONTAINER, slotId)
+		if slotId > GetContainerNumSlots(BANK_CONTAINER) then
+			local bagId = (slotId - getBagSize(BANK_CONTAINER)) + ITEM_INVENTORY_BANK_BAG_OFFSET
+			updateBagType(bagId)
+			updateBagSize(bagId)
+		else	
+			updateItem(BANK_CONTAINER, slotId)
+		end
 	end
 
 	function eventFrame:BANKFRAME_OPENED(event, ...)

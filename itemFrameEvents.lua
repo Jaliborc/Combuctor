@@ -5,53 +5,44 @@
 
 local AddonName, Addon = ...
 local FrameEvents = Addon:NewModule('ItemFrameEvents')
-local currentPlayer = UnitName('player')
 local frames = {}
+
 
 --[[ Events ]]--
 
 function FrameEvents:ITEM_LOCK_CHANGED(msg, ...)
-	--print(msg, ...)
 	self:UpdateSlotLock(...)
 end
 
 function FrameEvents:UNIT_QUEST_LOG_CHANGED(msg, ...)
-	--print(msg, ...)
 	self:UpdateBorder(...)
 end
 
 function FrameEvents:QUEST_ACCEPTED(msg, ...)
-	--print(msg, ...)
 	self:UpdateBorder(...)
 end
 
 function FrameEvents:ITEM_SLOT_ADD(msg, ...)
-	--print(msg, ...)
 	self:UpdateSlot(...)
 end
 
 function FrameEvents:ITEM_SLOT_REMOVE(msg, ...)
-	--print(msg, ...)
 	self:RemoveItem(...)
 end
 
 function FrameEvents:ITEM_SLOT_UPDATE(msg, ...)
-	--print(msg, ...)
 	self:UpdateSlot(...)
 end
 
 function FrameEvents:ITEM_SLOT_UPDATE_COOLDOWN(msg, ...)
-	--print(msg, ...)
 	self:UpdateSlotCooldown(...)
 end
 
 function FrameEvents:BANK_OPENED(msg, ...)
-	--print(msg, ...)
 	self:UpdateBankFrames(...)
 end
 
 function FrameEvents:BANK_CLOSED(msg, ...)
-	--print(msg, ...)
 	self:UpdateBankFrames(...)
 end
 
@@ -60,7 +51,7 @@ end
 
 function FrameEvents:UpdateBorder(...)
 	for f in self:GetFrames() do
-		if f:GetPlayer() == currentPlayer then
+		if f:GetPlayer() == UnitName('player') then
 			f:UpdateBorder(...)
 		end
 	end
@@ -68,7 +59,7 @@ end
 
 function FrameEvents:UpdateSlot(...)
 	for f in self:GetFrames() do
-		if f:GetPlayer() == currentPlayer then
+		if f:GetPlayer() == UnitName('player') then
 			if f:UpdateSlot(...) then
 				f:RequestLayout()
 			end
@@ -78,7 +69,7 @@ end
 
 function FrameEvents:RemoveItem(...)
 	for f in self:GetFrames() do
-		if f:GetPlayer() == currentPlayer then
+		if f:GetPlayer() == UnitName('player') then
 			if f:RemoveItem(...) then
 				f:RequestLayout()
 			end
@@ -88,7 +79,7 @@ end
 
 function FrameEvents:UpdateSlotLock(...)
 	for f in self:GetFrames() do
-		if f:GetPlayer() == currentPlayer then
+		if f:GetPlayer() == UnitName('player') then
 			f:UpdateSlotLock(...)
 		end
 	end
@@ -96,7 +87,7 @@ end
 
 function FrameEvents:UpdateSlotCooldown(...)
 	for f in self:GetFrames() do
-		if f:GetPlayer() == currentPlayer then
+		if f:GetPlayer() == UnitName('player') then
 			f:UpdateSlotCooldown(...)
 		end
 	end
@@ -151,7 +142,6 @@ do
 		self:Hide()
 	end)
 	
---	f:RegisterEvent('BAG_UPDATE_COOLDOWN')
 	f:RegisterEvent('ITEM_LOCK_CHANGED')
 	f:RegisterEvent('UNIT_QUEST_LOG_CHANGED')
 	f:RegisterEvent('QUEST_ACCEPTED')

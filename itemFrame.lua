@@ -98,8 +98,8 @@ function ItemFrame:HasItem(bag, slot, link)
 		if link then
 			name, link, quality, level, ilvl, type, subType, stackCount, equipLoc = GetItemInfo(link)
 		end
-
-		if f.quality and quality ~= f.quality then
+		
+		if bit.band(f.quality, (Addon.QualityFlags[quality] or 0)) <= 0 then
 			return false
 		elseif f.rule and not f.rule(player, bagType, name, link, quality, level, ilvl, type, subType, stackCount, equipLoc) then
 			return false

@@ -7,6 +7,7 @@ local AddonName, Addon = ...
 local ItemSlot = LibStub('Classy-1.0'):New('Button'); Addon.ItemSlot = ItemSlot
 
 local ItemSearch = LibStub('LibItemSearch-1.0')
+local PlayerInfo = Addon('PlayerInfo')
 local BagSlotInfo = Addon('BagSlotInfo')
 local ItemSlotInfo = Addon('ItemSlotInfo')
 
@@ -419,6 +420,7 @@ function ItemSlot:IsQuestItem()
 		return isQuestItem, (questID and not isActive)
 	end
 end
+
 
 --[[ Item Slot Coloring ]]--
 

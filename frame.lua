@@ -148,7 +148,7 @@ function InventoryFrame:New(titleText, settings, isBank, key)
 	f.titleText = titleText
 
 	f.bagButtons = {}
-	f.filter = {}
+	f.filter = { quality = bit.lshift(1, 9) - 1 }
 
 	f:SetWidth(settings.w or BASE_WIDTH)
 	f:SetHeight(settings.h or BASE_HEIGHT)
@@ -440,14 +440,23 @@ end
 
 
 --Quality
+function InventoryFrame:AddQuality(quality)
+	self:SetFilter('quality', self:GetFilter('quality') + quality)
+	self.qualityFilter:UpdateHighlight()
+end
+
+function InventoryFrame:RemoveQuality(quality)
+	self:SetFilter('quality', self:GetFilter('quality') - quality)
+	self.qualityFilter:UpdateHighlight()
+end
+
 function InventoryFrame:SetQuality(quality)
-	if self:SetFilter('quality', quality) then
-		self.qualityFilter:UpdateHighlight()
-	end
+	self:SetFilter('quality', quality)
+	self.qualityFilter:UpdateHighlight()
 end
 
 function InventoryFrame:GetQuality()
-	return self:GetFilter('quality') or -1
+	return self:GetFilter('quality') or 0
 end
 
 
@@ -668,6 +677,7 @@ function InventoryFrame:HideFrame(auto)
 		end
 	end
 end
+
 
 --[[
 	Side Filter Positioning
