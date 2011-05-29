@@ -21,11 +21,11 @@ end
 
 --[[ filter button ]]--
 
-local FilterButton = LibStub('Classy-1.0'):New('Button')
+local FilterButton = LibStub('Classy-1.0'):New('Checkbutton')
 local SIZE = 20
 
 function FilterButton:Create(parent, quality, qualityFlag)
-	local button = self:Bind(CreateFrame('Button', nil, parent, 'UIRadioButtonTemplate'))
+	local button = self:Bind(CreateFrame('Checkbutton', nil, parent, 'UIRadioButtonTemplate'))
 	button:SetWidth(SIZE)
 	button:SetHeight(SIZE)
 	button:SetScript('OnClick', self.OnClick)
@@ -33,14 +33,17 @@ function FilterButton:Create(parent, quality, qualityFlag)
 	button:SetScript('OnLeave', self.OnLeave)
 
 	local bg = button:CreateTexture(nil, 'BACKGROUND')
-	bg:SetWidth(SIZE/2)
-	bg:SetHeight(SIZE/2)
+	bg:SetSize(SIZE/3, SIZE/3)
 	bg:SetPoint('CENTER')
-	bg:SetTexture(GetItemQualityColor(quality))
-	button.bg = bg
+	
+	local r, g, b = GetItemQualityColor(quality)
+	bg:SetTexture(r, g, b, 0.5)
+
+	button:SetCheckedTexture(bg)	
+	button:GetNormalTexture():SetVertexColor(r, g, b)
+	
 	button.quality = quality
 	button.qualityFlag = qualityFlag
-
 	return button
 end
 
@@ -74,19 +77,7 @@ function FilterButton:OnLeave()
 end
 
 function FilterButton:UpdateHighlight(quality)
-	if bit.band(quality, self.qualityFlag) > 0 then
-		if self.bg then
-			self.bg:SetAlpha(1)
-		end
-		self:GetNormalTexture():SetVertexColor(1, 0.82, 0)
-		self:LockHighlight()
-	else
-		if self.bg then
-			self.bg:SetAlpha(0.5)
-		end
-		self:GetNormalTexture():SetVertexColor(1, 1, 1)
-		self:UnlockHighlight()
-	end
+	self:SetChecked(bit.band(quality, self.qualityFlag) > 0)
 end
 
 
