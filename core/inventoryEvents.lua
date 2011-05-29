@@ -206,7 +206,7 @@ local function forEachBag(f, ...)
 	if not f then error('Usage: forEachBag(function, ...)', 2) end
 
 	if AtBank then
-		for bagId = 1, NUM_BAG_SLOTS + GetNumBankSlots() do
+		for bagId = -1, NUM_BAG_SLOTS + GetNumBankSlots() do
 			f(bagId, ...)
 		end
 	else
