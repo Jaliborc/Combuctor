@@ -5,7 +5,7 @@
 	Based on SpecialEvents-Bags by Tekkub Stoutwrithe (tekkub@gmail.com)
 
 	ITEM_SLOT_ADD
-	args:		bag, slot, link, count, locked, coolingDown
+	args:		bag, slot, itemLink, count, coolingDown
 		called when a new slot becomes available to the player
 
 	ITEM_SLOT_REMOVE
@@ -13,7 +13,7 @@
 		called when an item slot is removed from being in use
 
 	ITEM_SLOT_UPDATE
-	args:		bag, slot, link, count, locked, coolingDown
+	args:		bag, slot, itemLink, count
 		called when an item slot's item or item count changes
 
 	ITEM_SLOT_UPDATE_COOLDOWN
@@ -43,8 +43,8 @@
 local AddonName, Addon = ...
 
 
---[[ 
-	Module Town 
+--[[
+	Module Town
 --]]
 
 local InventoryEvents = Addon:NewModule('InventoryEvents', Addon('Envoy'):New())
@@ -76,7 +76,6 @@ do
 			local item = self[index] or {}
 			item[1] = itemLink
 			item[2] = count
-			item[3] = locked
 			item[4] = onCooldown
 
 			self[index] = item
@@ -107,12 +106,12 @@ local BagSizes = {}
 --[[ Item Updating ]]--
 
 local function addItem(bagId, slotId)
-	local texture, count, locked, quality, readable, lootable, link = GetContainerItemInfo(bagId, slotId)
+	local texture, count, locked, quality, readable, lootable, itemLink = GetContainerItemInfo(bagId, slotId)
 	local start, duration, enable = GetContainerItemCooldown(bagId, slotId)
 	local onCooldown = (start > 0 and duration > 0 and enable > 0)
 
 	Slots:Set(bagId, slotId, link, count, locked, onCooldown)
-	sendMessage('ITEM_SLOT_ADD', bagId, slotId, link, count, locked, onCooldown)
+	sendMessage('ITEM_SLOT_ADD', bagId, slotId, itemLink, count, onCooldown)
 end
 
 local function removeItem(bagId, slotId)
@@ -127,17 +126,12 @@ local function updateItem(bagId, slotId)
 		local prevLink = item[1]
 		local prevCount = item[2]
 
-		local texture, count, locked, quality, readable, lootable, link = GetContainerItemInfo(bagId, slotId)
-		local start, duration, enable = GetContainerItemCooldown(bagId, slotId)
-		local onCooldown = (start > 0 and duration > 0 and enable > 0)
-
-		if not(prevLink == link and prevCount == count) then
+		local texture, count, locked, quality, readable, lootable, itemLink = GetContainerItemInfo(bagId, slotId)
+		if not(prevLink == itemLink and prevCount == count) then
 			item[1] = link
 			item[2] = count
-			item[3] = locked
-			item[4] = onCooldown
 
-			sendMessage('ITEM_SLOT_UPDATE', bagId, slotId, link, count, locked, onCooldown)
+			sendMessage('ITEM_SLOT_UPDATE', bagId, slotId, itemLink, count)
 		end
 	end
 end
@@ -161,6 +155,9 @@ end
 local function getBagSize(bagId)
 	if bagId == KEYRING_CONTAINER then
 		return GetKeyRingSize()
+	end
+	if bagId == BANK_CONTAINER then
+		return NUM_BANKGENERIC_SLOTS
 	end
 	return GetContainerNumSlots(bagId)
 end
@@ -235,8 +232,6 @@ do
 		self:RegisterEvent('BAG_UPDATE')
 		self:RegisterEvent('BAG_UPDATE_COOLDOWN')
 		self:RegisterEvent('PLAYERBANKSLOTS_CHANGED')
-		self:RegisterEvent('BANKFRAME_OPENED')
-		self:RegisterEvent('BANKFRAME_CLOSED')
 
 		updateBagSize(KEYRING_CONTAINER)
 		forEachItem(KEYRING_CONTAINER, updateItem)
@@ -245,7 +240,7 @@ do
 		forEachItem(BACKPACK_CONTAINER, updateItem)
 	end
 
-	function eventFrame:BAG_UPDATE(event, bagId)
+	function eventFrame:BAG_UPDATE(event, bagId, ...)
 		forEachBag(updateBagType)
 		forEachBag(updateBagSize)
 		forEachItem(bagId, updateItem)
@@ -253,8 +248,8 @@ do
 
 	--[[
 		per http://wowprogramming.com/docs/events/PLAYERBANKSLOTS_CHANGED
-			slotID - The slot id that changes. 
-					 1-28 is the bank slots. 
+			slotID - The slot id that changes.
+					 1-28 is the bank slots.
 					 29-35 are the bank bags.
 	--]]
 	function eventFrame:PLAYERBANKSLOTS_CHANGED(event, slotId, ...)
@@ -262,31 +257,56 @@ do
 			local bagId = (slotId - getBagSize(BANK_CONTAINER)) + ITEM_INVENTORY_BANK_BAG_OFFSET
 			updateBagType(bagId)
 			updateBagSize(bagId)
-		else	
+		else
 			updateItem(BANK_CONTAINER, slotId)
 		end
-	end
-
-	function eventFrame:BANKFRAME_OPENED(event, ...)
-		AtBank = true
-		forEachItem(BANK_CONTAINER, addItem)
-		forEachBag(updateBagType)
-		forEachBag(updateBagSize)
-		sendMessage('BANK_OPENED')
-
-		--redefine event for each successive call
-		self[event] = function(self)
-			AtBank = true
-			sendMessage('BANK_OPENED')
-		end
-	end
-
-	function eventFrame:BANKFRAME_CLOSED(event, ...)
-		AtBank = false
-		sendMessage('BANK_CLOSED')
 	end
 
 	function eventFrame:BAG_UPDATE_COOLDOWN(event, ...)
 		forEachBag(forEachItem, updateItemCooldown)
 	end
+end
+
+
+--[[
+	bank open/close events
+		this is here for my crazy theory that the main bank contents aren't available immediately
+		but are available on the next frame
+--]]
+
+do
+	local bankWatcher = CreateFrame('Frame'); bankWatcher:Hide()
+
+	bankWatcher:SetScript('OnShow', function(self)
+		AtBank = true
+
+		updateBagSize(BANK_CONTAINER)
+		forEachItem(BANK_CONTAINER, updateItem)
+
+		forEachBag(updateBagType)
+		forEachBag(updateBagSize)
+
+		sendMessage('BANK_OPENED')
+
+		self:SetScript('OnShow', function(self) 
+			AtBank = true
+			sendMessage('BANK_OPENED') 
+		end)
+	end)
+
+	bankWatcher:SetScript('OnHide', function(self)
+		AtBank = false
+		sendMessage('BANK_CLOSED')
+	end)
+
+	bankWatcher:SetScript('OnEvent', function(self, event, ...)
+		if event == 'BANKFRAME_OPENED' then
+			self:Show()
+		else
+			self:Hide()
+		end
+	end)
+
+	bankWatcher:RegisterEvent('BANKFRAME_OPENED')
+	bankWatcher:RegisterEvent('BANKFRAME_CLOSED')
 end
