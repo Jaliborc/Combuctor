@@ -2,7 +2,7 @@
 ## Title: Combuctor
 ## Author: Tuller
 ## Notes: Pants are a dangerous foe
-## Version: 2.5.0
+## Version: 4.1.tuba
 ## OptionalDeps: Ace3, Bagnon_Forever, BagSync, LibItemSearch-1.0
 ## SavedVariables: CombuctorDB2, CombuctorVersion
 embeds.xml

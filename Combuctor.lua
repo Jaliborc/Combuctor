@@ -3,12 +3,14 @@
 		Some sort of crazy visual inventory management system
 --]]
 
-Combuctor = LibStub('AceAddon-3.0'):NewAddon(select(2, ...), 'Combuctor', 'AceEvent-3.0', 'AceConsole-3.0')
-local L = LibStub('AceLocale-3.0'):GetLocale('Combuctor')
-local CURRENT_VERSION = GetAddOnMetadata('Combuctor', 'Version')
+local AddonName, Addon = ...
+
+Combuctor = LibStub('AceAddon-3.0'):NewAddon(Addon, AddonName, 'AceEvent-3.0', 'AceConsole-3.0')
+local L = LibStub('AceLocale-3.0'):GetLocale(AddonName)
+local CURRENT_VERSION = GetAddOnMetadata(AddonName, 'Version')
 
 --set the binding name stuff here, since its mostly locale independent
-BINDING_HEADER_COMBUCTOR = 'Combuctor'
+BINDING_HEADER_COMBUCTOR = AddonName
 BINDING_NAME_COMBUCTOR_TOGGLE_INVENTORY = L.ToggleInventory
 BINDING_NAME_COMBUCTOR_TOGGLE_BANK = L.ToggleBank
 
@@ -275,6 +277,8 @@ function Combuctor:OnSlashCommand(msg)
 		self:Toggle(BACKPACK_CONTAINER)
 	elseif msg == '' or msg == 'config' or msg == 'options' then
 		self:ShowOptions()
+	elseif msg == 'version' then
+		self:Print(self.db.version)
 	else
 		self:Print('Commands (/cbt or /combuctor)')
 		print('- bank: Toggle bank')
@@ -285,6 +289,10 @@ end
 
 
 --[[ Utility Functions ]]--
+
+function Combuctor:Print(...)
+	return print('|cffFFBA00'.. AddonName .. '|r:', ...)
+end
 
 function Combuctor:SetMaxItemScale(scale)
 	self.db.global.maxScale = scale or 1
