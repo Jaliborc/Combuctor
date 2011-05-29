@@ -362,7 +362,7 @@ function ItemSlot:GetPlayer()
 end
 
 function ItemSlot:GetBag()
-	return self:GetParent() and self:GetParent():GetID() or 1
+	return self:GetParent() and self:GetParent():GetID() or -1
 end
 
 function ItemSlot:IsSlot(bag, slot)
@@ -424,28 +424,12 @@ end
 
 --[[ Item Slot Coloring ]]--
 
-function ItemSlot:IsAmmoBagSlot()
-	return BagSlotInfo:IsAmmoBag(self:GetPlayer(), self:GetBag())
-end
-
-function ItemSlot:GetAmmoSlotColor()
-	return 0.7, 0.7, 1
-end
-
 function ItemSlot:IsTradeBagSlot()
 	return BagSlotInfo:IsTradeBag(self:GetPlayer(), self:GetBag())
 end
 
 function ItemSlot:GetTradeSlotColor()	
 	return 0.5, 1, 0.5
-end
-
-function ItemSlot:IsShardBagSlot()
-	return BagSlotInfo:IsShardBag(self:GetPlayer(), self:GetBag())
-end
-
-function ItemSlot:GetShardSlotColor()
-	return 0.9, 0.7, 1
 end
 
 function ItemSlot:IsKeyRingSlot()

@@ -46,6 +46,9 @@ function FrameEvents:BANK_CLOSED(msg, ...)
 	self:UpdateBankFrames(...)
 end
 
+function FrameEvents:BAG_UPDATE_TYPE(msg, ...)
+	self:UpdateSlotColor(...)
+end
 
 --[[ Update Methods ]]--
 
@@ -53,6 +56,14 @@ function FrameEvents:UpdateBorder(...)
 	for f in self:GetFrames() do
 		if f:GetPlayer() == UnitName('player') then
 			f:UpdateBorder(...)
+		end
+	end
+end
+
+function FrameEvents:UpdateSlotColor(...)
+	for f in self:GetFrames() do
+		if f:GetPlayer() == UnitName('player') then
+			f:UpdateSlotColor(...)
 		end
 	end
 end
@@ -155,6 +166,7 @@ do
 		'ITEM_SLOT_UPDATE',
 		'ITEM_SLOT_UPDATE_COOLDOWN',
 		'BANK_OPENED',
-		'BANK_CLOSED'
+		'BANK_CLOSED',
+		'BAG_UPDATE_TYPE'
 	)
 end

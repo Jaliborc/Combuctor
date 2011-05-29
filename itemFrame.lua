@@ -178,6 +178,14 @@ function ItemFrame:UpdateBorder()
 	end
 end
 
+function ItemFrame:UpdateSlotColor(bagId)
+	for _,item in pairs(self.items) do
+		if item:GetBag() == bagId then
+			item:UpdateSlotColor()
+		end
+	end
+end
+
 
 --[[ Mass Item Changes ]]--
 
