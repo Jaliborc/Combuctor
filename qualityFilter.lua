@@ -37,7 +37,7 @@ function FilterButton:Create(parent, quality, qualityFlag)
 	bg:SetPoint('CENTER')
 	
 	local r, g, b = GetItemQualityColor(quality)
-	bg:SetTexture(r, g, b, 0.5)
+	bg:SetTexture(r * 1.25, g * 1.25, b * 1.25, 0.75)
 
 	button:SetCheckedTexture(bg)	
 	button:GetNormalTexture():SetVertexColor(r, g, b)
@@ -50,11 +50,15 @@ end
 function FilterButton:OnClick()
 	local frame = self:GetParent():GetParent()
 	if bit.band(frame:GetQuality(), self.qualityFlag) > 0 then
-		frame:RemoveQuality(self.qualityFlag)
+		if IsModifierKeyDown() or frame:GetQuality() == self.qualityFlag then
+			frame:RemoveQuality(self.qualityFlag)
+		else
+			frame:SetQuality(self.qualityFlag)
+		end
 	elseif IsModifierKeyDown() then
-		frame:SetQuality(self.qualityFlag)
-	else
 		frame:AddQuality(self.qualityFlag)
+	else
+		frame:SetQuality(self.qualityFlag)
 	end
 end
 

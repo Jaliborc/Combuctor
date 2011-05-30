@@ -148,7 +148,7 @@ function InventoryFrame:New(titleText, settings, isBank, key)
 	f.titleText = titleText
 
 	f.bagButtons = {}
-	f.filter = { quality = bit.lshift(1, 9) - 1 }
+	f.filter = { quality = 0 }
 
 	f:SetWidth(settings.w or BASE_WIDTH)
 	f:SetHeight(settings.h or BASE_HEIGHT)
