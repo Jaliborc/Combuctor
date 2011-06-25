@@ -136,8 +136,6 @@ function Bag:OnClick(button)
 	elseif CursorHasItem() then
 		if self:IsBackpack() then
 			PutItemInBackpack()
-		elseif self:IsKeyRing() then
-			PutKeyInKeyRing()
 		else
 			PutItemInBag(self:GetInventorySlot())
 		end
@@ -291,8 +289,6 @@ function Bag:UpdateTooltip()
 		GameTooltip:SetText(BACKPACK_TOOLTIP, 1, 1, 1)
 	elseif self:IsBank() then
 		GameTooltip:SetText(L.Bank, 1, 1, 1)
-	elseif self:IsKeyRing() then
-		GameTooltip:SetText(KEYRING, 1, 1, 1)
 	elseif self:IsCached() then
 		self:UpdateCachedBagTooltip()
 	else
@@ -349,10 +345,6 @@ end
 --returns true if the given bag represetns the main bank container
 function Bag:IsBank()
 	return BagSlotInfo:IsBank(self:GetID())
-end
-
-function Bag:IsKeyRing()
-	return BagSlotInfo:IsKeyRing(self:GetID())
 end
 
 --returns true if the given bag slot is an inventory bag slot

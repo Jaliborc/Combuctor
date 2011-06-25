@@ -225,13 +225,6 @@ end
 --item slot color
 function ItemSlot:UpdateSlotColor()
 	if (not self:GetItem()) and self:ColoringBagSlots() then
-		if self:IsKeyRingSlot() then
-			local r, g, b = self:GetKeyringSlotColor()
-			SetItemButtonTextureVertexColor(self, r, g, b)
-			self:GetNormalTexture():SetVertexColor(r, g, b)
-			return
-		end
-
 		if self:IsTradeBagSlot() then
 			local r, g, b = self:GetTradeSlotColor()
 			SetItemButtonTextureVertexColor(self, r, g, b)
@@ -430,14 +423,6 @@ end
 
 function ItemSlot:GetTradeSlotColor()	
 	return 0.5, 1, 0.5
-end
-
-function ItemSlot:IsKeyRingSlot()
-	return BagSlotInfo:IsKeyRing(self:GetBag())
-end
-
-function ItemSlot:GetKeyringSlotColor()
-	return 1, 0.8, 0
 end
 
 function ItemSlot:ColoringBagSlots()

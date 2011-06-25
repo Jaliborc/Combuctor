@@ -43,15 +43,6 @@ function BagSlotInfo:IsBackpackBag(bagSlot)
 	return bagSlot > 0 and bagSlot < (NUM_BAG_SLOTS + 1)
 end
 
---returns true if the given bagSlot is the keyring
-function BagSlotInfo:IsKeyRing(bagSlot)
-	if not tonumber(bagSlot) then
-		error('Usage: BagSlotInfo:IsKeyRing(bagSlot)', 2)
-	end
-	
-	return bagSlot == KEYRING_CONTAINER
-end
-
 --returns true if the given bagSlot for the given player is cached
 function BagSlotInfo:IsCached(player, bagSlot)
 	if not(type(player) == 'string' and tonumber(bagSlot)) then
@@ -93,7 +84,7 @@ function BagSlotInfo:IsLocked(player, bagSlot)
 		error('Usage: BagSlotInfo:IsLocked(\'player\', bagSlot)', 2)
 	end
 	
-	if self:IsBackpack(bagSlot) or self:IsKeyRing(bagSlot) or self:IsBank(bagSlot) or self:IsCached(player, bagSlot) then
+	if self:IsBackpack(bagSlot) or self:IsBank(bagSlot) or self:IsCached(player, bagSlot) then
 		return false
 	end
 	return IsInventoryItemLocked(self:ToInventorySlot(bagSlot))
@@ -115,8 +106,6 @@ function BagSlotInfo:GetSize(player, bagSlot)
 		end
 	elseif self:IsBank(bagSlot) then
 		size = NUM_BANKGENERIC_SLOTS
-	elseif self:IsKeyRing(bagSlot) then
-		size = GetKeyRingSize()
 	else
 		size = GetContainerNumSlots(bagSlot)
 	end
@@ -171,10 +160,6 @@ function BagSlotInfo:GetBagType(player, bagSlot)
 	if not(type(player) == 'string' and tonumber(bagSlot)) then
 		error('Usage: size = BagSlotInfo:GetBagType(\'player\', bagSlot)', 2)
 	end
-	
-	if self:IsKeyRing(bagSlot) then
-		return 0x0100
-	end
 
 	if self:IsBank(bagSlot) or self:IsBackpack(bagSlot) then
 		return 0
@@ -203,10 +188,6 @@ end
 function BagSlotInfo:ToInventorySlot(bagSlot)
 	if not tonumber(bagSlot) then
 		error('Usage: BagSlotInfo:ToInventorySlot(bagSlot)', 2)
-	end
-	
-	if self:IsKeyRing(bagSlot) then
-		return KeyRingButtonIDToInvSlotID(bagSlot)
 	end
 	
 	if self:IsBackpackBag(bagSlot) then

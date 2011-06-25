@@ -88,20 +88,12 @@ local function addSet(sets, exclude, name, ...)
 end
 
 local function getDefaultInventorySets(class)
-	local sets, exclude
-
-	if class == 'HUNTER' then
-		sets, exclude = addSet(sets, exclude, L.All, L.All, L.Shards)
-	elseif class == 'WARLOCK' then
-		sets, exclude = addSet(sets, exclude, L.All, L.All, L.Ammo)
-	else
-		sets, exclude = addSet(sets, exclude, L.All, L.All, L.Ammo, L.Shards)
-	end
+	local sets, exclude = addSet(sets, exclude, L.All, L.All, L.Keys)
 	return sets, exclude
 end
 
 local function getDefaultBankSets(class)
-	local sets, exclude = addSet(sets, exclude, L.All, L.All, L.Shards, L.Ammo, L.Keys)
+	local sets, exclude = addSet(sets, exclude, L.All, L.All, L.Keys)
 	sets, exclude = addSet(sets, exclude, L.Equipment)
 	sets, exclude = addSet(sets, exclude, L.TradeGood)
 	sets, exclude = addSet(sets, exclude, L.Misc)
@@ -124,7 +116,7 @@ end
 function Combuctor:GetBaseProfile()
 	return {
 		inventory = {
-			bags = {-2, 0, 1, 2, 3, 4},
+			bags = {0, 1, 2, 3, 4},
 			position = {'RIGHT'},
 			showBags = false,
 			leftSideFilter = true,
@@ -183,10 +175,6 @@ function Combuctor:HookBagEvents()
 
 	ToggleBackpack = function()
 		self:Toggle(BACKPACK_CONTAINER)
-	end
-
-	ToggleKeyRing = function()
-		self:Toggle(KEYRING_CONTAINER)
 	end
 
 	OpenAllBags = function(frame)
