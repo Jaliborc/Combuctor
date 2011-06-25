@@ -604,14 +604,13 @@ end
 function InventoryFrame:UpdateManagedPosition()
 	if self.sets.position then
 		if self:GetAttribute('UIPanelLayout-enabled') then
-			self:SetAttribute('UIPanelLayout-defined', false)
-			self:SetAttribute('UIPanelLayout-enabled', false)
-			self:SetAttribute('UIPanelLayout-whileDead', false)
-			self:SetAttribute('UIPanelLayout-area', nil)
-			self:SetAttribute('UIPanelLayout-pushable', nil)
-			
 			if self:IsShown() then
 				HideUIPanel(self)
+				self:SetAttribute('UIPanelLayout-defined', false)
+				self:SetAttribute('UIPanelLayout-enabled', false)
+				self:SetAttribute('UIPanelLayout-whileDead', false)
+				self:SetAttribute('UIPanelLayout-area', nil)
+				self:SetAttribute('UIPanelLayout-pushable', nil)
 				ShowUIPanel(self)
 			end
 		end
