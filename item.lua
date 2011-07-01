@@ -6,7 +6,9 @@
 local AddonName, Addon = ...
 local ItemSlot = LibStub('Classy-1.0'):New('Button'); Addon.ItemSlot = ItemSlot
 
+local Unfit = LibStub('Unfit-1.0')
 local ItemSearch = LibStub('LibItemSearch-1.0')
+
 local PlayerInfo = Addon('PlayerInfo')
 local BagSlotInfo = Addon('BagSlotInfo')
 local ItemSlotInfo = Addon('ItemSlotInfo')
@@ -284,23 +286,18 @@ function ItemSlot:SetBorderQuality(quality)
 		end
 	end
 	
-	if self:HighlightUnusableItems() then
-		local link = select(7, self:GetItemSlotInfo())
-		if Unfit:IsItemUnusable(link) then
-			local r, g, b = RED_FONT_COLOR.r, RED_FONT_COLOR.g, RED_FONT_COLOR.b
-			border:SetVertexColor(r, g, b, self:GetHighlightAlpha())
-			border:Show()
-			return
-		end
+	local link = select(7, self:GetItemSlotInfo())
+	if Unfit:IsItemUnusable(link) then
+		local r, g, b = RED_FONT_COLOR.r, RED_FONT_COLOR.g, RED_FONT_COLOR.b
+		border:SetVertexColor(r, g, b, self:GetHighlightAlpha())
+		border:Show()
+		return
 	end
 
-	if self:HighlightingItemsByQuality() then
-		if self:GetItem() and quality and quality > 1 then
-			local r, g, b = GetItemQualityColor(quality)
-			border:SetVertexColor(r, g, b, self:GetHighlightAlpha())
-			border:Show()
-			return
-		end
+	if self:GetItem() and quality and quality > 1 then
+		local r, g, b = GetItemQualityColor(quality)
+		border:SetVertexColor(r, g, b, self:GetHighlightAlpha())
+		border:Show()
 	end
 end
 
