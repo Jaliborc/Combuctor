@@ -101,9 +101,9 @@ function ItemFrame:HasItem(bag, slot, link)
 		
 		if f.quality > 0 and not (quality and bit.band(f.quality, Addon.QualityFlags[quality]) > 0) then
 			return false
-		elseif f.rule and not f.rule(player, bagType, name, link, quality, level, ilvl, type, subType, stackCount, equipLoc) then
+		elseif f.rule and not f.rule(player, bagType, name, link, quality, level, ilvl, type, subType, stackCount, equipLoc, bag, slot) then
 			return false
-		elseif f.subRule and not f.subRule(player, bagType, name, link, quality, level, ilvl, type, subType, stackCount, equipLoc) then
+		elseif f.subRule and not f.subRule(player, bagType, name, link, quality, level, ilvl, type, subType, stackCount, equipLoc, bag, slot) then
 			return false
 		--text search
 		elseif f.name then
