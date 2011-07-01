@@ -1,5 +1,5 @@
 ## Interface: 40200
-## Title: Combuctor
+## Title: |cff20ff20Combuctor|r
 ## Author: Tuller
 ## Notes: Pants are a dangerous foe
 ## Version: 4.2.0

@@ -265,22 +265,31 @@ end
 function ItemSlot:SetBorderQuality(quality)
 	local border = self.border
 	local qBorder = self.questBorder
+	
+	qBorder:Hide()
+	border:Hide()
 
 	if self:HighlightingQuestItems() then
 		local isQuestItem, isQuestStarter = self:IsQuestItem()
 		if isQuestItem then
-			qBorder:SetTexture(TEXTURE_ITEM_QUEST_BORDER)
-			qBorder:SetAlpha(self:GetHighlightAlpha())
-			qBorder:Show()
-			border:Hide()
+			border:SetVertexColor(1, .82, .2,  self:GetHighlightAlpha())
+			border:Show()
 			return
 		end
 
 		if isQuestStarter then
 			qBorder:SetTexture(TEXTURE_ITEM_QUEST_BANG)
-			qBorder:SetAlpha(self:GetHighlightAlpha())
 			qBorder:Show()
-			border:Hide()
+			return
+		end
+	end
+	
+	if self:HighlightUnusableItems() then
+		local link = select(7, self:GetItemSlotInfo())
+		if Unfit:IsItemUnusable(link) then
+			local r, g, b = RED_FONT_COLOR.r, RED_FONT_COLOR.g, RED_FONT_COLOR.b
+			border:SetVertexColor(r, g, b, self:GetHighlightAlpha())
+			border:Show()
 			return
 		end
 	end
@@ -290,13 +299,9 @@ function ItemSlot:SetBorderQuality(quality)
 			local r, g, b = GetItemQualityColor(quality)
 			border:SetVertexColor(r, g, b, self:GetHighlightAlpha())
 			border:Show()
-			qBorder:Hide()
 			return
 		end
 	end
-
-	qBorder:Hide()
-	border:Hide()
 end
 
 function ItemSlot:UpdateBorder()
