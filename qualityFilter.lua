@@ -36,7 +36,7 @@ function FilterButton:Create(parent, quality, qualityFlag, qualityColor)
 	button:GetNormalTexture():SetVertexColor(r, g, b)
 	
 	local bg = button:CreateTexture(nil, 'BACKGROUND')
-	bg:SetTexture(r * .7, g * .7, b * .7)
+	bg:SetTexture(r * .5, g * .5, b * .5)
 	bg:SetPoint('CENTER')
 	bg:SetSize(8,8)
 
