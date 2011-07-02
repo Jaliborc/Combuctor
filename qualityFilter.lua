@@ -1,4 +1,4 @@
-﻿--[[
+--[[
 	Quality Filter Widget
 		used for setting what quality of items to show
 --]]
@@ -22,28 +22,29 @@ end
 --[[ filter button ]]--
 
 local FilterButton = LibStub('Classy-1.0'):New('Checkbutton')
-local SIZE = 20
+local SIZE = 18
 
-function FilterButton:Create(parent, quality, qualityFlag)
+function FilterButton:Create(parent, quality, qualityFlag, qualityColor)
 	local button = self:Bind(CreateFrame('Checkbutton', nil, parent, 'UIRadioButtonTemplate'))
-	button:SetWidth(SIZE)
-	button:SetHeight(SIZE)
 	button:SetScript('OnClick', self.OnClick)
 	button:SetScript('OnEnter', self.OnEnter)
 	button:SetScript('OnLeave', self.OnLeave)
+	button:SetCheckedTexture(nil)
+	button:SetSize(SIZE, SIZE)
 
-	local bg = button:CreateTexture(nil, 'BACKGROUND')
-	bg:SetSize(SIZE/3, SIZE/3)
-	bg:SetPoint('CENTER')
-	
-	local r, g, b = GetItemQualityColor(quality)
-	bg:SetTexture(r * 1.25, g * 1.25, b * 1.25, 0.75)
-
-	button:SetCheckedTexture(bg)	
+	local r, g, b = GetItemQualityColor(qualityColor)
 	button:GetNormalTexture():SetVertexColor(r, g, b)
+	button:GetHighlightTexture():SetDesaturated(true)
 	
-	button.quality = quality
+	local bg = button:CreateTexture(nil, 'BACKGROUND')
+	bg:SetTexture(r, g, b)
+	bg:SetPoint('CENTER')
+	bg:SetSize(8,8)
+
+	button.qualityColor = qualityColor
 	button.qualityFlag = qualityFlag
+	button.quality = quality
+	button.bg = bg
 	return button
 end
 
@@ -65,10 +66,10 @@ end
 function FilterButton:OnEnter()
 	GameTooltip:SetOwner(self, 'ANCHOR_RIGHT')
 
-	local quality = self.quality
-	if quality then
-		local r,g,b = GetItemQualityColor(quality)
-		GameTooltip:SetText(_G[format('ITEM_QUALITY%d_DESC', quality)], r, g, b)
+	local color = self.qualityColor
+	if color then
+		local r,g,b = GetItemQualityColor(color)
+		GameTooltip:SetText(_G[format('ITEM_QUALITY%d_DESC', self.quality)], r, g, b)
 	else
 		GameTooltip:SetText(ALL)
 	end
@@ -81,7 +82,13 @@ function FilterButton:OnLeave()
 end
 
 function FilterButton:UpdateHighlight(quality)
-	self:SetChecked(bit.band(quality, self.qualityFlag) > 0)
+	if bit.band(quality, self.qualityFlag) > 0 then
+		self:LockHighlight()
+		self.bg:SetVertexColor(1, 1, 1)
+	else
+		self:UnlockHighlight()
+		self.bg:SetVertexColor(.4, .4, .4)
+	end
 end
 
 
@@ -100,21 +107,21 @@ function QualityFilter:New(parent)
 	f:AddQualityButton(3)
 	f:AddQualityButton(4)
 	f:AddQualityButton(5, Addon.QualityFlags[5] + Addon.QualityFlags[6])
-	f:AddQualityButton(7)
+	f:AddQualityButton(7, nil, 6)
 
-	f:SetWidth(SIZE * 6)
+	f:SetWidth(SIZE * 7)
 	f:SetHeight(SIZE)
 	f:UpdateHighlight()
 
 	return f
 end
 
-function QualityFilter:AddQualityButton(quality, qualityFlags)
-	local button = FilterButton:Create(self, quality, qualityFlags or Addon.QualityFlags[quality])
+function QualityFilter:AddQualityButton(quality, qualityFlags, qualityColor)
+	local button = FilterButton:Create(self, quality, qualityFlags or Addon.QualityFlags[quality], qualityColor or quality)
 	if self.prev then
 		button:SetPoint('LEFT', self.prev, 'RIGHT', 1, 0)
 	else
-		button:SetPoint('LEFT')
+		button:SetPoint('LEFT', 0, 2)
 	end
 	self.prev = button
 end
