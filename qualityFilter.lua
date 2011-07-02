@@ -32,17 +32,19 @@ function FilterButton:Create(parent, quality, qualityFlag, qualityColor)
 	button:SetCheckedTexture(nil)
 	button:SetSize(SIZE, SIZE)
 
-	local r, g, b = GetItemQualityColor(qualityColor or quality)
+	local r, g, b = GetItemQualityColor(qualityColor)
 	button:GetNormalTexture():SetVertexColor(r, g, b)
+	button:GetHighlightTexture():SetDesaturated(true)
 	
 	local bg = button:CreateTexture(nil, 'BACKGROUND')
-	bg:SetTexture(r * .5, g * .5, b * .5)
+	bg:SetTexture(r, g, b)
 	bg:SetPoint('CENTER')
 	bg:SetSize(8,8)
 
-	button.qualityColor = qualityColor or quality
+	button.qualityColor = qualityColor
 	button.qualityFlag = qualityFlag
 	button.quality = quality
+	button.bg = bg
 	return button
 end
 
@@ -82,8 +84,10 @@ end
 function FilterButton:UpdateHighlight(quality)
 	if bit.band(quality, self.qualityFlag) > 0 then
 		self:LockHighlight()
+		self.bg:SetVertexColor(1, 1, 1)
 	else
 		self:UnlockHighlight()
+		self.bg:SetVertexColor(.4, .4, .4)
 	end
 end
 
@@ -113,7 +117,7 @@ function QualityFilter:New(parent)
 end
 
 function QualityFilter:AddQualityButton(quality, qualityFlags, qualityColor)
-	local button = FilterButton:Create(self, quality, qualityFlags or Addon.QualityFlags[quality], qualityColor)
+	local button = FilterButton:Create(self, quality, qualityFlags or Addon.QualityFlags[quality], qualityColor or quality)
 	if self.prev then
 		button:SetPoint('LEFT', self.prev, 'RIGHT', 1, 0)
 	else
