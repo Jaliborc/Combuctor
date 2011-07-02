@@ -6,7 +6,9 @@
 local AddonName, Addon = ...
 local ItemSlot = LibStub('Classy-1.0'):New('Button'); Addon.ItemSlot = ItemSlot
 
+local Unfit = LibStub('Unfit-1.0')
 local ItemSearch = LibStub('LibItemSearch-1.0')
+
 local PlayerInfo = Addon('PlayerInfo')
 local BagSlotInfo = Addon('BagSlotInfo')
 local ItemSlotInfo = Addon('ItemSlotInfo')
@@ -265,38 +267,38 @@ end
 function ItemSlot:SetBorderQuality(quality)
 	local border = self.border
 	local qBorder = self.questBorder
+	
+	qBorder:Hide()
+	border:Hide()
 
 	if self:HighlightingQuestItems() then
 		local isQuestItem, isQuestStarter = self:IsQuestItem()
 		if isQuestItem then
-			qBorder:SetTexture(TEXTURE_ITEM_QUEST_BORDER)
-			qBorder:SetAlpha(self:GetHighlightAlpha())
-			qBorder:Show()
-			border:Hide()
+			border:SetVertexColor(1, .82, .2,  self:GetHighlightAlpha())
+			border:Show()
 			return
 		end
 
 		if isQuestStarter then
 			qBorder:SetTexture(TEXTURE_ITEM_QUEST_BANG)
-			qBorder:SetAlpha(self:GetHighlightAlpha())
 			qBorder:Show()
-			border:Hide()
 			return
 		end
 	end
-
-	if self:HighlightingItemsByQuality() then
-		if self:GetItem() and quality and quality > 1 then
-			local r, g, b = GetItemQualityColor(quality)
-			border:SetVertexColor(r, g, b, self:GetHighlightAlpha())
-			border:Show()
-			qBorder:Hide()
-			return
-		end
+	
+	local link = select(7, self:GetItemSlotInfo())
+	if Unfit:IsItemUnusable(link) then
+		local r, g, b = RED_FONT_COLOR.r, RED_FONT_COLOR.g, RED_FONT_COLOR.b
+		border:SetVertexColor(r, g, b, self:GetHighlightAlpha())
+		border:Show()
+		return
 	end
 
-	qBorder:Hide()
-	border:Hide()
+	if self:GetItem() and quality and quality > 1 then
+		local r, g, b = GetItemQualityColor(quality)
+		border:SetVertexColor(r, g, b, self:GetHighlightAlpha())
+		border:Show()
+	end
 end
 
 function ItemSlot:UpdateBorder()
