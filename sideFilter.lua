@@ -1,4 +1,4 @@
-﻿--[[
+--[[
 	Side Filters
 		Used for setting what types of items to show
 --]]
@@ -48,13 +48,11 @@ function SideFilterButton:UpdateHighlight(setName)
 	self:SetChecked(self.set.name == setName)
 end
 
-function SideFilterButton:SetReversed(enable)
-	self.reversed = enable and true or nil
-
+function SideFilterButton:SetReversed(reversed)
 	local border = _G[self:GetName() .. 'Border']
-
 	border:ClearAllPoints()
-	if self:Reversed() then
+
+	if reversed then
 		border:SetTexCoord(1, 0, 0, 1)
 		border:SetPoint('TOPRIGHT', 3, 11)
 	else
@@ -62,6 +60,8 @@ function SideFilterButton:SetReversed(enable)
 		border:ClearAllPoints()
 		border:SetPoint('TOPLEFT', -3, 11)
 	end
+
+  self.reversed = reversed
 end
 
 function SideFilterButton:Reversed()
@@ -81,24 +81,16 @@ function SideFilter:New(parent, reversed)
 	--metatable magic for button creation on demand
 	f.buttons = setmetatable({}, {__index = function(t, k)
 		local b = SideFilterButton:New(f, f:Reversed())
-
-		--layout the last placed button
-		if k > 1 then
-			b:SetPoint('TOPLEFT', t[k-1], 'BOTTOMLEFT', 0, -17)
-		else
-			if f:Reversed() then
-				b:SetPoint('TOPRIGHT', parent, 'TOPLEFT', 10, -80)
-			else
-				b:SetPoint('TOPLEFT', parent, 'TOPRIGHT', -32, -65)
-			end
-		end
-
 		t[k] = b
+
+    if k > 1 then
+      b:SetPoint('TOPLEFT', t[k-1], 'BOTTOMLEFT', 0, -17)
+    end
+  
 		return b
 	end})
 
 	f:SetReversed(reversed)
-
 	return f
 end
 
@@ -141,33 +133,24 @@ function SideFilter:UpdateHighlight()
 	end
 end
 
---layout all buttons
-function SideFilter:Layout()
-	if #self.buttons > 0 then
-		local first = self.buttons[1]
-		first:ClearAllPoints()
 
-		if self:Reversed() then
-			first:SetPoint('TOPRIGHT', self:GetParent(), 'TOPLEFT', 10, -80)
-		else
-			first:SetPoint('TOPLEFT', self:GetParent(), 'TOPRIGHT', -32, -65)
-		end
+--[[ Reversed ]]--
 
-		for i = 2, #self.buttons do
-			self.buttons[i]:SetPoint('TOPLEFT', self.buttons[i-1], 'BOTTOMLEFT', 0, -17)
-		end
-	end
-end
+function SideFilter:SetReversed(reversed)
+  local first = self.buttons[1]
+  first:ClearAllPoints()
 
---[[ Switch between tabs on the left/right ]]--
-function SideFilter:SetReversed(enable)
-	self.reversed = enable and true or nil
+  if reversed then
+    first:SetPoint('TOPRIGHT', self:GetParent(), 'TOPLEFT', 0, -80)
+  else
+    first:SetPoint('TOPLEFT', self:GetParent(), 'TOPRIGHT', 0, -40)
+  end
 
 	for i, button in pairs(self.buttons) do
-		button:SetReversed(enable)
+		button:SetReversed(reversed)
 	end
 
-	self:Layout()
+  self.reversed = reversed
 end
 
 function SideFilter:Reversed()

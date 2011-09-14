@@ -1,4 +1,4 @@
-﻿--[[
+--[[
 	Localization.lua
 	简体中文 zhCN
 		Translations for Combuctor
@@ -27,12 +27,9 @@ L.Bags = '背包'
 L.BagToggle = '<左键点击> 切换是否显示背包'
 L.InventoryToggle = '<右键点击> 显示整合背包'
 L.BankToggle = '<右键点击> 显示银行'
-L.MoveTip = '<Alt+左键拖拽> 移动'
-L.ResetPositionTip = '<右键点击> 恢复初始位置'
 
 L.Normal = '常规'
 L.Equipment = '装备'
-L.Keys = '钥匙'
 L.Trade = '商业'
 L.Ammo = '弹药'
 L.Shards = '碎片'

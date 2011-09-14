@@ -1,4 +1,4 @@
-﻿--[[
+--[[
 	Localization.lua
 		Translations for Combuctor
 
@@ -29,12 +29,9 @@ L.Bags = '容器'
 L.BagToggle = '<左鍵點選>顯示或隱藏容器'
 L.InventoryToggle = '<右鍵點選>打開或關閉背包視窗'
 L.BankToggle = '<右鍵點選>打開或關閉銀行視窗'
-L.MoveTip = '<Alt-左鍵拖曳>移動'
-L.ResetPositionTip = '<右鍵點選>重設位置'
 
 L.Normal = '一般'
 L.Equipment = '裝備'
-L.Keys = '鑰匙'
 L.Trade = '商業'
 L.Ammo = '彈藥'
 L.Shards = '碎片'

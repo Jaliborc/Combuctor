@@ -1,4 +1,4 @@
-﻿--[[
+--[[
 	Tab Filters
 		Used to filter within categories
 --]]
@@ -63,7 +63,7 @@ function BottomFilter:New(parent)
 		if k > 1 then
 			tab:SetPoint('LEFT', f.buttons[k-1], 'RIGHT', -16, 0)
 		else
-			tab:SetPoint('CENTER', parent, 'BOTTOMLEFT', 60, 46)
+			tab:SetPoint('CENTER', parent, 'BOTTOMLEFT', 50, -14)
 		end
 
 		t[k] = tab

@@ -21,5 +21,6 @@
 	<Script file="bottomFilter.lua"/>
 	<Script file="frame.lua"/>
 	
-	<Include file="Combuctor.xml"/>
+	<Include file="components.xml"/>
+	<Include file="frame.xml"/>
 </Ui>

@@ -38,13 +38,13 @@ function MoneyFrame:OnClick()
 	local name = parent:GetName()
 
 	if MouseIsOver(getglobal(name .. 'GoldButton')) then
-		OpenCoinPickupFrame(COPPER_PER_GOLD, MoneyTypeInfo[parent.moneyType].UpdateFunc(), parent)
+		OpenCoinPickupFrame(COPPER_PER_GOLD, MoneyTypeInfo[parent.moneyType].UpdateFunc(parent), parent)
 		parent.hasPickup = 1
 	elseif MouseIsOver(getglobal(name .. 'SilverButton')) then
-		OpenCoinPickupFrame(COPPER_PER_SILVER, MoneyTypeInfo[parent.moneyType].UpdateFunc(), parent)
+		OpenCoinPickupFrame(COPPER_PER_SILVER, MoneyTypeInfo[parent.moneyType].UpdateFunc(parent), parent)
 		parent.hasPickup = 1
 	elseif MouseIsOver(getglobal(name .. 'CopperButton')) then
-		OpenCoinPickupFrame(1, MoneyTypeInfo[parent.moneyType].UpdateFunc(), parent)
+		OpenCoinPickupFrame(1, MoneyTypeInfo[parent.moneyType].UpdateFunc((parent)), parent)
 		parent.hasPickup = 1
 	end
 end

@@ -1,0 +1,157 @@
+====== 4.2.5
+* Jaliborc: The config has been divided into two windows - "General" & "Sets"
+* Jaliborc: New options at the "General" window - "Display Sets on Left" and "Act as Interface Panel"
+* Jaliborc: Estetical improvements to the "Sets" window
+* Jaliborc: Removed unecessary code
+
+====== 4.2.4
+* Jaliborc: The windows can no longer be dragged of the screen.
+
+====== 4.2.3
+* Jaliborc: Tagging as release version
+
+====== 4.2.2
+* Jaliborc: Fixed bug causing errors when opening the options menu
+
+====== 4.2.1
+* Jaliborc: Added unusable item coloring
+* Jaliborc: Improved the quality filter design
+* Jaliborc: Remade the windows so that they tile when resizing instead of stretching
+* Jaliborc: Fixed a bug with the heirloom color
+* Jaliborc: Fixed a bug when clicking the money box
+
+===== 4.2.0
+* Updated for WoW 4.2.0
+* Tinkered a bit more with fixing frame positions to work properly when managed/unmanaged
+* Removed keyring bits.
+
+====== 4.1.2
+* Reworked the quality filter again to make it a bit more similar to the old style.
+* Selecting no qualities on the quality filter will now show all items.
+* Selecting a quality will now show items of that quality only.
+* Modifier clicking a quality will add the quality to the selection.
+
+====== 4.1.tuba
+* Added a fix for the issue people were having where the bank frame was not updating. Hopefully it works :)
+* Fixed a bug causing empty item slots to not properly update in color when swapping bags of different types.
+* Revamped the quality filter
+* Clicking a quality button will now toggle showing that quality. Empty slots are shown regardless of quality selected.
+* Modifier clicking an unchecked quality filter will select only that quality.
+* Added heirlooms to the quality filter.
+* The legendary filter also now includes artifacts.
+
+====== 2.4.3
+* Fixed LibItemSearch reference in the TOC file to make it load on demand properly
+
+====== 2.4.2
+* Localization bugfixes
+
+====== 2.4.1
+* Fixed a bug preventing Combuctor from showing up when you visit a bank.
+
+===== 2.4.0
+* Updated TOCs for 4.1
+* Added a fix for the frame not remembering position issue
+* Did a lot of restructuring, which probably will result in some bugs
+
+====== 2.3.2
+* Tackle box fix (thanks JuddMan)
+* Compatibility fixes for WoW 4.1
+
+====== 2.3.1
+* Bugfix
+
+===== 2.3.0
+* 4.0.6 fixes (this version won't work with pre 4.0.6 versions)
+* Added tacle box support (for reals this time?)
+
+====== 2.2.5
+* Added BagSync support.
+* Removed Bagnon_Forever from the main download. (It'll still work, though)
+* Added tackle box support (I hope :P)
+* Updated LibItemSearch, you can now perform tooltip searches via tt:<search>
+
+====== 2.2.4b
+* Added back missing Bagnon_Forever + Bagnon_Tooltips folders
+
+====== 2.2.4
+* Fixed some compatibility issues with v4.0.1: specifically the player selector not working.
+
+====== 2.2.3b
+* Added back the Bagnon_Forever + Bagnon_Tooltips folders
+
+====== 2.2.3
+* Updated for WoW v4.0.1
+
+====== 2.2.2
+* Fixed a typo causing an error when moving an item onto an empty part of the Combuctor frame.
+
+====== 2.2.1
+* Fixed a bug causing the bank frame to not display
+* Fixed an error when picking up a bag
+
+===== 2.2.0
+* Pushed in some changes I made in Bagnon.  This should hopefully fix the bank frame issue.
+* Added in quest item highlighting
+* Added in empty slot coloring based on bag type
+
+====== 2.1.4
+* Removed debug prints from the bank frame
+
+====== 2.1.3
+* Updated for 3.3
+* Updated LibItemSearch, adding in support for equipment sets (s:setname), item level (ilvl:level), and comparison operators (ex, q<=epic)
+
+====== 2.1.2
+* Updated for 3.2
+* Added currency tracking to the money frame tooltip, thanks to Nyghtingale
+
+====== 2.1.1
+* Bagnon_Forever fixes
+
+===== 2.1.0
+* Heavily revised text searches
+* Pure text searches now only look at item names.
+* t:<text> searches look at item type/subtype/equiploc information
+* q:<text> searches look at quality information (ex, q:0 or q:epic)
+* boe, bop, boa, bou, and quest perform tooltip searches for bind on x and quest item information.
+* It is possible to negate a search (ex, !q:epic)
+* It is possible to perform an intersection search (ex, q:epic&t:weapon for all epic weapons)
+* It is possible to perform an union search (ex, t:weapon|t:armor for all items that are either armor or weapons).
+
+====== 2.0.8
+* Bumped TOC for 3.1
+* Added left side tabs (no GUI so far for it)
+
+====== 2.0.7
+* Updated Russian localization
+
+====== 2.0.6
+* Fixed some localization bugs
+
+====== 2.0.5
+* Updated translations
+* Fixed a minor tooltip issue
+
+====== 2.0.4
+* Updated Chinese translation
+* Turns out I was using my old wrath branch for Bagnon_Forever + Bagnon_Tooltips
+
+====== 2.0.3-Repackage
+* Made Bagnon_Forever not LOD
+
+====== 2.0.3
+* Fixed a bug caused by missing localization files.
+
+====== 2.0.2
+* Fixed a bug with version updating
+
+====== 2.0.1
+* Fixed a bug with Bagnon_Forever
+
+===== 2.0.0
+* A wrath compatible rewrite.
+* Added the ability to resize the frame via dragging the bottom right corner
+* Added the ability to customize which categories are displayed on the frames (/combuctor)
+* Added the ability for developers to add in more sets and subsets to Combuctor
+* Combuctor is still very much a beta at this point in time: The new features are very much a first draft.

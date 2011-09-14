@@ -121,18 +121,19 @@ do
 end
 
 
-local InventoryFrame = LibStub('Classy-1.0'):New('Frame'); Addon.Frame = InventoryFrame
+local InventoryFrame = LibStub('Classy-1.0'):New('Frame');
+Addon.Frame = InventoryFrame
+Addon.Frames = {}
 
 --local references
-local _G = getfenv(0)
 local L = LibStub('AceLocale-3.0'):GetLocale('Combuctor')
 local CombuctorSet = Addon('Sets')
 
 --constants
-local BASE_WIDTH = 384
-local ITEM_FRAME_WIDTH_OFFSET = 312 - BASE_WIDTH
-local BASE_HEIGHT = 512
-local ITEM_FRAME_HEIGHT_OFFSET = 346 - BASE_HEIGHT
+local BASE_WIDTH = 300
+local BASE_HEIGHT = 300
+local ITEM_FRAME_WIDTH_OFFSET = 278 - BASE_WIDTH
+local ITEM_FRAME_HEIGHT_OFFSET = 205 - BASE_HEIGHT
 
 
 --frame constructor
@@ -153,22 +154,17 @@ function InventoryFrame:New(titleText, settings, isBank, key)
 	f:SetWidth(settings.w or BASE_WIDTH)
 	f:SetHeight(settings.h or BASE_HEIGHT)
 
-	f.title = _G[f:GetName() .. 'Title']
-
 	f.sideFilter = Addon.SideFilter:New(f, f:IsSideFilterOnLeft())
-
 	f.bottomFilter = Addon.BottomFilter:New(f)
 
-	f.nameFilter = _G[f:GetName() .. 'Search']
-
 	f.qualityFilter = Addon.QualityFilter:New(f)
-	f.qualityFilter:SetPoint('BOTTOMLEFT', 24, 65)
+	f.qualityFilter:SetPoint('BOTTOMLEFT', 10, 4)
 
 	f.itemFrame = Addon.ItemFrame:New(f)
-	f.itemFrame:SetPoint('TOPLEFT', 24, -78)
+	f.itemFrame:SetPoint('TOPLEFT', 10, -64)
 
 	f.moneyFrame = Addon.MoneyFrame:New(f)
-	f.moneyFrame:SetPoint('BOTTOMRIGHT', -40, 67)
+	f.moneyFrame:SetPoint('BOTTOMRIGHT', -8, 8)
 
 	--load what the title says
 	f:UpdateTitleText()
@@ -183,8 +179,8 @@ function InventoryFrame:New(titleText, settings, isBank, key)
 	f:UpdateClampInsets()
 
 	lastID = lastID + 1
-
 	table.insert(UISpecialFrames, f:GetName())
+  Addon.Frames[key] = f
 
 	return f
 end
@@ -196,14 +192,6 @@ end
 
 function InventoryFrame:UpdateTitleText()
 	self.title:SetFormattedText(self.titleText, self:GetPlayer())
-end
-
-function InventoryFrame:OnTitleEnter(title)
-	GameTooltip:SetOwner(title, 'ANCHOR_LEFT')
-	GameTooltip:SetText(title:GetText(), 1, 1, 1)
-	GameTooltip:AddLine(L.MoveTip)
-	GameTooltip:AddLine(L.ResetPositionTip)
-	GameTooltip:Show()
 end
 
 
@@ -274,9 +262,9 @@ function InventoryFrame:UpdateBagFrame()
 		for i,bag in ipairs(self.bagButtons) do
 			bag:ClearAllPoints()
 			if i > 1 then
-				bag:SetPoint('TOP', self.bagButtons[i-1], 'BOTTOM', 0, -6)
+				bag:SetPoint('TOP', self.bagButtons[i-1], 'BOTTOM', 0, -2)
 			else
-				bag:SetPoint('TOPRIGHT', -48, -82)
+				bag:SetPoint('TOPRIGHT', -12, -66)
 			end
 			bag:Show()
 		end
@@ -469,59 +457,7 @@ function InventoryFrame:OnSizeChanged()
 	self.sets.w = w
 	self.sets.h = h
 
-	self:SizeTLTextures(w, h)
-	self:SizeBLTextures(w, h)
-	self:SizeTRTextures(w, h)
-	self:SizeBRTextures(w, h)
 	self:UpdateItemFrameSize()
-end
-
-function InventoryFrame:SizeTLTextures(w, h)
-	local t = _G[self:GetName() .. 'TLRight']
-	t:SetWidth(128 + (w - BASE_WIDTH)/2)
-
-	local t = _G[self:GetName() .. 'TLBottom']
-	t:SetHeight(128 + (h - BASE_HEIGHT)/2)
-
-	local t = _G[self:GetName() .. 'TLBottomRight']
-	t:SetWidth(128 + (w - BASE_WIDTH)/2)
-	t:SetHeight(128 + (h - BASE_HEIGHT)/2)
-end
-
-function InventoryFrame:SizeBLTextures(w, h)
-	local t = _G[self:GetName() .. 'BLRight']
-	t:SetWidth(128 + (w - BASE_WIDTH)/2)
-
-	local t = _G[self:GetName() .. 'BLTop']
-	t:SetHeight(128 + (h - BASE_HEIGHT)/2)
-
-	local t = _G[self:GetName() .. 'BLTopRight']
-	t:SetWidth(128 + (w - BASE_WIDTH)/2)
-	t:SetHeight(128 + (h - BASE_HEIGHT)/2)
-end
-
-function InventoryFrame:SizeTRTextures(w, h)
-	local t = _G[self:GetName() .. 'TRLeft']
-	t:SetWidth(64 + (w - BASE_WIDTH)/2)
-
-	local t = _G[self:GetName() .. 'TRBottom']
-	t:SetHeight(128 + (h - BASE_HEIGHT)/2)
-
-	local t = _G[self:GetName() .. 'TRBottomLeft']
-	t:SetWidth(64 + (w - BASE_WIDTH)/2)
-	t:SetHeight(128 + (h - BASE_HEIGHT)/2)
-end
-
-function InventoryFrame:SizeBRTextures(w, h)
-	local t = _G[self:GetName() .. 'BRLeft']
-	t:SetWidth(64 + (w - BASE_WIDTH)/2)
-
-	local t = _G[self:GetName() .. 'BRTop']
-	t:SetHeight(128 + (h - BASE_HEIGHT)/2)
-
-	local t = _G[self:GetName() .. 'BRTopLeft']
-	t:SetWidth(64 + (w - BASE_WIDTH)/2)
-	t:SetHeight(128 + (h - BASE_HEIGHT)/2)
 end
 
 function InventoryFrame:UpdateItemFrameSize()
@@ -542,30 +478,28 @@ end
 
 --updates where we can position the frame based on if the side and bottom filters are shown
 function InventoryFrame:UpdateClampInsets()
-	local l, r, t, b
+	local l, r, b
 
 	if self.bottomFilter:IsShown() then
-		t = -15
-		b = 35
+		b = -32
 	else
-		t = -15
-		b = 65
+		b = 0
 	end
 
 	if self.sideFilter:IsShown() then
 		if self.sideFilter:Reversed() then
-			l = -20
-			r = -35
-		else
-			l = 15
+			l = -35
 			r = 0
+		else
+			l = -8
+			r = 35
 		end
 	else
-		l = 15
-		r = -35
+		l = -8
+		r = 0
 	end
 
-	self:SetClampRectInsets(l, r, t, b)
+	self:SetClampRectInsets(l, r, 12, b)
 end
 
 
@@ -602,18 +536,21 @@ function InventoryFrame:LoadPosition()
 end
 
 function InventoryFrame:UpdateManagedPosition()
+  local shown = self:IsShown()
+
 	if self.sets.position then
 		if self:GetAttribute('UIPanelLayout-enabled') then
-			if self:IsShown() then
-				HideUIPanel(self)
-				self:SetAttribute('UIPanelLayout-defined', false)
-				self:SetAttribute('UIPanelLayout-enabled', false)
-				self:SetAttribute('UIPanelLayout-whileDead', false)
-				self:SetAttribute('UIPanelLayout-area', nil)
-				self:SetAttribute('UIPanelLayout-pushable', nil)
+      HideUIPanel(self)
+      self:SetAttribute('UIPanelLayout-defined', false)
+      self:SetAttribute('UIPanelLayout-enabled', false)
+      self:SetAttribute('UIPanelLayout-whileDead', false)
+      self:SetAttribute('UIPanelLayout-area', nil)
+      self:SetAttribute('UIPanelLayout-pushable', nil)
+      
+      if shown then
 				ShowUIPanel(self)
-			end
-		end
+      end
+    end
 	elseif not self:GetAttribute('UIPanelLayout-enabled') then
 		self:SetAttribute('UIPanelLayout-defined', true)
 		self:SetAttribute('UIPanelLayout-enabled', true)
@@ -621,7 +558,7 @@ function InventoryFrame:UpdateManagedPosition()
 		self:SetAttribute('UIPanelLayout-area', 'left')
 		self:SetAttribute('UIPanelLayout-pushable', 1)
 
-		if self:IsShown() then
+		if shown then
 			HideUIPanel(self)
 			ShowUIPanel(self)
 		end

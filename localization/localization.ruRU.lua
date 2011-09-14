@@ -1,4 +1,4 @@
-﻿--[[
+--[[
 	Localization.lua
 		Translations for Combuctor
 
@@ -28,12 +28,9 @@ L.Bags = 'Сумки'
 L.BagToggle = '<ЛеваяКнопкаМыши> Показать сумки'
 L.InventoryToggle = '<ПраваяКнопкаМыши> Показать окно инвентаря'
 L.BankToggle = '<ПраваяКнопкаМыши> Показать окно банка'
-L.MoveTip = '<Alt+ЛеваяКнопкаМыши> Переместить'
-L.ResetPositionTip = '<ПраваяКнопкаМыши> Позиция по умолчанию'
 
 L.Normal = 'Обычное'
 L.Equipment = 'Обмундирование'
-L.Keys = 'Ключи'
 L.Trade = 'Товары'
 L.Ammo = 'Боеприпасы'
 L.Shards = 'Камни'

@@ -84,7 +84,7 @@ end
 function FilterButton:UpdateHighlight(quality)
 	if bit.band(quality, self.qualityFlag) > 0 then
 		self:LockHighlight()
-		self.bg:SetVertexColor(1, 1, 1)
+		self.bg:SetVertexColor(.95, .95, .95)
 	else
 		self:UnlockHighlight()
 		self.bg:SetVertexColor(.4, .4, .4)

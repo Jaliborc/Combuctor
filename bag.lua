@@ -1,5 +1,5 @@
 --[[
-	ba.lua
+	bag.lua
 		A bag button object
 --]]
 
