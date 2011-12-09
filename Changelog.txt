@@ -1,3 +1,9 @@
+====== 4.3.0
+* Jaliborc: Updated for WoW 4.3
+
+====== 4.2.6
+* Jaliborc: Tagging as release
+
 ====== 4.2.5
 * Jaliborc: The config has been divided into two windows - "General" & "Sets"
 * Jaliborc: New options at the "General" window - "Display Sets on Left" and "Act as Interface Panel"

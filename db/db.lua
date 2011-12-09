@@ -8,10 +8,6 @@ if not(BagnonDB) and BagSync then BagnonDB = {} else return end
 local CURRENT_REALM = GetRealmName()
 
 local function getBagTag(bagId)
-	if bagId == KEYRING_CONTAINER then
-		return 'key'
-	end
-	
 	if bagId == BANK_CONTAINER then
 		return 'bank'
 	end
@@ -116,7 +112,7 @@ end
 --]]
 function BagnonDB:GetMoney(player)
 	local pd = playerData(player)
-	local c = pd and pd['gold:0:0']
+	local c = pd and pd['gold']
 	return c or 0
 end
 
