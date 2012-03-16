@@ -9,11 +9,12 @@
 libs\libs.xml
 localization\localization.xml
 
+core\core.xml
 sets\sets.xml
-utility\utility.xml
+events\events.xml
+info\info.xml
 
 templates\templates.xml
 components\components.xml
-db\db.xml
 
 main.lua
