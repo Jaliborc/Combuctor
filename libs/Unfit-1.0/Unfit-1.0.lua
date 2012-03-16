@@ -1,5 +1,5 @@
 --[[
-Copyright 2011 João Cardoso
+Copyright 2011-2012 João Cardoso
 Unfit is distributed under the terms of the GNU General Public License (or the Lesser GPL).
 This file is part of Unfit.
 

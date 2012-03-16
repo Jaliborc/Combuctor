@@ -1,8 +1,11 @@
+====== 4.3.2
+* Fixed a bug causing the frame selector to show at unusual situations
+
 ====== 4.3.1
 * Fixed bug causing BagSync support to not work properly
 * Added portuguese translations
 
-====== 4.3.0
+===== 4.3.0
 * Jaliborc: Updated for WoW 4.3
 * Jaliborc: No more "Jaliborc" tag. If there is nothing there, it means it was me.
 

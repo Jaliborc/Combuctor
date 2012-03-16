@@ -4,7 +4,7 @@
 --]]
 
 local AddonName, Addon = ...
-local ItemFrame = LibStub('Classy-1.0'):New('Button'); Addon.ItemFrame = ItemFrame
+local ItemFrame = Addon:NewClass('ItemFrame', 'Button')
 
 --local bindings
 local ItemSearch = LibStub('LibItemSearch-1.0')

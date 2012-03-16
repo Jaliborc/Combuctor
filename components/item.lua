@@ -4,7 +4,7 @@
 --]]
 
 local AddonName, Addon = ...
-local ItemSlot = LibStub('Classy-1.0'):New('Button'); Addon.ItemSlot = ItemSlot
+local ItemSlot = Addon:NewClass('ItemSlot', 'Button')
 
 local Unfit = LibStub('Unfit-1.0')
 local ItemSearch = LibStub('LibItemSearch-1.0')
@@ -13,12 +13,8 @@ local PlayerInfo = Addon('PlayerInfo')
 local BagSlotInfo = Addon('BagSlotInfo')
 local ItemSlotInfo = Addon('ItemSlotInfo')
 
---[[
-	The item widget
---]]
 
-
---[[ ItemSlot Constructor ]]--
+--[[ Constructor ]]--
 
 function ItemSlot:New()
 	return self:Restore() or self:Create()

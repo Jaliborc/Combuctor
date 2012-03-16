@@ -4,12 +4,10 @@
 --]]
 
 local AddonName, Addon = ...
+local BottomTab = Addon:NewClass('BottomTab', 'Button')
 
---[[
-	BottomTab Object
---]]
 
-local BottomTab = LibStub('Classy-1.0'):New('Button')
+--[[ Contructor ]]--
 
 function BottomTab:New(parent, id)
 	local tab = self:Bind(CreateFrame('Button', parent:GetName() .. 'Tab' .. id, parent, 'CombuctorFrameTabButtonTemplate'))

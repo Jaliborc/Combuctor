@@ -4,7 +4,7 @@
 --]]
 
 local AddonName, Addon = ...
-local Bag = LibStub('Classy-1.0'):New('Button'); Addon.Bag = Bag
+local Bag = Addon:NewClass('Bag', 'Button')
 local L = LibStub('AceLocale-3.0'):GetLocale(AddonName)
 local BagSlotInfo = Addon('BagSlotInfo')
 

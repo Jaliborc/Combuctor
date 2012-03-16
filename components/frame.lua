@@ -50,79 +50,7 @@
 --]]
 
 local AddonName, Addon = ...
-local FrameEvents = Addon:NewModule('FrameEvents')
-do
-	local frames = {}
-
-	function FrameEvents:Load()
-		local CSet = Addon('Sets')
-	
-		CSet:RegisterMessage(self, 'COMBUCTOR_SET_ADD', 'UpdateSets')
-		CSet:RegisterMessage(self, 'COMBUCTOR_SET_UPDATE', 'UpdateSets')
-		CSet:RegisterMessage(self, 'COMBUCTOR_SET_REMOVE', 'UpdateSets')
-
-		CSet:RegisterMessage(self, 'COMBUCTOR_CONFIG_SET_ADD', 'UpdateSetConfig')
-		CSet:RegisterMessage(self, 'COMBUCTOR_CONFIG_SET_REMOVE', 'UpdateSetConfig')
-
-		CSet:RegisterMessage(self, 'COMBUCTOR_SUBSET_ADD', 'UpdateSubSets')
-		CSet:RegisterMessage(self, 'COMBUCTOR_SUBSET_UPDATE', 'UpdateSubSets')
-		CSet:RegisterMessage(self, 'COMBUCTOR_SUBSET_REMOVE', 'UpdateSubSets')
-
-		CSet:RegisterMessage(self, 'COMBUCTOR_CONFIG_SUBSET_ADD', 'UpdateSubSetConfig')
-		CSet:RegisterMessage(self, 'COMBUCTOR_CONFIG_SUBSET_REMOVE', 'UpdateSubSetConfig')
-	end
-
-	function FrameEvents:UpdateSets(msg, name)
-		for f in self:GetFrames() do
-			if f:HasSet(name) then
-				f:UpdateSets()
-			end
-		end
-	end
-
-	function FrameEvents:UpdateSetConfig(msg, key, name)
-		for f in self:GetFrames() do
-			if f.key == key then
-				f:UpdateSets()
-			end
-		end
-	end
-
-	function FrameEvents:UpdateSubSetConfig(msg, key, name, parent)
-		for f in self:GetFrames() do
-			if f.key == key and f:GetCategory() == parent then
-				f:UpdateSubSets()
-			end
-		end
-	end
-
-	function FrameEvents:UpdateSubSets(msg, name, parent)
-		for f in self:GetFrames() do
-			if f:GetCategory() == parent then
-				f:UpdateSubSets()
-			end
-		end
-	end
-
-
-	function FrameEvents:Register(f)
-		frames[f] = true
-	end
-
-	function FrameEvents:Unregister(f)
-		frames[f] = nil
-	end
-
-	function FrameEvents:GetFrames()
-		return pairs(frames)
-	end
-	
-	FrameEvents:Load()
-end
-
-
-local InventoryFrame = LibStub('Classy-1.0'):New('Frame');
-Addon.Frame = InventoryFrame
+local InventoryFrame = Addon:NewClass('Frame', 'Frame')
 Addon.Frames = {}
 
 --local references
@@ -180,7 +108,7 @@ function InventoryFrame:New(titleText, settings, isBank, key)
 
 	lastID = lastID + 1
 	table.insert(UISpecialFrames, f:GetName())
-  Addon.Frames[key] = f
+  	Addon.Frames[key] = f
 
 	return f
 end
@@ -572,14 +500,14 @@ end
 
 function InventoryFrame:OnShow()
 	PlaySound('igBackPackOpen')
+	Addon('FrameEvents'):Register(self)
 	
-	FrameEvents:Register(self)
 	self:UpdateSets(self:GetDefaultCategory())
 end
 
 function InventoryFrame:OnHide()
 	PlaySound('igBackPackClose')
-	FrameEvents:Unregister(self)
+	Addon('FrameEvents'):Unregister(self)
 
 	--it may look stupid, but yes
 	if self:IsBank() and self:AtBank() then

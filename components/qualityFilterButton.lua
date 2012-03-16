@@ -1,36 +1,22 @@
 --[[
-	Quality Filter Widget
-		used for setting what quality of items to show
+	Quality Filter Button
+		The elements of the quality filter
 --]]
 
 local AddonName, Addon = ...
+local FilterButton = Addon:NewClass('QualityFilterButton', 'Checkbutton')
+FilterButton.SIZE = 18
 
 
---[[
-	CombuctorQualityFlags
---]]
-
-do
-	local QualityFlags = {}
-	for quality = 0, 7 do
-		QualityFlags[quality] = bit.lshift(1, quality)
-	end
-	Addon.QualityFlags = QualityFlags
-end
-
-
---[[ filter button ]]--
-
-local FilterButton = LibStub('Classy-1.0'):New('Checkbutton')
-local SIZE = 18
+--[[ Constructor ]]--
 
 function FilterButton:Create(parent, quality, qualityFlag, qualityColor)
 	local button = self:Bind(CreateFrame('Checkbutton', nil, parent, 'UIRadioButtonTemplate'))
+	button:SetSize(FilterButton.SIZE, FilterButton.SIZE)
 	button:SetScript('OnClick', self.OnClick)
 	button:SetScript('OnEnter', self.OnEnter)
 	button:SetScript('OnLeave', self.OnLeave)
 	button:SetCheckedTexture(nil)
-	button:SetSize(SIZE, SIZE)
 
 	local r, g, b = GetItemQualityColor(qualityColor)
 	button:GetNormalTexture():SetVertexColor(r, g, b)
@@ -47,6 +33,9 @@ function FilterButton:Create(parent, quality, qualityFlag, qualityColor)
 	button.bg = bg
 	return button
 end
+
+
+--[[ Frame Events ]]--
 
 function FilterButton:OnClick()
 	local frame = self:GetParent():GetParent()
@@ -81,6 +70,9 @@ function FilterButton:OnLeave()
 	GameTooltip:Hide()
 end
 
+
+--[[ Update ]]--
+
 function FilterButton:UpdateHighlight(quality)
 	if bit.band(quality, self.qualityFlag) > 0 then
 		self:LockHighlight()
@@ -88,48 +80,5 @@ function FilterButton:UpdateHighlight(quality)
 	else
 		self:UnlockHighlight()
 		self.bg:SetVertexColor(.4, .4, .4)
-	end
-end
-
-
---[[
-	QualityFilter, A group of filter buttons
---]]
-
-local QualityFilter = LibStub('Classy-1.0'):New('Frame'); Addon.QualityFilter = QualityFilter
-
-function QualityFilter:New(parent)
-	local f = self:Bind(CreateFrame('Frame', nil, parent))
-
-	f:AddQualityButton(0)
-	f:AddQualityButton(1)
-	f:AddQualityButton(2)
-	f:AddQualityButton(3)
-	f:AddQualityButton(4)
-	f:AddQualityButton(5, Addon.QualityFlags[5] + Addon.QualityFlags[6])
-	f:AddQualityButton(7, nil, 6)
-
-	f:SetWidth(SIZE * 7)
-	f:SetHeight(SIZE)
-	f:UpdateHighlight()
-
-	return f
-end
-
-function QualityFilter:AddQualityButton(quality, qualityFlags, qualityColor)
-	local button = FilterButton:Create(self, quality, qualityFlags or Addon.QualityFlags[quality], qualityColor or quality)
-	if self.prev then
-		button:SetPoint('LEFT', self.prev, 'RIGHT', 1, 0)
-	else
-		button:SetPoint('LEFT', 0, 2)
-	end
-	self.prev = button
-end
-
-function QualityFilter:UpdateHighlight()
-	local quality = self:GetParent():GetQuality()
-
-	for i = 1, select('#', self:GetChildren()) do
-		select(i, self:GetChildren()):UpdateHighlight(quality)
 	end
 end

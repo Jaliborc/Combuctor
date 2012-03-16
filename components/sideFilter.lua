@@ -1,86 +1,21 @@
 --[[
-	Side Filters
+	Side Filter
 		Used for setting what types of items to show
 --]]
 
 local AddonName, Addon = ...
-
---[[ 
-	A side filter button, switches parent filters on click 
---]]
-
-local SideFilterButton = LibStub('Classy-1.0'):New('CheckButton')
-do
-	local id = 1
-	function SideFilterButton:New(parent, reversed)
-		local b = self:Bind(CreateFrame('CheckButton', 'CombuctorSideButton' .. id, parent, 'CombuctorSideTabButtonTemplate'))
-		b:GetNormalTexture():SetTexCoord(0.06, 0.94, 0.06, 0.94)
-		b:SetScript('OnClick', b.OnClick)
-		b:SetScript('OnEnter', b.OnEnter)
-		b:SetScript('OnLeave', b.OnLeave)
-		b:SetReversed(reversed)
-
-		id = id + 1
-		return b
-	end
-end
-
-function SideFilterButton:OnClick()
-	self:GetParent():GetParent():SetCategory(self.set.name)
-end
-
-function SideFilterButton:OnEnter()
-	GameTooltip:SetOwner(self, 'ANCHOR_RIGHT')
-	GameTooltip:SetText(self.set.name)
-	GameTooltip:Show()
-end
-
-function SideFilterButton:OnLeave()
-	GameTooltip:Hide()
-end
-
-function SideFilterButton:Set(set)
-	self.set = set
-	self:SetNormalTexture(set.icon)
-end
-
-function SideFilterButton:UpdateHighlight(setName)
-	self:SetChecked(self.set.name == setName)
-end
-
-function SideFilterButton:SetReversed(reversed)
-	local border = _G[self:GetName() .. 'Border']
-	border:ClearAllPoints()
-
-	if reversed then
-		border:SetTexCoord(1, 0, 0, 1)
-		border:SetPoint('TOPRIGHT', 3, 11)
-	else
-		border:SetTexCoord(0, 1, 0, 1)
-		border:ClearAllPoints()
-		border:SetPoint('TOPLEFT', -3, 11)
-	end
-
-  self.reversed = reversed
-end
-
-function SideFilterButton:Reversed()
-	return self.reversed
-end
+local FilterButton = Addon.SideFilterButton
+local SideFilter = Addon:NewClass('SideFilter', 'Frame')
 
 
---[[
-	Side Filter Object
---]]
-
-local SideFilter = LibStub('Classy-1.0'):New('Frame'); Addon.SideFilter = SideFilter
+--[[ Constructor ]]--
 
 function SideFilter:New(parent, reversed)
 	local f = self:Bind(CreateFrame('Frame', nil, parent))
 
 	--metatable magic for button creation on demand
 	f.buttons = setmetatable({}, {__index = function(t, k)
-		local b = SideFilterButton:New(f, f:Reversed())
+		local b = FilterButton:New(f, f:Reversed())
 		t[k] = b
 
     if k > 1 then
@@ -93,6 +28,9 @@ function SideFilter:New(parent, reversed)
 	f:SetReversed(reversed)
 	return f
 end
+
+
+--[[ Update ]]--
 
 function SideFilter:UpdateFilters()
 	local numFilters = 0
