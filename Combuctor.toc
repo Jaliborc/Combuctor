@@ -9,6 +9,8 @@
 libs\libs.xml
 localization\localization.xml
 
+main.lua
+
 core\core.xml
 sets\sets.xml
 events\events.xml
@@ -16,5 +18,3 @@ info\info.xml
 
 templates\templates.xml
 components\components.xml
-
-main.lua

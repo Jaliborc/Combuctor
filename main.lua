@@ -5,20 +5,27 @@
 
 local AddonName, Addon = ...
 
-Combuctor = LibStub('AceAddon-3.0'):NewAddon(Addon, AddonName, 'AceEvent-3.0', 'AceConsole-3.0')
+LibStub('AceAddon-3.0'):NewAddon(Addon, AddonName, 'AceEvent-3.0', 'AceConsole-3.0')
+Addon.__call = Addon.GetModule
+setmetatable(Addon, Addon)
+
+
+--[[ Constants ]]--
+
 local L = LibStub('AceLocale-3.0'):GetLocale(AddonName)
 local CURRENT_VERSION = GetAddOnMetadata(AddonName, 'Version')
 
---set the binding name stuff here, since its mostly locale independent
 BINDING_HEADER_COMBUCTOR = AddonName
 BINDING_NAME_COMBUCTOR_TOGGLE_INVENTORY = L.ToggleInventory
 BINDING_NAME_COMBUCTOR_TOGGLE_BANK = L.ToggleBank
+_G[AddonName] = Addon
+
 
 --[[
 	Loading/Profile Functions
 --]]
 
-function Combuctor:OnInitialize()
+function Addon:OnInitialize()
 	self.profile = self:InitDB()
 
 	-- version update
@@ -46,10 +53,10 @@ function Combuctor:OnInitialize()
 	self:RegisterChatCommand('cbt', 'OnSlashCommand')
 	
 	-- base set
-	self:GetModule('Sets'):Register(L.All, 'Interface/Icons/INV_Misc_EngGizmos_17', function() return true end)
+	self('Sets'):Register(L.All, 'Interface/Icons/INV_Misc_EngGizmos_17', function() return true end)
 end
 
-function Combuctor:InitDB()
+function Addon:InitDB()
 	if not CombuctorDB2 then
 		CombuctorDB2 = {
 			version = CURRENT_VERSION,
@@ -65,7 +72,7 @@ function Combuctor:InitDB()
 	return self:GetProfile() or self:InitProfile()
 end
 
-function Combuctor:GetProfile(player)
+function Addon:GetProfile(player)
 	if not player then
 		player = UnitName('player')
 	end
@@ -105,7 +112,7 @@ local function getDefaultBankSets(class)
 	return sets, exclude
 end
 
-function Combuctor:InitProfile()
+function Addon:InitProfile()
 	local player, realm = UnitName('player'), GetRealmName()
 	local class = select(2, UnitClass('player'))
 	local profile = self:GetBaseProfile()
@@ -117,7 +124,7 @@ function Combuctor:InitProfile()
 	return profile
 end
 
-function Combuctor:GetBaseProfile()
+function Addon:GetBaseProfile()
 	return {
 		inventory = {
 			bags = {0, 1, 2, 3, 4},
@@ -137,10 +144,10 @@ function Combuctor:GetBaseProfile()
 	}
 end
 
-function Combuctor:UpdateSettings(major, minor, bugfix)
+function Addon:UpdateSettings(major, minor, bugfix)
 end
 
-function Combuctor:UpdateVersion()
+function Addon:UpdateVersion()
 	self.db.version = CURRENT_VERSION
 	self:Print(format(L.Updated, self.db.version))
 end
@@ -150,8 +157,8 @@ end
 	Events
 --]]
 
-function Combuctor:OnEnable()
-	local profile = Combuctor:GetProfile(UnitName('player'))
+function Addon:OnEnable()
+	local profile = self:GetProfile(UnitName('player'))
 
 	self.frames = {
 		self.Frame:New(L.InventoryTitle, profile.inventory, false, 'inventory'),
@@ -161,7 +168,7 @@ function Combuctor:OnEnable()
 	self:HookBagEvents()
 end
 
-function Combuctor:HookBagEvents()
+function Addon:HookBagEvents()
 	local AutoShowInventory = function()
 		self:Show(BACKPACK_CONTAINER, true)
 	end
@@ -198,12 +205,13 @@ function Combuctor:HookBagEvents()
 
 	BankFrame:UnregisterAllEvents()
 	
-	self('InventoryEvents'):Register(self, 'BANK_OPENED', function()
+	local InvEvents = self('InventoryEvents')
+	InvEvents.Register(self, 'BANK_OPENED', function()
 		self:Show(BANK_CONTAINER, true)
 		self:Show(BACKPACK_CONTAINER, true)
 	end)
 	
-	self('InventoryEvents'):Register(self, 'BANK_CLOSED', function()
+	InvEvents.Register(self, 'BANK_CLOSED', function()
 		self:Hide(BANK_CONTAINER, true)
 		self:Hide(BACKPACK_CONTAINER, true)
 	end)
@@ -219,7 +227,7 @@ function Combuctor:HookBagEvents()
 	self:RegisterEvent('AUCTION_HOUSE_CLOSED', AutoHideInventory)
 end
 
-function Combuctor:Show(bag, auto)
+function Addon:Show(bag, auto)
 	for _,frame in pairs(self.frames) do
 		for _,bagID in pairs(frame.sets.bags) do
 			if bagID == bag then
@@ -230,7 +238,7 @@ function Combuctor:Show(bag, auto)
 	end
 end
 
-function Combuctor:Hide(bag, auto)
+function Addon:Hide(bag, auto)
 	for _,frame in pairs(self.frames) do
 		for _,bagID in pairs(frame.sets.bags) do
 			if bagID == bag then
@@ -241,7 +249,7 @@ function Combuctor:Hide(bag, auto)
 	end
 end
 
-function Combuctor:Toggle(bag, auto)
+function Addon:Toggle(bag, auto)
 	for _,frame in pairs(self.frames) do
 		for _,bagID in pairs(frame.sets.bags) do
 			if bagID == bag then
@@ -252,7 +260,7 @@ function Combuctor:Toggle(bag, auto)
 	end
 end
 
-function Combuctor:ShowOptions()
+function Addon:ShowOptions()
 	if LoadAddOn('Combuctor_Config') then
 		InterfaceOptionsFrame_OpenToCategory(self.Options)
 		return true
@@ -260,7 +268,7 @@ function Combuctor:ShowOptions()
 	return false
 end
 
-function Combuctor:OnSlashCommand(msg)
+function Addon:OnSlashCommand(msg)
 	local msg = msg and msg:lower()
 
 	if msg == 'bank' then
@@ -282,18 +290,18 @@ end
 
 --[[ Utility Functions ]]--
 
-function Combuctor:GetFrame(key)
+function Addon:GetFrame(key)
   return self.Frames[key]
 end
 
-function Combuctor:Print(...)
+function Addon:Print(...)
 	return print('|cffFFBA00'.. AddonName .. '|r:', ...)
 end
 
-function Combuctor:SetMaxItemScale(scale)
+function Addon:SetMaxItemScale(scale)
 	self.db.global.maxScale = scale or 1
 end
 
-function Combuctor:GetMaxItemScale()
+function Addon:GetMaxItemScale()
 	return self.db.global.maxScale
 end

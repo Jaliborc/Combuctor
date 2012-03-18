@@ -139,7 +139,11 @@ end
 --[[ Initialization ]]--
 
 do
-	local f = CreateFrame('Frame'); f:Hide()
+	local f = CreateFrame('Frame')
+	f:RegisterEvent('ITEM_LOCK_CHANGED')
+	f:RegisterEvent('UNIT_QUEST_LOG_CHANGED')
+	f:RegisterEvent('QUEST_ACCEPTED')
+	f:Hide()
 	
 	f:SetScript('OnEvent', function(self, event, ...)
 		local method = FrameEvents[event]
@@ -153,20 +157,14 @@ do
 		self:Hide()
 	end)
 	
-	f:RegisterEvent('ITEM_LOCK_CHANGED')
-	f:RegisterEvent('UNIT_QUEST_LOG_CHANGED')
-	f:RegisterEvent('QUEST_ACCEPTED')
+	local Events = Addon('InventoryEvents')
+	Events.Register(FrameEvents, 'ITEM_SLOT_ADD')
+	Events.Register(FrameEvents, 'ITEM_SLOT_REMOVE')
+	Events.Register(FrameEvents, 'ITEM_SLOT_UPDATE')
+	Events.Register(FrameEvents, 'ITEM_SLOT_UPDATE_COOLDOWN')
+	Events.Register(FrameEvents, 'BANK_OPENED')
+	Events.Register(FrameEvents, 'BANK_CLOSED')
+	Events.Register(FrameEvents, 'BAG_UPDATE_TYPE')
 	
 	FrameEvents.Updater = f
-	
-	Addon('InventoryEvents'):RegisterMany(
-		FrameEvents, 
-		'ITEM_SLOT_ADD',
-		'ITEM_SLOT_REMOVE',
-		'ITEM_SLOT_UPDATE',
-		'ITEM_SLOT_UPDATE_COOLDOWN',
-		'BANK_OPENED',
-		'BANK_CLOSED',
-		'BAG_UPDATE_TYPE'
-	)
 end

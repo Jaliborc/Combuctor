@@ -41,13 +41,8 @@
 
 
 local AddonName, Addon = ...
-
-
---[[
-	Module Town
---]]
-
-local InventoryEvents = Addon:NewModule('InventoryEvents', Addon('Envoy'):New())
+local InventoryEvents = Addon:NewModule('InventoryEvents')
+local Sender = LibStub('CallbackHandler-1.0'):New(InventoryEvents, 'Register', 'Unregister', 'UnregisterAll')
 local AtBank = false
 
 function InventoryEvents:AtBank()
@@ -55,7 +50,7 @@ function InventoryEvents:AtBank()
 end
 
 local function sendMessage(msg, ...)
-	InventoryEvents:Send(msg, ...)
+	Sender:Fire(msg, ...)
 end
 
 

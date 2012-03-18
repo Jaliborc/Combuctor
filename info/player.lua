@@ -35,5 +35,5 @@ function PlayerInfo:GetMoney(player)
 end
 
 function PlayerInfo:AtBank()
-	return Addon('InventoryEvents'):AtBank()
+	return Addon('InventoryEvents').AtBank()
 end

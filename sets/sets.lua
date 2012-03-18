@@ -3,8 +3,15 @@
 --]]
 
 local AddonName, Addon = ...
-local CombuctorSet = Addon:NewModule('Sets', Addon('Envoy'):New()); Addon.Set = CombuctorSet
+local CombuctorSet = Addon:NewModule('Sets')
+Addon('Sets')
+local Sender = LibStub('CallbackHandler-1.0'):New(CombuctorSet, 'RegisterMessage', 'UnregisterMessage', 'UnregisterAllMessages')
 local sets = {}
+
+local sendMessage = function(msg, ...)
+	Sender:Fire(msg, ...)
+end
+
 
 --[[
 	true | false = setRule(player, bagType, name, link, quality, level, ilvl, type, subType, stackCount, equipLoc)
@@ -12,17 +19,6 @@ local sets = {}
 	A setRule is passed both the bag slot info information for a bag where an item is stored, along with all return values from GetItemInfo for an item in the slot we're looking at
 	The function should return either true (the slot is in the set defined by this rule), or false (the slot is not)
 --]]
-
---function setRule(player, bagType)
---	return bagType == 0
---end
-
-local sendMessage = function(msg, ...)
-	CombuctorSet:Send(msg, ...)
-end
-CombuctorSet.RegisterMessage = CombuctorSet.Register
-CombuctorSet.UnregisterMessage = CombuctorSet.Unregister
-
 
 --[[
 	CombuctorSet:Register('name', 'icon' [, setRule])
@@ -33,6 +29,7 @@ CombuctorSet.UnregisterMessage = CombuctorSet.Unregister
 	
 	if <setRule> is nil, then the set is assume to be all items
 --]]
+
 
 function CombuctorSet:Register(name, icon, rule)
 	assert(name, 'Set must include a name')

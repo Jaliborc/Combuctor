@@ -8,21 +8,21 @@ local FrameEvents = Addon:NewModule('FrameEvents')
 local frames = {}
 
 function FrameEvents:Load()
-	local CSet = Addon('Sets')
+	local Sets = Addon('Sets')
 
-	CSet:RegisterMessage(self, 'COMBUCTOR_SET_ADD', 'UpdateSets')
-	CSet:RegisterMessage(self, 'COMBUCTOR_SET_UPDATE', 'UpdateSets')
-	CSet:RegisterMessage(self, 'COMBUCTOR_SET_REMOVE', 'UpdateSets')
+	Sets.RegisterMessage(self, 'COMBUCTOR_SET_ADD', 'UpdateSets')
+	Sets.RegisterMessage(self, 'COMBUCTOR_SET_UPDATE', 'UpdateSets')
+	Sets.RegisterMessage(self, 'COMBUCTOR_SET_REMOVE', 'UpdateSets')
 
-	CSet:RegisterMessage(self, 'COMBUCTOR_CONFIG_SET_ADD', 'UpdateSetConfig')
-	CSet:RegisterMessage(self, 'COMBUCTOR_CONFIG_SET_REMOVE', 'UpdateSetConfig')
+	Sets.RegisterMessage(self, 'COMBUCTOR_CONFIG_SET_ADD', 'UpdateSetConfig')
+	Sets.RegisterMessage(self, 'COMBUCTOR_CONFIG_SET_REMOVE', 'UpdateSetConfig')
 
-	CSet:RegisterMessage(self, 'COMBUCTOR_SUBSET_ADD', 'UpdateSubSets')
-	CSet:RegisterMessage(self, 'COMBUCTOR_SUBSET_UPDATE', 'UpdateSubSets')
-	CSet:RegisterMessage(self, 'COMBUCTOR_SUBSET_REMOVE', 'UpdateSubSets')
+	Sets.RegisterMessage(self, 'COMBUCTOR_SUBSET_ADD', 'UpdateSubSets')
+	Sets.RegisterMessage(self, 'COMBUCTOR_SUBSET_UPDATE', 'UpdateSubSets')
+	Sets.RegisterMessage(self, 'COMBUCTOR_SUBSET_REMOVE', 'UpdateSubSets')
 
-	CSet:RegisterMessage(self, 'COMBUCTOR_CONFIG_SUBSET_ADD', 'UpdateSubSetConfig')
-	CSet:RegisterMessage(self, 'COMBUCTOR_CONFIG_SUBSET_REMOVE', 'UpdateSubSetConfig')
+	Sets.RegisterMessage(self, 'COMBUCTOR_CONFIG_SUBSET_ADD', 'UpdateSubSetConfig')
+	Sets.RegisterMessage(self, 'COMBUCTOR_CONFIG_SUBSET_REMOVE', 'UpdateSubSetConfig')
 end
 
 function FrameEvents:UpdateSets(msg, name)
