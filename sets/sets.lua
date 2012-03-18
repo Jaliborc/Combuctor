@@ -4,14 +4,12 @@
 
 local AddonName, Addon = ...
 local CombuctorSet = Addon:NewModule('Sets')
-Addon('Sets')
 local Sender = LibStub('CallbackHandler-1.0'):New(CombuctorSet, 'RegisterMessage', 'UnregisterMessage', 'UnregisterAllMessages')
 local sets = {}
 
-local sendMessage = function(msg, ...)
+function CombuctorSet:Send(msg, ...)
 	Sender:Fire(msg, ...)
 end
-
 
 --[[
 	true | false = setRule(player, bagType, name, link, quality, level, ilvl, type, subType, stackCount, equipLoc)
@@ -40,11 +38,11 @@ function CombuctorSet:Register(name, icon, rule)
 		if not(set.icon == icon and set.rule == rule) then
 			set.icon = icon
 			set.rule = rule
-			sendMessage('COMBUCTOR_SET_UPDATE', name, icon, rule)
+			self:Send('COMBUCTOR_SET_UPDATE', name, icon, rule)
 		end
 	else
-		table.insert(sets, {['name'] = name, ['icon'] = icon, ['rule'] = rule})
-		sendMessage('COMBUCTOR_SET_ADD', name, icon, rule)
+		tinsert(sets, {['name'] = name, ['icon'] = icon, ['rule'] = rule})
+		self:Send('COMBUCTOR_SET_ADD', name, icon, rule)
 	end
 end
 
@@ -69,11 +67,11 @@ function CombuctorSet:RegisterSubSet(name, parent, icon, rule)
 		if not(set.icon == icon and set.rule == rule) then
 			set.icon = icon
 			set.rule = rule
-			sendMessage('COMBUCTOR_SUBSET_UPDATE', name, parent, icon, rule)
+			self:Send('COMBUCTOR_SUBSET_UPDATE', name, parent, icon, rule)
 		end
 	else
-		table.insert(sets, {['parent'] = parent, ['name'] = name, ['icon'] = icon, ['rule'] = rule})
-		sendMessage('COMBUCTOR_SUBSET_ADD', name, parent, icon, rule)
+		tinsert(sets, {['parent'] = parent, ['name'] = name, ['icon'] = icon, ['rule'] = rule})
+		self:Send('COMBUCTOR_SUBSET_ADD', name, parent, icon, rule)
 	end
 end
 
@@ -93,7 +91,7 @@ local function removeSetAndChildren(parent)
 		local set = sets[i]
 
 		if set.parent == parent or (set.parent == nil and set.name == parent) then
-			table.remove(sets, i)
+			tremove(sets, i)
 			found = true
 		else
 			i = i + 1
@@ -101,7 +99,7 @@ local function removeSetAndChildren(parent)
 	end
 
 	if found then
-		sendMessage('COMBUCTOR_SET_REMOVE', parent)
+		self:Send('COMBUCTOR_SET_REMOVE', parent)
 	end
 end
 
@@ -109,8 +107,8 @@ function CombuctorSet:Unregister(name, parent)
 	if parent then
 		for i,set in pairs(sets) do
 			if set.name == name and set.parent == parent then
-				table.remove(sets, i)
-				sendMessage('COMBUCTOR_SUBSET_REMOVE', name, parent)
+				tremove(sets, i)
+				self:Send('COMBUCTOR_SUBSET_REMOVE', name, parent)
 				break
 			end
 		end

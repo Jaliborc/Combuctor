@@ -9,8 +9,8 @@ local ItemFrame = Addon:NewClass('ItemFrame', 'Button')
 --local bindings
 local ItemSearch = LibStub('LibItemSearch-1.0')
 local FrameEvents = Addon('ItemFrameEvents')
-local BagSlotInfo = Addon('BagSlotInfo')
-local ItemSlotInfo = Addon('ItemSlotInfo')
+local BagInfo = Addon('BagInfo')
+local ItemInfo = Addon('ItemInfo')
 
 --InvDataity functions
 local function ToIndex(bag, slot)
@@ -298,19 +298,19 @@ end
 --[[ Item Placement ]]--
 
 function ItemFrame:GetBagSize(bag)
-	return BagSlotInfo:GetSize(self:GetPlayer(), bag)
+	return BagInfo:GetSize(self:GetPlayer(), bag)
 end
 
 function ItemFrame:GetBagType(bag)
-	return BagSlotInfo:GetBagType(self:GetPlayer(), bag)
+	return BagInfo:GetFamily(self:GetPlayer(), bag)
 end
 
 function ItemFrame:IsBagCached(bag)
-	return BagSlotInfo:IsCached(self:GetPlayer(), bag)
+	return BagInfo:IsCached(self:GetPlayer(), bag)
 end
 
 function ItemFrame:GetItemLink(bag, slot)
-	local link = select(7, ItemSlotInfo:GetItemInfo(self:GetPlayer(), bag, slot))
+	local link = select(7, ItemInfo:GetInfo(self:GetPlayer(), bag, slot))
 	return link
 end
 

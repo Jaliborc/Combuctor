@@ -9,9 +9,8 @@ local ItemSlot = Addon:NewClass('ItemSlot', 'Button')
 local Unfit = LibStub('Unfit-1.0')
 local ItemSearch = LibStub('LibItemSearch-1.0')
 
-local PlayerInfo = Addon('PlayerInfo')
-local BagSlotInfo = Addon('BagSlotInfo')
-local ItemSlotInfo = Addon('ItemSlotInfo')
+local BagInfo = Addon('BagInfo')
+local ItemInfo = Addon('ItemInfo')
 
 
 --[[ Constructor ]]--
@@ -183,7 +182,7 @@ end
 function ItemSlot:Update()
 	if not self:IsVisible() then return end
 
-	local texture, count, locked, quality, readable, lootable, link = self:GetItemSlotInfo()
+	local texture, count, locked, quality, readable, lootable, link = self:GetItemInfo()
 
 	self:SetItem(link)
 	self:SetTexture(texture)
@@ -256,7 +255,7 @@ end
 
 --returns true if the slot is locked, and false otherwise
 function ItemSlot:IsLocked()
-	return ItemSlotInfo:IsLocked(self:GetPlayer(), self:GetBag(), self:GetID())
+	return ItemInfo:IsLocked(self:GetPlayer(), self:GetBag(), self:GetID())
 end
 
 --colors the item border based on the quality of the item.  hides it for common/poor items
@@ -282,7 +281,7 @@ function ItemSlot:SetBorderQuality(quality)
 		end
 	end
 	
-	local link = select(7, self:GetItemSlotInfo())
+	local link = select(7, self:GetItemInfo())
 	if Unfit:IsItemUnusable(link) then
 		local r, g, b = RED_FONT_COLOR.r, RED_FONT_COLOR.g, RED_FONT_COLOR.b
 		border:SetVertexColor(r, g, b, self:GetHighlightAlpha())
@@ -298,7 +297,7 @@ function ItemSlot:SetBorderQuality(quality)
 end
 
 function ItemSlot:UpdateBorder()
-	local texture, count, locked, quality = self:GetItemSlotInfo()
+	local texture, count, locked, quality = self:GetItemInfo()
 	self:SetBorderQuality(quality)
 end
 
@@ -361,24 +360,24 @@ function ItemSlot:IsSlot(bag, slot)
 end
 
 function ItemSlot:IsCached()
-	return BagSlotInfo:IsCached(self:GetPlayer(), self:GetBag())
+	return BagInfo:IsCached(self:GetPlayer(), self:GetBag())
 end
 
 function ItemSlot:IsBank()
-	return BagSlotInfo:IsBank(self:GetBag())
+	return BagInfo:IsBank(self:GetBag())
 end
 
 function ItemSlot:IsBankSlot()
 	local bag = self:GetBag()
-	return BagSlotInfo:IsBank(bag) or BagSlotInfo:IsBankBag(bag)
+	return BagInfo:IsBank(bag) or BagInfo:IsBankBag(bag)
 end
 
 function ItemSlot:AtBank()
-	return PlayerInfo:AtBank()
+	return Addon('InventoryEvents').AtBank()
 end
 
-function ItemSlot:GetItemSlotInfo()
-	local texture, count, locked, quality, readable, lootable, link = ItemSlotInfo:GetItemInfo(self:GetPlayer(), self:GetBag(), self:GetID())
+function ItemSlot:GetItemInfo()
+	local texture, count, locked, quality, readable, lootable, link = ItemInfo:GetInfo(self:GetPlayer(), self:GetBag(), self:GetID())
 	return texture, count, locked, quality, readable, lootable, link
 end
 
@@ -416,7 +415,7 @@ end
 --[[ Item Slot Coloring ]]--
 
 function ItemSlot:IsTradeBagSlot()
-	return BagSlotInfo:IsTradeBag(self:GetPlayer(), self:GetBag())
+	return BagInfo:IsTradeBag(self:GetPlayer(), self:GetBag())
 end
 
 function ItemSlot:GetTradeSlotColor()	

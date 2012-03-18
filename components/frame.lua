@@ -54,7 +54,7 @@ local InventoryFrame = Addon:NewClass('Frame', 'Frame')
 Addon.Frames = {}
 
 --local references
-local L = LibStub('AceLocale-3.0'):GetLocale('Combuctor')
+local L = LibStub('AceLocale-3.0'):GetLocale(AddonName)
 local CombuctorSet = Addon('Sets')
 
 --constants
@@ -107,7 +107,7 @@ function InventoryFrame:New(titleText, settings, isBank, key)
 	f:UpdateClampInsets()
 
 	lastID = lastID + 1
-	table.insert(UISpecialFrames, f:GetName())
+	tinsert(UISpecialFrames, f:GetName())
   	Addon.Frames[key] = f
 
 	return f
@@ -183,7 +183,7 @@ function InventoryFrame:UpdateBagFrame()
 			if bagID ~= KEYRING_CONTAINER then
 				local bag = Addon.Bag:Get()
 				bag:Set(self, bagID)
-				table.insert(self.bagButtons, bag)
+				tinsert(self.bagButtons, bag)
 			end
 		end
 
@@ -566,5 +566,5 @@ function InventoryFrame:IsBank()
 end
 
 function InventoryFrame:AtBank()
-	return Addon('PlayerInfo'):AtBank()
+	return Addon('InventoryEvents').AtBank()
 end

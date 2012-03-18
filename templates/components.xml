@@ -50,7 +50,7 @@
 				self.icon:SetPoint("CENTER", self)
 			</OnLoad>
 			<OnEvent>
-				if(self:IsShown() and arg1 == "player") then
+				if (self:IsShown() and arg1 == "player") then
 					SetPortraitTexture(self.icon, arg1)
 				end
 			</OnEvent>
@@ -72,15 +72,12 @@
 				self.icon:SetTexCoord(0, 1, 0, 1)
 			</OnMouseUp>
 			<OnClick>
-				if(button == "LeftButton") then
-					if BagnonDB then
-						BagnonDB:SetDropdownFrame(self:GetParent())
-						BagnonDB:ToggleDropdown(self, 20, 32)
-					end
+				if Combuctor.TogglePlayerDropdown then
+					Combuctor:TogglePlayerDropdown(self, self:GetParent(), 15, 10)
 				end
 			</OnClick>
 			<OnEnter>
-				if BagnonDB then
+				if Combuctor.TogglePlayerDropdown then
 					self:GetParent():OnPortraitEnter(self)
 				end
 			</OnEnter>

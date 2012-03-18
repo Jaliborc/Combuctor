@@ -6,7 +6,7 @@
 local AddonName, Addon = ...
 local Bag = Addon:NewClass('Bag', 'Button')
 local L = LibStub('AceLocale-3.0'):GetLocale(AddonName)
-local BagSlotInfo = Addon('BagSlotInfo')
+local BagInfo = Addon('BagInfo')
 
 --[[ Constructor/Destructor ]]--
 
@@ -85,7 +85,7 @@ function Bag:Set(parent, id)
 		self:RegisterEvent('BAG_UPDATE')
 		self:RegisterEvent('PLAYERBANKSLOTS_CHANGED')
 
-		if self:IsBankBagSlot() then
+		if self:IsBankBag() then
 			self:RegisterEvent('BANKFRAME_OPENED')
 			self:RegisterEvent('BANKFRAME_CLOSED')
 			self:RegisterEvent('PLAYERBANKBAGSLOTS_CHANGED')
@@ -122,7 +122,7 @@ function Bag:OnEvent(event, ...)
 end
 
 function Bag:OnClick(button)
-	local link = (self:GetItemInfo())
+	local link = (self:GetInfo())
 	if link and HandleModifiedItemClick(link) then
 		return
 	end
@@ -203,7 +203,7 @@ end
 function Bag:UpdateSlotInfo()
 	if not self:IsBagSlot() then return end
 
-	local link, count, texture = self:GetItemInfo()
+	local link, count, texture = self:GetInfo()
 	if link then
 		self.hasItem = link
 
@@ -300,12 +300,12 @@ function Bag:UpdateTooltip()
 end
 
 function Bag:UpdateCachedBagTooltip()
-	local link = (self:GetItemInfo())
+	local link = (self:GetInfo())
 	if link then
 		GameTooltip:SetHyperlink(link)
 	elseif self:IsPurchasable() then
 		GameTooltip:SetText(BANK_BAG_PURCHASE, 1, 1, 1)
-	elseif self:IsBankBagSlot() then
+	elseif self:IsBankBag() then
 		GameTooltip:SetText(BANK_BAG, 1, 1, 1)
 	else
 		GameTooltip:SetText(EQUIP_CONTAINER, 1, 1, 1)
@@ -334,49 +334,49 @@ end
 
 --returns true if the bag is loaded from offline data, and false otehrwise
 function Bag:IsCached()
-	return BagSlotInfo:IsCached(self:GetPlayer(), self:GetID())
+	return BagInfo:IsCached(self:GetPlayer(), self:GetID())
 end
 
 --returns true if the given bag represents the backpack container
 function Bag:IsBackpack()
-	return BagSlotInfo:IsBackpack(self:GetID())
+	return BagInfo:IsBackpack(self:GetID())
 end
 
 --returns true if the given bag represetns the main bank container
 function Bag:IsBank()
-	return BagSlotInfo:IsBank(self:GetID())
+	return BagInfo:IsBank(self:GetID())
 end
 
 --returns true if the given bag slot is an inventory bag slot
-function Bag:IsInventoryBagSlot()
-	return BagSlotInfo:IsBackpackBag(self:GetID())
+function Bag:IsBackpackBag()
+	return BagInfo:IsBackpackBag(self:GetID())
 end
 
 --returns true if the given bag slot is a purchasable bank bag slot
-function Bag:IsBankBagSlot()
-	return BagSlotInfo:IsBankBag(self:GetID())
+function Bag:IsBankBag()
+	return BagInfo:IsBankBag(self:GetID())
 end
 
---returns true if the given bagSlot is one the player can place a bag in, and false otherwise
-function Bag:IsBagSlot()
-	return self:IsInventoryBagSlot() or self:IsBankBagSlot()
+--returns true if the given bagSlot is one the player can place a bag in
+function Bag:IsCustom()
+	return self:IsBackpackBag() or self:IsBankBag()
 end
 
 --returns true if the bag is a purchasable bank slot, and false otherwise
 function Bag:IsPurchasable()
-	return BagSlotInfo:IsPurchasable(self:GetPlayer(), self:GetID())
+	return BagInfo:IsPurchasable(self:GetPlayer(), self:GetID())
 end
 
 --returns the inventory slot id representation of the given bag
 function Bag:GetInventorySlot()
-	return BagSlotInfo:ToInventorySlot(self:GetID())
+	return BagInfo:ToInventorySlot(self:GetID())
 end
 
-function Bag:GetItemInfo()
-	local link, count, texture = BagSlotInfo:GetItemInfo(self:GetPlayer(), self:GetID())
-	return link, count, texture
+function Bag:GetInfo()
+	return BagInfo:GetInfo(self:GetPlayer(), self:GetID())
+	-- link, count, texture
 end
 
 function Bag:IsLocked()
-	return BagSlotInfo:IsLocked(self:GetPlayer(), self:GetID())
+	return BagInfo:IsLocked(self:GetPlayer(), self:GetID())
 end

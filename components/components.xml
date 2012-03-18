@@ -3,6 +3,7 @@
 	<Script file="itemFrame.lua"/>
 	<Script file="bag.lua"/>
 	<Script file="money.lua"/>
+	<Script file="playerDropdown.lua"/>
 	<Script file="qualityFilterButton.lua"/>
 	<Script file="qualityFilter.lua"/>
 	<Script file="sideFilterButton.lua"/>

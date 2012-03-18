@@ -82,14 +82,14 @@ end
 
 local function addSet(sets, exclude, name, ...)
 	if sets then
-		table.insert(sets, name)
+		tinsert(sets, name)
 	else
 		sets = {name}
 	end
 
 	if select('#', ...) > 0 then
 		if exclude then
-			table.insert(exclude, {[name] = {...}})
+			tinsert(exclude, {[name] = {...}})
 		else
 			exclude = {[name] = {...}}
 		end

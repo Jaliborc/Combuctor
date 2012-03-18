@@ -1,35 +1,20 @@
 ﻿--[[
-	itemSlotInfo.lua
+	item.lua
 		Generic methods for accessing item slot information
 --]]
 
 local AddonName, Addon = ...
-local ItemSlotInfo = Addon:NewModule('ItemSlotInfo')
+local ItemInfo = Addon:NewModule('ItemInfo')
+local Cache = LibStub('LibItemCache-1.0')
 
-function ItemSlotInfo:GetItemInfo(player, bag, slot)
-	local link, count, texture, quality, readable, locked, lootable
-	if self:IsCached(player, bag, slot) then
-		if BagnonDB then
-			link, count, texture, quality = BagnonDB:GetItemData(bag, slot, player)
-		end
-	else
-		texture, count, locked, quality, readable, lootable, link = GetContainerItemInfo(bag, slot)
-		
-		--GetContainerItemInfo does not return a quality value for all items.  If it does not, it returns -1
-		if link and quality < 0 then
-			quality = (select(3, GetItemInfo(link)))
-		end
-	end
-	return texture, count, locked, quality, readable, lootable, link
+function ItemInfo:GetInfo(...)
+	return Cache:GetItemInfo(...)
 end
 
-function ItemSlotInfo:IsLocked(player, bag, slot)
-	if self:IsCached(player, bag, slot) then
-		return false
-	end
-	return (select(3, GetContainerItemInfo(bag, slot)))
+function ItemInfo:IsLocked(...)
+  return select(3, self:GetInfo(...))
 end
 
-function ItemSlotInfo:IsCached(player, bag, slot)
-	return Addon('BagSlotInfo'):IsCached(player, bag)
+function ItemInfo:IsCached(...)
+	return select(8, self:GetInfo(...))
 end
