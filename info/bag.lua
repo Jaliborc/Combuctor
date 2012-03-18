@@ -43,7 +43,7 @@ end
 
 function BagInfo:IsLocked(player, bag)
 	if not self:IsBackpack(bag) and not self:IsBank(bag) then
-    local slot, size, cached = select(4, self:GetInfo(player, bag))
+    	local slot, size, cached = select(4, self:GetInfo(player, bag))
 		return not cached and IsInventoryItemLocked(slot)
 	end
 end

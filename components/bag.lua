@@ -185,13 +185,13 @@ function Bag:Update()
 end
 
 function Bag:UpdateLock()
-	if not self:IsBagSlot() then return end
-
-	SetItemButtonDesaturated(self, self:IsLocked())
+	if self:IsCustomSlot() then
+		SetItemButtonDesaturated(self, self:IsLocked())
+	end
 end
 
 function Bag:UpdateCursor()
-	if not self:IsBagSlot() then return end
+	if not self:IsCustomSlot() then return end
 
 	if CursorCanGoInSlot(self:GetInventorySlot()) then
 		self:LockHighlight()
@@ -201,7 +201,7 @@ function Bag:UpdateCursor()
 end
 
 function Bag:UpdateSlotInfo()
-	if not self:IsBagSlot() then return end
+	if not self:IsCustomSlot() then return end
 
 	local link, count, texture = self:GetInfo()
 	if link then
@@ -358,7 +358,7 @@ function Bag:IsBankBag()
 end
 
 --returns true if the given bagSlot is one the player can place a bag in
-function Bag:IsCustom()
+function Bag:IsCustomSlot()
 	return self:IsBackpackBag() or self:IsBankBag()
 end
 
@@ -369,7 +369,7 @@ end
 
 --returns the inventory slot id representation of the given bag
 function Bag:GetInventorySlot()
-	return BagInfo:ToInventorySlot(self:GetID())
+	return BagInfo:ToInventorySlot(self:GetPlayer(), self:GetID())
 end
 
 function Bag:GetInfo()

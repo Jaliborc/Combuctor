@@ -1,3 +1,7 @@
+====== 4.3.3 (beta)
+* Now comes packed with BagBrother, an addon that stores bag, bank and vault data for offline viewing. This addon is shared with Bagnon.
+* Added support for BagSync and Armory caching systems.
+
 ====== 4.3.2
 * Fixed a bug causing the frame selector to show at unusual situations
 
