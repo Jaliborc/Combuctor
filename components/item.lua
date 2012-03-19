@@ -75,7 +75,7 @@ function ItemSlot:GetBlizzardItemSlot(id)
 		return nil
 	end
 
-	local bag = math.ceil(id / MAX_CONTAINER_ITEMS)
+	local bag = ceil(id / MAX_CONTAINER_ITEMS)
 	local slot = (id-1) % MAX_CONTAINER_ITEMS + 1
 	local item = _G[format('ContainerFrame%dItem%d', bag, slot)]
 
@@ -365,15 +365,6 @@ end
 
 function ItemSlot:IsBank()
 	return BagInfo:IsBank(self:GetBag())
-end
-
-function ItemSlot:IsBankSlot()
-	local bag = self:GetBag()
-	return BagInfo:IsBank(bag) or BagInfo:IsBankBag(bag)
-end
-
-function ItemSlot:AtBank()
-	return Addon('InventoryEvents').AtBank()
 end
 
 function ItemSlot:GetItemInfo()

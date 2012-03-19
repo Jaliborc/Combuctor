@@ -10,6 +10,10 @@ local frames = {}
 
 --[[ Events ]]--
 
+function FrameEvents:GET_ITEM_INFO_RECEIVED()
+	self:UpdateCached()
+end
+
 function FrameEvents:ITEM_LOCK_CHANGED(msg, ...)
 	self:UpdateSlotLock(...)
 end
@@ -51,6 +55,12 @@ function FrameEvents:BAG_UPDATE_TYPE(msg, ...)
 end
 
 --[[ Update Methods ]]--
+
+function FrameEvents:UpdateCached()
+	for f in self:GetFrames() do
+		f:Regenerate()
+	end
+end
 
 function FrameEvents:UpdateBorder(...)
 	for f in self:GetFrames() do
@@ -117,6 +127,8 @@ function FrameEvents:LayoutFrames()
 			f:Layout()
 		end
 	end
+	
+	self.Updater:Hide()
 end
 
 function FrameEvents:RequestLayout()
@@ -140,8 +152,9 @@ end
 
 do
 	local f = CreateFrame('Frame')
-	f:RegisterEvent('ITEM_LOCK_CHANGED')
+	f:RegisterEvent('GET_ITEM_INFO_RECEIVED')
 	f:RegisterEvent('UNIT_QUEST_LOG_CHANGED')
+	f:RegisterEvent('QUEST_ACCEPTED')
 	f:RegisterEvent('QUEST_ACCEPTED')
 	f:Hide()
 	
@@ -154,7 +167,6 @@ do
 	
 	f:SetScript('OnUpdate', function(self, elapsed)
 		FrameEvents:LayoutFrames()
-		self:Hide()
 	end)
 	
 	local Events = Addon('InventoryEvents')
