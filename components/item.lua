@@ -182,7 +182,7 @@ end
 function ItemSlot:Update()
 	if not self:IsVisible() then return end
 
-	local texture, count, locked, quality, readable, lootable, link = self:GetItemInfo()
+	local texture, count, locked, quality, readable, lootable, link = self:GetInfo()
 
 	self:SetItem(link)
 	self:SetTexture(texture)
@@ -281,7 +281,7 @@ function ItemSlot:SetBorderQuality(quality)
 		end
 	end
 	
-	local link = select(7, self:GetItemInfo())
+	local link = select(7, self:GetInfo())
 	if Unfit:IsItemUnusable(link) then
 		local r, g, b = RED_FONT_COLOR.r, RED_FONT_COLOR.g, RED_FONT_COLOR.b
 		border:SetVertexColor(r, g, b, self:GetHighlightAlpha())
@@ -297,7 +297,7 @@ function ItemSlot:SetBorderQuality(quality)
 end
 
 function ItemSlot:UpdateBorder()
-	local texture, count, locked, quality = self:GetItemInfo()
+	local texture, count, locked, quality = self:GetInfo()
 	self:SetBorderQuality(quality)
 end
 
@@ -367,7 +367,7 @@ function ItemSlot:IsBank()
 	return BagInfo:IsBank(self:GetBag())
 end
 
-function ItemSlot:GetItemInfo()
+function ItemSlot:GetInfo()
 	local texture, count, locked, quality, readable, lootable, link = ItemInfo:GetInfo(self:GetPlayer(), self:GetBag(), self:GetID())
 	return texture, count, locked, quality, readable, lootable, link
 end

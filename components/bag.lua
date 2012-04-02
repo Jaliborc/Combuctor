@@ -272,6 +272,7 @@ function Bag:PurchaseSlot()
 			hasMoneyFrame = 1,
 			timeout = 0,
 			hideOnEscape = 1,
+			preferredIndex = 3,
 		}
 	end
 

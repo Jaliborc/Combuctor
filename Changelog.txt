@@ -1,3 +1,12 @@
+====== 4.3.6 (beta)
+* Preventing code taint
+
+====== 4.3.5 (beta)
+* Hotfix
+
+====== 4.3.4 (beta)
+* Fixed a bug causing settings to not be saved between sessions.
+
 ====== 4.3.3 (beta)
 * Now comes packed with BagBrother, an addon that stores bag, bank and vault data for offline viewing. This addon is shared with Bagnon.
 * Added support for BagSync and Armory caching systems.

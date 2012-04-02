@@ -76,7 +76,7 @@ do
 	 	[0x8000] = 'tackle'
 	}
 
-	for v in ipairs(Addon.BAG_TYPES) do
+	for v in pairs(Addon.BAG_TYPES) do
 		Addon.TRADE_TYPE = Addon.TRADE_TYPE + v
 	end
 end

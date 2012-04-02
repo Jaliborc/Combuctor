@@ -2,9 +2,9 @@
 ## Title: |cff5FC412Combuctor|r
 ## Author: Tuller and Jaliborc (João Cardoso)
 ## Notes: Pants are a dangerous foe
-## Version: 4.3.2
+## Version: 4.3.6
 ## OptionalDeps: BagBrother, BagSync, Armory, Ace3, LibItemCache-1.0, LibItemSearch-1.0, Unfit-1.0
-## SavedVariables: CombuctorVersion
+## SavedVariables: CombuctorVersion, CombuctorDB2
 
 libs\libs.xml
 localization\localization.xml

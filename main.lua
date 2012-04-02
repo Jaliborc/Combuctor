@@ -262,7 +262,7 @@ end
 
 function Addon:ShowOptions()
 	if LoadAddOn('Combuctor_Config') then
-		InterfaceOptionsFrame_OpenToCategory(self.Options)
+		InterfaceOptionsFrame_OpenToCategory(AddonName)
 		return true
 	end
 	return false
