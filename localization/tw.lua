@@ -23,7 +23,7 @@ L.BankTitle = "%s的銀行"
 --tooltips
 L.Inventory = '背包'
 L.Bank = '銀行'
-L.TotalOnRealm = '%s的總資金'
+L.Total = '總'
 L.ClickToPurchase = '<點選>購買'
 L.Bags = '容器'
 L.BagToggle = '<左鍵點選>顯示或隱藏容器'

@@ -196,7 +196,7 @@ function ItemFrame:Regenerate()
 
 	local changed = false
 
-	for _,bag in pairs(self.bags) do
+	for _,bag in ipairs(self.bags) do
 		for slot = 1, self:GetBagSize(bag) do
 			if self:UpdateSlot(bag, slot) then
 				changed = true

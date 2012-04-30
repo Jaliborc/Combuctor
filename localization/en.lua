@@ -20,7 +20,7 @@ L.BankTitle = "%s's Bank"
 --tooltips
 L.Inventory = 'Inventory'
 L.Bank = 'Bank'
-L.TotalOnRealm = 'Total on %s'
+L.Total = 'Total'
 L.ClickToPurchase = '<Click> to purchase'
 L.Bags = 'Bags'
 L.BagToggle = '<Left-Click> to toggle the bag display'

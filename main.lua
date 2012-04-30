@@ -145,6 +145,20 @@ function Addon:GetBaseProfile()
 end
 
 function Addon:UpdateSettings(major, minor, bugfix)
+	-- Remove keyring
+	if major < '4' or minor < '3' or bugfix < '9' then
+		for char, prefs in pairs(CombuctorDB2.profiles) do
+			local bags = prefs.inventory and prefs.inventory.bags
+			
+			if bags then
+				for i, bag in ipairs(bags) do
+					if bag == -2 then
+						tremove(bags, i)
+					end
+				end
+			end
+		end
+	end
 end
 
 function Addon:UpdateVersion()
@@ -265,7 +279,6 @@ function Addon:ShowOptions()
 		InterfaceOptionsFrame_OpenToCategory(AddonName)
 		return true
 	end
-	return false
 end
 
 function Addon:OnSlashCommand(msg)

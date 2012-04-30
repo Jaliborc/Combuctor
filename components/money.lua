@@ -6,6 +6,10 @@
 local AddonName, Addon = ...
 local MoneyFrame = LibStub('Classy-1.0'):New('Frame'); Addon.MoneyFrame = MoneyFrame
 local L = LibStub('AceLocale-3.0'):GetLocale('Combuctor')
+local ItemCache = LibStub('LibItemCache-1.0')
+
+
+--[[ Constructor ]]--
 
 function MoneyFrame:New(parent)
 	local f = self:Bind(CreateFrame('Frame', parent:GetName() .. 'MoneyFrame', parent, 'SmallMoneyFrameTemplate'))
@@ -13,12 +17,12 @@ function MoneyFrame:New(parent)
 	f:Update()
 
 	local click = CreateFrame('Button', f:GetName() .. 'Click', f)
-	click:SetFrameLevel(f:GetFrameLevel() + 3)
+	click:SetFrameLevel(f:GetFrameLevel() + 4)
 	click:SetAllPoints(f)
 
-	click:SetScript('OnClick', self.OnClick)
-	click:SetScript('OnEnter', self.OnEnter)
-	click:SetScript('OnLeave', self.OnLeave)
+	click:SetScript('OnClick', function() f:OnClick() end)
+	click:SetScript('OnEnter', function() f:OnEnter() end)
+	click:SetScript('OnLeave', function() f:OnLeave() end)
 
 	return f
 end
@@ -32,65 +36,81 @@ function MoneyFrame:Update()
 	end
 end
 
---frame events
-function MoneyFrame:OnClick()
-	local parent = self:GetParent()
-	local name = parent:GetName()
 
-	if MouseIsOver(getglobal(name .. 'GoldButton')) then
-		OpenCoinPickupFrame(COPPER_PER_GOLD, MoneyTypeInfo[parent.moneyType].UpdateFunc(parent), parent)
-		parent.hasPickup = 1
-	elseif MouseIsOver(getglobal(name .. 'SilverButton')) then
-		OpenCoinPickupFrame(COPPER_PER_SILVER, MoneyTypeInfo[parent.moneyType].UpdateFunc(parent), parent)
-		parent.hasPickup = 1
-	elseif MouseIsOver(getglobal(name .. 'CopperButton')) then
-		OpenCoinPickupFrame(1, MoneyTypeInfo[parent.moneyType].UpdateFunc((parent)), parent)
-		parent.hasPickup = 1
+--[[ Frame Events ]]--
+
+function MoneyFrame:OnClick()
+	local name = self:GetName()
+
+	if MouseIsOver(_G[name .. 'GoldButton']) then
+		OpenCoinPickupFrame(COPPER_PER_GOLD, MoneyTypeInfo[self.moneyType].UpdateFunc(self), self)
+		self.hasPickup = 1
+	elseif MouseIsOver(_G[name .. 'SilverButton']) then
+		OpenCoinPickupFrame(COPPER_PER_SILVER, MoneyTypeInfo[self.moneyType].UpdateFunc(self), self)
+		self.hasPickup = 1
+	elseif MouseIsOver(_G[name .. 'CopperButton']) then
+		OpenCoinPickupFrame(1, MoneyTypeInfo[self.moneyType].UpdateFunc(self), self)
+		self.hasPickup = 1
 	end
+	
+	self:OnLeave()
 end
 
--- ChangeLog
--- 07/03/2009 Serenity(SACW) modified this frame to show earmarked currencies in the money window when hovered over, probably should get it's own small square in the inventory frame
---     but this works for now.
 function MoneyFrame:OnEnter()
-	if BagnonDB then
-		
-		GameTooltip:SetOwner(self, 'ANCHOR_TOPRIGHT')
+	if not ItemCache:HasCache() then
+    	return
+  	end
 
-	-- Section added by Serenity of Silver Aerie Codeworks.
-		if ( GetNumWatchedTokens() > 0 ) then
-			local Num_Currs = GetNumWatchedTokens()
-
-			if ( Num_Currs > 3 ) then
-				Num_Currs = 3
-			end
-			
-			GameTooltip:AddLine(format("%s's Currencies", UnitName('player') ) )
-			
-			for CountVar = 1, Num_Currs, 1 do
-				local Curr_Name, Curr_Amt = GetBackpackCurrencyInfo(CountVar)
-				if ( Curr_Name == nil ) then
-				else
-					GameTooltip:AddDoubleLine(Curr_Name, Curr_Amt, 0, 170, 255, 255, 255, 255)
-				end
-			end			
-
-			GameTooltip:AddLine('\r')
-		end
-
-		local money = 0
-		for player in BagnonDB:GetPlayers() do
-			money = money + BagnonDB:GetMoney(player)
-		end
-	-- End Section
-	
---		GameTooltip:SetText(format(L.TotalOnRealm, GetRealmName()))
-		GameTooltip:AddLine(format(L.TotalOnRealm, GetRealmName()))
-		SetTooltipMoney(GameTooltip, money)
-		GameTooltip:Show()
+	-- Total
+	local total = 0
+	for i, player in ItemCache:IteratePlayers() do
+		total = total + ItemCache:GetMoney(player)
 	end
+
+	GameTooltip:SetOwner(self, 'ANCHOR_BOTTOM')
+	GameTooltip:AddDoubleLine(L.Total, GetCoinTextureString(total), nil,nil,nil, 1,1,1)
+	GameTooltip:AddLine(' ')
+	
+	-- Each player
+	for i, player in ItemCache:IteratePlayers() do
+		local money = ItemCache:GetMoney(player)
+		if money > 0 then
+			GameTooltip:AddDoubleLine(player, self:GetCoinsText(money), 1,1,1, 1,1,1)
+		end
+	end
+	
+	GameTooltip:Show()
 end
 
 function MoneyFrame:OnLeave()
 	GameTooltip:Hide()
+end
+
+
+--[[ Methods ]]--
+
+function MoneyFrame:GetCoinsText(money)
+	local gold, silver, copper = self:GetCoins(money)
+	local text = ''
+
+	if gold > 0 then
+		text = text .. format(' %d|cffffd700%s|r', gold, GOLD_AMOUNT_SYMBOL)
+	end
+
+	if silver > 0 then
+		text = text .. format(' %d|cffc7c7cf%s|r', silver, SILVER_AMOUNT_SYMBOL)
+	end
+
+	if copper > 0 or money == 0 then
+		text = text .. format(' %d|cffeda55f%s|r', copper, COPPER_AMOUNT_SYMBOL)
+	end
+
+	return text
+end
+
+function MoneyFrame:GetCoins(money)
+	local gold = floor(money / (COPPER_PER_SILVER * SILVER_PER_GOLD))
+	local silver = floor((money - (gold * COPPER_PER_SILVER * SILVER_PER_GOLD)) / COPPER_PER_SILVER)
+	local copper = money % COPPER_PER_SILVER
+	return gold, silver, copper
 end

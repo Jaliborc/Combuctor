@@ -1,3 +1,19 @@
+====== 4.3.11
+* Updated LibItemSearch (search engine) to latest version
+
+====== 4.3.10
+* Fixed bug causing money frame tooltip to not show on mousehover
+* Redesigned money frame tooltip
+
+====== 4.3.9
+* Important hot hotfix
+
+====== 4.3.8
+* Tagging release
+
+====== 4.3.7 (beta)
+* Bugfixes
+
 ====== 4.3.6 (beta)
 * Preventing code taint
 
@@ -181,4 +197,4 @@
 * Added the ability to resize the frame via dragging the bottom right corner
 * Added the ability to customize which categories are displayed on the frames (/combuctor)
 * Added the ability for developers to add in more sets and subsets to Combuctor
-* Combuctor is still very much a beta at this point in time: The new features are very much a first draft.
+* Combuctor is still very much a beta at this point in time: The new features are very much a first draft.y much a first draft.a first draft.

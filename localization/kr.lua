@@ -22,7 +22,7 @@ L.BankTitle = "%s의 은행"
 --tooltips
 L.Inventory = '인벤토리'
 L.Bank = '은행'
-L.TotalOnRealm = '%s의 총 금액'
+L.Total = '합계'
 L.ClickToPurchase = '<클릭>으로 구매'
 L.Bags = '가방'
 L.BagToggle = '<왼쪽 클릭>으로 가방 보기 토글'
