@@ -57,12 +57,12 @@ function Cache:GetItemCounts (player, id)
 		bags = bags + self:GetItemCount(player, i, id)
 	end
 	
-	local bank = 0
+	local bank = self:GetItemCount(player, BANK_CONTAINER, id)
 	for i = 1 + NUM_BAG_SLOTS, NUM_BANKBAGSLOTS + NUM_BAG_SLOTS do
       bank = bank + self:GetItemCount(player, i, id)
     end
 	
-	return self:GetItemCount(player, 'equip', id, true), bags, bank + self:GetItemCount(player, BANK_CONTAINER, id)
+	return self:GetItemCount(player, 'equip', id, true), bags, bank, self:GetItemCount(player, 'vault', id, true)
 end
 
 function Cache:GetItemCount (player, bag, id, unique)

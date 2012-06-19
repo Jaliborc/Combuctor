@@ -34,3 +34,8 @@ L.Trade = '商业'
 L.Ammo = '弹药'
 L.Shards = '碎片'
 L.Usable = '消耗品'
+
+--itemcount tooltips
+L.TipCount1 = '装备: %d'
+L.TipCount2 = '背包: %d'
+L.TipCount3 = '银行: %d'

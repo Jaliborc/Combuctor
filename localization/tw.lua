@@ -37,3 +37,8 @@ L.Ammo = '彈藥'
 L.Shards = '碎片'
 L.SoulShard = '靈魂碎片'
 L.Usable = '消耗品'
+
+--itemcount tooltips
+L.TipCount1 = ', 已裝備: %d'
+L.TipCount2 = ', 背包: %d'
+L.TipCount3 = ', 銀行: %d'

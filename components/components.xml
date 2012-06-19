@@ -10,4 +10,5 @@
 	<Script file="sideFilter.lua"/>
 	<Script file="bottomFilter.lua"/>
 	<Script file="frame.lua"/>
+	<Script file="tooltips.lua"/>
 </Ui>

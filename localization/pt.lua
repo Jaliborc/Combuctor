@@ -29,6 +29,12 @@ L.BagToggle = '<Clique-esquerdo> para mostrar os sacos'
 L.InventoryToggle = '<Clique-direito> para mostrar o banco'
 L.BankToggle = '<Clique-direito> para mostrar o banco'
 
+--itemcount tooltips
+L.TipCount1 = 'Equipado: %d'
+L.TipCount2 = 'Mochila: %d'
+L.TipCount3 = 'Banco: %d'
+L.TipCount4 = 'Cofre: %d'
+
 -- options
 L.Sets = 'Conjuntos'
 L.Panel = 'Janelas'

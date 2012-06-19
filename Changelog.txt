@@ -1,3 +1,6 @@
+====== 4.3.12
+* Added option to display item counts on tooltips
+
 ====== 4.3.11
 * Updated LibItemSearch (search engine) to latest version
 
