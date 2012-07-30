@@ -97,5 +97,7 @@ function BagInfo:GetFamily(player, bag)
 	local link = self:GetInfo(player, bag)
 	if link then
 		return GetItemFamily(link)
+	else
+		return 0
 	end
 end

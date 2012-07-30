@@ -93,7 +93,7 @@ function InventoryFrame:New(titleText, settings, isBank, key)
 
 	f.moneyFrame = Addon.MoneyFrame:New(f)
 	f.moneyFrame:SetPoint('BOTTOMRIGHT', -8, 8)
-
+	
 	--load what the title says
 	f:UpdateTitleText()
 

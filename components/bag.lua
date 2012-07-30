@@ -30,7 +30,7 @@ function Bag:New()
 	count:SetPoint('BOTTOMRIGHT', -2, 2)
 
 	local nt = bag:CreateTexture(name .. 'NormalTexture')
-	nt:SetTexture([[Interface\\Buttons\\UI-Quickslot2]])
+	nt:SetTexture([[Interface\Buttons\UI-Quickslot2]])
 	nt:SetWidth(NORMAL_TEXTURE_SIZE)
 	nt:SetHeight(NORMAL_TEXTURE_SIZE)
 	nt:SetPoint('CENTER', 0, -1)
