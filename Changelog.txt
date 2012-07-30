@@ -1,3 +1,8 @@
+====== 5.0.0
+* Updated and tested for Mists of Pandaria.
+* Added monk class and pandaren race.
+* Bug fixes.
+
 ====== 4.3.12
 * Added option to display item counts on tooltips
 
@@ -200,4 +205,4 @@
 * Added the ability to resize the frame via dragging the bottom right corner
 * Added the ability to customize which categories are displayed on the frames (/combuctor)
 * Added the ability for developers to add in more sets and subsets to Combuctor
-* Combuctor is still very much a beta at this point in time: The new features are very much a first draft.y much a first draft.a first draft.
+* Combuctor is still very much a beta at this point in time: The new features are very much a first draft.y much a first draft.a first draft. first draft.
