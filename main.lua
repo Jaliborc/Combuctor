@@ -273,6 +273,12 @@ function Addon:Toggle(bag, auto)
 	end
 end
 
+function Addon:UpdateFrames()
+	for _,frame in pairs(self.frames) do
+		frame.itemFrame:Regenerate()
+	end
+end
+
 function Addon:ShowOptions()
 	if LoadAddOn('Combuctor_Config') then
 		InterfaceOptionsFrame_OpenToCategory(ADDON)
