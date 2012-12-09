@@ -1,9 +1,6 @@
 --[[
-	Localization.lua
-		Translations for Combuctor
-
 	Traditional Chinese
-	01Dec2008	Irene Wang <xares.vossen@gmail.com>
+		By Irene Wang
 --]]
 
 local L = LibStub("AceLocale-3.0"):NewLocale("Combuctor", "zhTW")

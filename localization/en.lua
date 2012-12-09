@@ -1,8 +1,6 @@
 --[[
-	Localization.lua
-		Translations for Combuctor
-
-	English: Default language
+	English Translations
+		Default language
 --]]
 
 local L = LibStub("AceLocale-3.0"):NewLocale("Combuctor", "enUS", true)

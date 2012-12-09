@@ -1,9 +1,6 @@
 --[[
-	Localization.lua
-		Translations for Combuctor
-
-	Português
-	Translation by Jaliborc (João Cardoso) and madcampos
+	Portuguese Translations
+		By Jaliborc and madcampos
 --]]
 
 local L = LibStub("AceLocale-3.0"):NewLocale("Combuctor", "ptBR")

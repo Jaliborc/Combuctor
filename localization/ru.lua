@@ -1,9 +1,6 @@
 --[[
-	Localization.lua
-		Translations for Combuctor
-
-	Russian
-	Translation by ZZa
+	Russian	Translations
+		By ZZa
 --]]
 
 local L = LibStub("AceLocale-3.0"):NewLocale("Combuctor", "ruRU")
