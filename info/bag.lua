@@ -73,7 +73,8 @@ do
 		[0x0080] = 'engineer',
 		[0x0200] = 'gem',
 		[0x0400] = 'mine',
-	 	[0x8000] = 'tackle'
+	 	[0x8000] = 'tackle',
+	 	[0x10000] = 'cooking'
 	}
 
 	for v in pairs(Addon.BAG_TYPES) do
