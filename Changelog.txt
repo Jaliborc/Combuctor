@@ -1,3 +1,15 @@
+====== 5.1.2
+* Added support for cooking bags.
+
+====== 5.1.1
+* Fixed small but annoying localization bug.
+
+====== 5.1.0
+* Updated for patch 5.1: Landfall!
+
+====== 5.0.3
+* Updated Korean localization, by 노분노씹새끼.
+
 ====== 5.0.2
 * Tagging as release.
 
