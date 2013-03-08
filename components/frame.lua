@@ -180,11 +180,9 @@ function InventoryFrame:UpdateBagFrame()
 
 	if self.sets.showBags then
 		for _,bagID in ipairs(self.sets.bags) do
-			if bagID ~= KEYRING_CONTAINER then
-				local bag = Addon.Bag:Get()
-				bag:Set(self, bagID)
-				tinsert(self.bagButtons, bag)
-			end
+			local bag = Addon.Bag:Get()
+			bag:Set(self, bagID)
+			tinsert(self.bagButtons, bag)
 		end
 
 		for i,bag in ipairs(self.bagButtons) do
@@ -476,7 +474,7 @@ function InventoryFrame:UpdateManagedPosition()
       self:SetAttribute('UIPanelLayout-pushable', nil)
       
       if shown then
-				ShowUIPanel(self)
+		ShowUIPanel(self)
       end
     end
 	elseif not self:GetAttribute('UIPanelLayout-enabled') then

@@ -9,8 +9,8 @@ local ItemFrame = Addon:NewClass('ItemFrame', 'Button')
 --local bindings
 local ItemSearch = LibStub('LibItemSearch-1.0')
 local FrameEvents = Addon('ItemFrameEvents')
+local Cache = LibStub('LibItemCache-1.0')
 local BagInfo = Addon('BagInfo')
-local ItemInfo = Addon('ItemInfo')
 
 --InvDataity functions
 local function ToIndex(bag, slot)
@@ -272,6 +272,7 @@ function ItemFrame:Layout(spacing)
 			local item = items[ToIndex(bag, slot)]
 			if item then
 				i = i + 1
+				
 				local row = mod(i-1,cols)
 				local col = ceil(i/cols)-1
 				item:ClearAllPoints()
@@ -310,8 +311,7 @@ function ItemFrame:IsBagCached(bag)
 end
 
 function ItemFrame:GetItemLink(bag, slot)
-	local link = select(7, ItemInfo:GetInfo(self:GetPlayer(), bag, slot))
-	return link
+	return select(7, Cache:GetItemInfo(self:GetPlayer(), bag, slot))
 end
 
 --places the item in the first available slot in the current player's visible bags

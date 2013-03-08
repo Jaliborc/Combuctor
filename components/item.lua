@@ -10,7 +10,7 @@ local Unfit = LibStub('Unfit-1.0')
 local ItemSearch = LibStub('LibItemSearch-1.0')
 
 local BagInfo = Addon('BagInfo')
-local ItemInfo = Addon('ItemInfo')
+local Cache = LibStub('LibItemCache-1.0')
 
 
 --[[ Constructor ]]--
@@ -179,14 +179,14 @@ end
 --[[ Update Methods ]]--
 
 
--- Update the texture, lock status, and other information about an item
 function ItemSlot:Update()
-	if not self:IsVisible() then return end
+	if not self:IsVisible() then
+		return
+	end
 
-	local texture, count, locked, quality, readable, lootable, link = self:GetInfo()
-
+	local icon, count, locked, quality, readable, lootable, link = self:GetInfo()
 	self:SetItem(link)
-	self:SetTexture(texture)
+	self:SetTexture(icon)
 	self:SetCount(count)
 	self:SetLocked(locked)
 	self:SetReadable(readable)
@@ -256,7 +256,7 @@ end
 
 --returns true if the slot is locked, and false otherwise
 function ItemSlot:IsLocked()
-	return ItemInfo:IsLocked(self:GetPlayer(), self:GetBag(), self:GetID())
+	return select(3, self:GetInfo())
 end
 
 --colors the item border based on the quality of the item.  hides it for common/poor items
@@ -361,7 +361,7 @@ function ItemSlot:IsSlot(bag, slot)
 end
 
 function ItemSlot:IsCached()
-	return BagInfo:IsCached(self:GetPlayer(), self:GetBag())
+	return select(8, self:GetInfo())
 end
 
 function ItemSlot:IsBank()
@@ -369,8 +369,7 @@ function ItemSlot:IsBank()
 end
 
 function ItemSlot:GetInfo()
-	local texture, count, locked, quality, readable, lootable, link = ItemInfo:GetInfo(self:GetPlayer(), self:GetBag(), self:GetID())
-	return texture, count, locked, quality, readable, lootable, link
+	return Cache:GetItemInfo(self:GetPlayer(), self:GetBag(), self:GetID())
 end
 
 

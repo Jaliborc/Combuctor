@@ -145,22 +145,20 @@ local function updateItemCooldown(bagId, slotId)
 	end
 end
 
+
 --[[ Bag Updating ]]--
 
-local function getBagSize(bagId)
-	if bagId == KEYRING_CONTAINER then
-		return GetKeyRingSize()
-	end
-	if bagId == BANK_CONTAINER then
+local function GetBagSize(bag)
+	if bag == BANK_CONTAINER then
 		return NUM_BANKGENERIC_SLOTS
 	end
-	return GetContainerNumSlots(bagId)
+
+	return GetContainerNumSlots(bag)
 end
 
---bag sizes
-local function updateBagSize(bagId)
+local function UpdateBagSize(bagId)
 	local prevSize = BagSizes[bagId] or 0
-	local newSize = getBagSize(bagId)
+	local newSize = GetBagSize(bagId)
 	BagSizes[bagId] = newSize
 
 	if prevSize > newSize then
@@ -174,7 +172,7 @@ local function updateBagSize(bagId)
 	end
 end
 
-local function updateBagType(bagId)
+local function UpdateBagType(bagId)
 	local _, newType = GetContainerNumFreeSlots(bagId)
 	local prevType = BagTypes[bagId]
 
@@ -184,12 +182,13 @@ local function updateBagType(bagId)
 	end
 end
 
---[[ metamethods ]]--
+
+--[[ Iterators ]]--
 
 local function forEachItem(bagId, f, ...)
 	if not bagId and f then error('Usage: forEachItem(bagId, function, ...)', 2) end
 
-	for slotId = 1, getBagSize(bagId) do
+	for slotId = 1, GetBagSize(bagId) do
 		f(bagId, slotId, ...)
 	end
 end
@@ -206,11 +205,10 @@ local function forEachBag(f, ...)
 			f(bagId, ...)
 		end
 	end
-	f(KEYRING_CONTAINER, ...)
 end
 
 
---[[ inventory event watcher ]]--
+--[[ Event Watcher ]]--
 
 do
 	local eventFrame = CreateFrame('Frame'); eventFrame:Hide()
@@ -228,16 +226,13 @@ do
 		self:RegisterEvent('BAG_UPDATE_COOLDOWN')
 		self:RegisterEvent('PLAYERBANKSLOTS_CHANGED')
 
-		updateBagSize(KEYRING_CONTAINER)
-		forEachItem(KEYRING_CONTAINER, updateItem)
-
-		updateBagSize(BACKPACK_CONTAINER)
+		UpdateBagSize(BACKPACK_CONTAINER)
 		forEachItem(BACKPACK_CONTAINER, updateItem)
 	end
 
 	function eventFrame:BAG_UPDATE(event, bagId, ...)
-		forEachBag(updateBagType)
-		forEachBag(updateBagSize)
+		forEachBag(UpdateBagType)
+		forEachBag(UpdateBagSize)
 		forEachItem(bagId, updateItem)
 	end
 
@@ -249,9 +244,9 @@ do
 	--]]
 	function eventFrame:PLAYERBANKSLOTS_CHANGED(event, slotId, ...)
 		if slotId > GetContainerNumSlots(BANK_CONTAINER) then
-			local bagId = (slotId - getBagSize(BANK_CONTAINER)) + ITEM_INVENTORY_BANK_BAG_OFFSET
-			updateBagType(bagId)
-			updateBagSize(bagId)
+			local bagId = (slotId - GetBagSize(BANK_CONTAINER)) + ITEM_INVENTORY_BANK_BAG_OFFSET
+			UpdateBagType(bagId)
+			UpdateBagSize(bagId)
 		else
 			updateItem(BANK_CONTAINER, slotId)
 		end
@@ -275,11 +270,11 @@ do
 	bankWatcher:SetScript('OnShow', function(self)
 		AtBank = true
 
-		updateBagSize(BANK_CONTAINER)
+		UpdateBagSize(BANK_CONTAINER)
 		forEachItem(BANK_CONTAINER, updateItem)
 
-		forEachBag(updateBagType)
-		forEachBag(updateBagSize)
+		forEachBag(UpdateBagType)
+		forEachBag(UpdateBagSize)
 
 		sendMessage('BANK_OPENED')
 
