@@ -1,1 +1,0 @@
-## Interface: 50001## Title: LibItemCache## Notes:## Author: Jaliborc (João Cardoso)## X-Category: Library## X-Licence: GNU General Public License - Version 3## OptionalDeps: LibStub, BagBrother, BagSync, ArmoryLibItemCache.xml

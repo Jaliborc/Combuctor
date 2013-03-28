@@ -107,7 +107,7 @@ function ItemFrame:HasItem(bag, slot, link)
 			return false
 		--text search
 		elseif f.name then
-			return ItemSearch:Find(link, f.name)
+			return ItemSearch:Matches(link, f.name)
 		end
 	end
 	return true

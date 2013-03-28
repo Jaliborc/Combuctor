@@ -267,7 +267,7 @@ function ItemSlot:SetBorderQuality(quality)
 	qBorder:Hide()
 	border:Hide()
 
-	if self:HighlightingQuestItems() then
+	if self:HighlightQuestItems() then
 		local isQuestItem, isQuestStarter = self:IsQuestItem()
 		if isQuestItem then
 			border:SetVertexColor(1, .82, .2,  self:GetHighlightAlpha())
@@ -373,13 +373,13 @@ function ItemSlot:GetInfo()
 end
 
 
---[[ Item Type Highlighting ]]--
+--[[ Item Type Highlight ]]--
 
-function ItemSlot:HighlightingItemsByQuality()
+function ItemSlot:HighlightItemsByQuality()
 	return true
 end
 
-function ItemSlot:HighlightingQuestItems()
+function ItemSlot:HighlightQuestItems()
 	return true
 end
 
@@ -395,7 +395,7 @@ function ItemSlot:IsQuestItem()
 	end
 
 	if self:IsCached() then
-		return ItemSearch:Find(itemLink, QUEST_ITEM_SEARCH), false
+		return ItemSearch:Matches(itemLink, QUEST_ITEM_SEARCH), false
 	else
 		local isQuestItem, questID, isActive = GetContainerItemQuestInfo(self:GetBag(), self:GetID())
 		return isQuestItem, (questID and not isActive)
