@@ -2,6 +2,10 @@
 	path = libs/LibItemSearch-1.0
 	url = git://github.com/Tuller/LibItemSearch-1.0.git
 
+[submodule "libs/LibItemCache-1.0"]
+	path = libs/LibItemCache-1.0
+	url = git://github.com/Jaliborc/LibItemCache-1.0.git
+
 [submodule "libs/Unfit-1.0"]
 	path = libs/Unfit-1.0
 	url = git://github.com/Jaliborc/Unfit-1.0.git
