@@ -1,3 +1,9 @@
+===== 5.3.0
+* Updated for patch Escalation.
+* Upgraded search engine, which means:** Smarter syntax and better search results.
+** Now items belonging to equipment sets are colored separately. Packed with ItemRack and Wardrobe support!
+* Fixed bug causing error message on rare login situations.
+
 ===== 5.2.0
 * Updated for patch 5.2: The Thunder King!
 * Fixed an issue causing some cached items to not display any icon.
@@ -228,4 +234,4 @@
 * Added the ability to resize the frame via dragging the bottom right corner
 * Added the ability to customize which categories are displayed on the frames (/combuctor)
 * Added the ability for developers to add in more sets and subsets to Combuctor
-* Combuctor is still very much a beta at this point in time: The new features are very much a first draft.y much a first draft.a first draft. first draft...
+* Combuctor is still very much a beta at this point in time: The new features are very much a first draft.y much a first draft.a first draft. first draft....
