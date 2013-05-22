@@ -20,7 +20,7 @@ BINDING_NAME_COMBUCTOR_TOGGLE_BANK = L.ToggleBank
 
 
 --[[
-	Loading/Profile Functions
+	Startup
 --]]
 
 function Addon:OnInitialize()
@@ -39,20 +39,29 @@ function Addon:OnInitialize()
 		version = CURRENT_VERSION
 	end
 
-	-- create a loader for the options menu
+	-- base set, slash commands
+	self('Sets'):Register(L.All, 'Interface/Icons/INV_Misc_EngGizmos_17', function() return true end)
+	self:RegisterChatCommand('combuctor', 'OnSlashCommand')
+	self:RegisterChatCommand('cbt', 'OnSlashCommand')
+
+	-- option frame loader
 	local f = CreateFrame('Frame', nil, InterfaceOptionsFrame)
 	f:SetScript('OnShow', function(self)
 		self:SetScript('OnShow', nil)
 		LoadAddOn('Combuctor_Config')
 	end)
+end
 
-	-- slash command support
-	self:RegisterChatCommand('combuctor', 'OnSlashCommand')
-	self:RegisterChatCommand('cbt', 'OnSlashCommand')
-	
-	-- base set
-	self('Sets'):Register(L.All, 'Interface/Icons/INV_Misc_EngGizmos_17', function() return true end)
+function Addon:OnEnable()
+	local profile = self:GetProfile(UnitName('player'))
+
+	self.frames = {
+		self.Frame:New(L.InventoryTitle, profile.inventory, false, 'inventory'),
+		self.Frame:New(L.BankTitle, profile.bank, true, 'bank')
+	}
+
 	self:HookTooltips()
+	self:HookBagEvents()
 end
 
 function Addon:InitDB()
@@ -169,17 +178,6 @@ end
 --[[
 	Events
 --]]
-
-function Addon:OnEnable()
-	local profile = self:GetProfile(UnitName('player'))
-
-	self.frames = {
-		self.Frame:New(L.InventoryTitle, profile.inventory, false, 'inventory'),
-		self.Frame:New(L.BankTitle, profile.bank, true, 'bank')
-	}
-
-	self:HookBagEvents()
-end
 
 function Addon:HookBagEvents()
 	local AutoShowInventory = function()
