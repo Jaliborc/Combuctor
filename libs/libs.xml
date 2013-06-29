@@ -13,19 +13,3 @@
 	<Script file="LibItemSearch-1.2\LibItemSearch-1.2.lua"/>
 	<Include file="LibItemCache-1.0\LibItemCache-1.0.xml"/>
 </Ui>
-
-[submodule "libs/CustomSearch-1.0"]
-	path = libs/CustomSearch-1.0
-	url = git://github.com/Jaliborc/CustomSearch-1.0.git
-
-[submodule "libs/LibItemSearch-1.2"]
-	path = libs/LibItemSearch-1.2
-	url = git://github.com/Jaliborc/LibItemSearch-1.2.git
-
-[submodule "libs/LibItemCache-1.0"]
-	path = libs/LibItemCache-1.0
-	url = git://github.com/Jaliborc/LibItemCache-1.0.git
-
-[submodule "libs/Unfit-1.0"]
-	path = libs/Unfit-1.0
-	url = git://github.com/Jaliborc/Unfit-1.0.git
