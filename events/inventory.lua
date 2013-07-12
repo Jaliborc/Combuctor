@@ -131,6 +131,7 @@ local function updateItem(bagId, slotId)
 	end
 end
 
+--[[ THIS FUNCTION DOESN'T WORK, item[1] is *ALWAYS* nil ]]--
 local function updateItemCooldown(bagId, slotId)
 	local item = Slots(bagId, slotId)
 
@@ -225,15 +226,30 @@ do
 		self:RegisterEvent('BAG_UPDATE')
 		self:RegisterEvent('BAG_UPDATE_COOLDOWN')
 		self:RegisterEvent('PLAYERBANKSLOTS_CHANGED')
+		self:RegisterEvent('ZONE_CHANGED_NEW_AREA')
+		self:RegisterEvent('MAIL_SEND_INFO_UPDATE')
 
 		UpdateBagSize(BACKPACK_CONTAINER)
 		forEachItem(BACKPACK_CONTAINER, updateItem)
 	end
 
 	function eventFrame:BAG_UPDATE(event, bagId, ...)
+		updateBags()
+		forEachItem(bagId, updateItem)
+	end
+	
+	function eventFrame:ZONE_CHANGED_NEW_AREA(event, ...)
+		updateBags()
+	end
+	
+	function eventFrame:MAIL_SEND_INFO_UPDATE(event, ...)
+		forEachBag(UpdateBagSize)
+		forEachBag(forEachItem, updateItem, ...)
+	end
+	
+	function updateBags()
 		forEachBag(UpdateBagType)
 		forEachBag(UpdateBagSize)
-		forEachItem(bagId, updateItem)
 	end
 
 	--[[
@@ -253,6 +269,8 @@ do
 	end
 
 	function eventFrame:BAG_UPDATE_COOLDOWN(event, ...)
+		forEachBag(UpdateBagSize)
+		forEachBag(forEachItem, updateItem, ...)
 		forEachBag(forEachItem, updateItemCooldown)
 	end
 end
