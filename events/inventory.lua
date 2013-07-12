@@ -131,6 +131,7 @@ local function updateItem(bagId, slotId)
 	end
 end
 
+--[[ THIS FUNCTION DOESN'T WORK, item[1] is *ALWAYS* nil ]]--
 local function updateItemCooldown(bagId, slotId)
 	local item = Slots(bagId, slotId)
 
@@ -225,15 +226,44 @@ do
 		self:RegisterEvent('BAG_UPDATE')
 		self:RegisterEvent('BAG_UPDATE_COOLDOWN')
 		self:RegisterEvent('PLAYERBANKSLOTS_CHANGED')
+		self:RegisterEvent('ZONE_CHANGED_NEW_AREA')
+		self:RegisterEvent('MAIL_SEND_INFO_UPDATE')
+		self:RegisterEvent('LOOT_OPENED')
+		self:RegisterEvent('LOOT_CLOSED')
 
 		UpdateBagSize(BACKPACK_CONTAINER)
 		forEachItem(BACKPACK_CONTAINER, updateItem)
 	end
 
 	function eventFrame:BAG_UPDATE(event, bagId, ...)
+		updateAllBagsTypeSize()
+		forEachItem(bagId, updateItem)
+	end
+	
+	function eventFrame:ZONE_CHANGED_NEW_AREA(event, ...)
+		updateAllBagsTypeSize()
+	end
+	
+	function eventFrame:MAIL_SEND_INFO_UPDATE(event, ...)
+		updateAllBagsSizeItems()
+	end
+	
+	function eventFrame:LOOT_OPENED(event, ...)
+		updateAllBagsSizeItems()
+	end
+	
+	function eventFrame:LOOT_CLOSED(event, ...)
+		updateAllBagsSizeItems()
+	end
+	
+	function updateAllBagsSizeItems()
+		forEachBag(UpdateBagSize)
+		forEachBag(forEachItem, updateItem)
+	end
+	
+	function updateAllBagsTypeSize()
 		forEachBag(UpdateBagType)
 		forEachBag(UpdateBagSize)
-		forEachItem(bagId, updateItem)
 	end
 
 	--[[
@@ -253,6 +283,8 @@ do
 	end
 
 	function eventFrame:BAG_UPDATE_COOLDOWN(event, ...)
+		forEachBag(UpdateBagSize)
+		forEachBag(forEachItem, updateItem, ...)
 		forEachBag(forEachItem, updateItemCooldown)
 	end
 end
