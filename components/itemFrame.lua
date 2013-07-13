@@ -7,8 +7,8 @@ local AddonName, Addon = ...
 local ItemFrame = Addon:NewClass('ItemFrame', 'Button')
 
 --local bindings
+local FrameEvents = Addon.FrameEvents
 local ItemSearch = LibStub('LibItemSearch-1.2')
-local FrameEvents = Addon('ItemFrameEvents')
 local Cache = LibStub('LibItemCache-1.0')
 local BagInfo = Addon('BagInfo')
 

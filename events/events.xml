@@ -1,5 +1,5 @@
 <Ui xmlns="http://www.blizzard.com/wow/ui/">
-	<Script file="inventory.lua"/>
+	<Script file="bags.lua"/>
 	<Script file="itemFrame.lua"/>
 	<Script file="frame.lua"/>
 </Ui>

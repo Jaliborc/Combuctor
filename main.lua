@@ -213,16 +213,15 @@ function Addon:HookBagEvents()
 	hooksecurefunc('CloseAllBags', function()
 		self:Hide(BACKPACK_CONTAINER)
 	end)
-
+	
 	BankFrame:UnregisterAllEvents()
 	
-	local InvEvents = self('InventoryEvents')
-	InvEvents.Register(self, 'BANK_OPENED', function()
+	self.BagEvents.Listen(self, 'BANK_OPENED', function()
 		self:Show(BANK_CONTAINER, true)
 		self:Show(BACKPACK_CONTAINER, true)
 	end)
 	
-	InvEvents.Register(self, 'BANK_CLOSED', function()
+	self.BagEvents.Listen(self, 'BANK_CLOSED', function()
 		self:Hide(BANK_CONTAINER, true)
 		self:Hide(BACKPACK_CONTAINER, true)
 	end)
