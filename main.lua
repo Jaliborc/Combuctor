@@ -291,7 +291,7 @@ end
 function Addon:ShowOptions()
 	if LoadAddOn('Combuctor_Config') then
 		InterfaceOptionsFrame_OpenToCategory(ADDON)
-		return true
+		InterfaceOptionsFrame_OpenToCategory(ADDON) -- sometimes once not enough
 	end
 end
 
@@ -307,10 +307,7 @@ function Addon:OnSlashCommand(msg)
 	elseif msg == 'version' then
 		self:Print(self.db.version)
 	else
-		self:Print('Commands (/cbt or /combuctor)')
-		print('- bank: Toggle bank')
-		print('- bags: Toggle inventory')
-		print('- options: Shows the options menu')
+		self:Print('Commands (/cbt or /combuctor)\n- bank: Toggle bank\n- bags: Toggle inventory\n- options: Shows the options menu')
 	end
 end
 
