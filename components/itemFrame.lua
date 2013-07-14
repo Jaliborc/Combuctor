@@ -5,14 +5,12 @@
 
 local AddonName, Addon = ...
 local ItemFrame = Addon:NewClass('ItemFrame', 'Button')
-
---local bindings
 local FrameEvents = Addon.FrameEvents
+
 local ItemSearch = LibStub('LibItemSearch-1.2')
 local Cache = LibStub('LibItemCache-1.0')
 local BagInfo = Addon('BagInfo')
 
---InvDataity functions
 local function ToIndex(bag, slot)
 	return (bag<0 and bag*100 - slot) or (bag*100 + slot)
 end
@@ -22,9 +20,7 @@ local function ToBag(index)
 end
 
 
---[[
-	Constructor
---]]
+--[[ Constructor ]]--
 
 function ItemFrame:New(parent)
 	local f = self:Bind(CreateFrame('Button', nil, parent))
@@ -254,20 +250,19 @@ function ItemFrame:Layout(spacing)
 	local size = 36 + spacing*2
 	local cols = 0
 	local scale, rows
-	local maxScale = Combuctor:GetMaxItemScale()
 
 	repeat
 		cols = cols + 1
 		scale = width / (size*cols)
 		rows = floor(height / (size*scale))
-	until(scale <= maxScale and cols*rows >= count)
+	until (scale <= 1.5 and cols*rows >= count)
 
 	--layout the items
 	local player = self:GetPlayer()
 	local items = self.items
 	local i = 0
 
-	for _,bag in ipairs(self.bags) do
+	for _, bag in ipairs(self.bags) do
 		for slot = 1, self:GetBagSize(bag) do
 			local item = items[ToIndex(bag, slot)]
 			if item then

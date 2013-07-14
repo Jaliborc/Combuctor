@@ -382,19 +382,19 @@ end
 --[[ Item Type Highlight ]]--
 
 function ItemSlot:HighlightItemsByQuality()
-	return true
+	return not Addon:GetSetting('disableItemsByQuality')
 end
 
 function ItemSlot:HighlightQuestItems()
-	return true
+	return not Addon:GetSetting('disableQuestItems')
 end
 
 function ItemSlot:HighlightUnusableItems()
-	return true
+	return not Addon:GetSetting('disableUnusableItems')
 end
 
 function ItemSlot:HighlightSetItems()
-	return true
+	return not Addon:GetSetting('disableSetItems')
 end
 
 function ItemSlot:GetHighlightAlpha()

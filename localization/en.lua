@@ -38,7 +38,11 @@ L.Panel = 'Panel'
 L.OptionsSubtitle = 'Pants are a dangerous foe! Keep them organized.'
 L.LeftFilters = 'Display Sets on Left'
 L.ActPanel = 'Act as Standard Panel'
-L.TipCounts = 'Enable Tooltip Item Count'
+L.HighlightItemsByQuality = 'Highlight Items by Quality' 
+L.HighlightUnusableItems = 'Highlight Unusable Items'
+L.HighlightSetItems = 'Highlight Equipment Set Items'
+L.HighlightQuestItems = 'Highlight Quest Items'
+L.TipCounts = 'Tooltip Item Count'
 
 -- options tooltips
 L.LeftFiltersTip = [[
