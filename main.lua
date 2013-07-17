@@ -4,9 +4,9 @@
 --]]
 
 local ADDON, Addon = ...
-_G[ADDON] = LibStub('AceAddon-3.0'):NewAddon(Addon, ADDON, 'AceEvent-3.0', 'AceConsole-3.0')
+LibStub('AceAddon-3.0'):NewAddon(Addon, ADDON, 'AceEvent-3.0', 'AceConsole-3.0')
 Addon.__call = Addon.GetModule
-setmetatable(Addon, Addon)
+_G[ADDON] = setmetatable(Addon, Addon)
 
 
 --[[ Constants ]]--
@@ -23,7 +23,6 @@ BINDING_NAME_COMBUCTOR_TOGGLE_BANK = L.ToggleBank
 
 function Addon:OnInitialize()
 	self.profile = self:InitDB()
-	self.frames = {}
 
 	-- version update
 	if self.db.version ~= CURRENT_VERSION then
@@ -47,11 +46,8 @@ end
 function Addon:OnEnable()
 	local profile = self:GetProfile(UnitName('player'))
 
-	self.frames = {
-		self.Frame:New(L.InventoryTitle, profile.inventory, false, 'inventory'),
-		self.Frame:New(L.BankTitle, profile.bank, true, 'bank')
-	}
-
+	self.Frame:New(L.InventoryTitle, profile.inventory, false, 'inventory')
+	self.Frame:New(L.BankTitle, profile.bank, true, 'bank')
 	self:HookTooltips()
 	self:HookBagEvents()
 end
@@ -283,7 +279,7 @@ function Addon:UpdateFrames()
 end
 
 function Addon:GetFrame(key)
-  return self.Frames[key]
+  return self.frames[key]
 end
 
 

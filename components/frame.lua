@@ -51,7 +51,7 @@
 
 local AddonName, Addon = ...
 local InventoryFrame = Addon:NewClass('Frame', 'Frame')
-Addon.Frames = {}
+Addon.frames = {}
 
 --local references
 local L = LibStub('AceLocale-3.0'):GetLocale(AddonName)
@@ -108,7 +108,7 @@ function InventoryFrame:New(titleText, settings, isBank, key)
 
 	lastID = lastID + 1
 	tinsert(UISpecialFrames, f:GetName())
-  	Addon.Frames[key] = f
+  	Addon.frames[key] = f
 
 	return f
 end
