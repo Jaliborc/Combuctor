@@ -23,6 +23,7 @@ BINDING_NAME_COMBUCTOR_TOGGLE_BANK = L.ToggleBank
 
 function Addon:OnInitialize()
 	self.profile = self:InitDB()
+	self.frames = {}
 
 	-- version update
 	if self.db.version ~= CURRENT_VERSION then
