@@ -4,12 +4,10 @@
 
 local AddonName, Addon = ...
 local CombuctorSet = Addon:NewModule('Sets')
-local Sender = LibStub('CallbackHandler-1.0'):New(CombuctorSet, 'RegisterMessage', 'UnregisterMessage', 'UnregisterAllMessages')
 local sets = {}
 
-function CombuctorSet:Send(msg, ...)
-	Sender:Fire(msg, ...)
-end
+
+CombuctorSet.Send = LibStub('CallbackHandler-1.0'):New(CombuctorSet, 'RegisterMessage', 'UnregisterMessage', 'UnregisterAllMessages').Fire
 
 --[[
 	true | false = setRule(player, bagType, name, link, quality, level, ilvl, type, subType, stackCount, equipLoc)
@@ -83,7 +81,7 @@ end
 	in the even that the set has children, those child sets are removed as well
 --]]
 
-local function removeSetAndChildren(parent)
+local function removeSetAndChildren(self, parent)
 	local i = 1
 	local found = false
 
@@ -113,7 +111,7 @@ function CombuctorSet:Unregister(name, parent)
 			end
 		end
 	else
-		removeSetAndChildren(name)
+		removeSetAndChildren(self, name)
 	end
 end
 

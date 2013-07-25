@@ -1,54 +1,22 @@
-﻿--[[
-	Tests for the combuctor set api thingy
---]]
+﻿local Sets = Combuctor:GetModule('Sets')
+local Exists, None = WoWUnit.Exists, WoWUnit.IsFalse
+local Tests = WoWUnit('Combuctor.Sets')
 
-local CombuctorSet = Combuctor:GetModule('Sets')
+function Tests:Set()
+	Sets:Register('bacon', 'someIcon')
+	Exists(Sets:Get('bacon'))
 
-local function printSets()
-	for i, set in CombuctorSet:GetParentSets() do
-		ChatFrame1:AddMessage(format('set %d: %s', i, set.name))
-		for j, subset in CombuctorSet:GetChildSets(set.name) do
-			ChatFrame1:AddMessage(format('subset %d: %s', j, subset.name))
-		end
-	end
+	Sets:Unregister('bacon')
+	None(Sets:Get('bacon'))
 end
 
---set tests
-ChatFrame1:AddMessage('register set tests..')
-CombuctorSet:Register('bacon') --should work
-CombuctorSet:Register('bacon') --should perform an update
+function Tests:Subset()
+	Sets:Register('bacon', 'someIcon')
+	Sets:RegisterSubSet('cheese', 'bacon', 'someIcon')
+	Exists(Sets:Get('cheese', 'bacon'))
 
-for i = 1, 10 do
-	CombuctorSet:Register('testSet' .. i)
+	Sets:Unregister('cheese', 'bacon')
+	None(Sets:Get('cheese'))
+
+	Sets:Unregister('bacon')
 end
-
---subset test
-ChatFrame1:AddMessage('register subset tests..')
-CombuctorSet:RegisterSubSet('cheese', 'bacon') --should also work
-CombuctorSet:RegisterSubSet('cheese', 'bacon') --should perform an update
-
-CombuctorSet:RegisterSubSet('delicious', 'bacon') --should also work
---	CombuctorSet:RegisterSubSet('bacon', 'cheese') --cannot have cheese without bacon
-
---set and subset iterator tests
-ChatFrame1:AddMessage('set iterator test...')
-printSets()
-
---unregister set test
-ChatFrame1:AddMessage('set removal test...')
-for i = 1, 10 do
-	CombuctorSet:Unregister('testSet' .. i)
-end
-printSets()
-
---unregister subset test
-ChatFrame1:AddMessage('subset removal test...')
-CombuctorSet:Unregister('delicious', 'bacon')
-printSets()
-
---unregister set with subsets test
-ChatFrame1:AddMessage('set with subsets removal test...')
-CombuctorSet:Unregister('bacon')
-printSets()
-
-ChatFrame1:AddMessage('tests complete')

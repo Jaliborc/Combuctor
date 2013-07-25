@@ -1,3 +1,6 @@
+====== 5.3.2
+* Fixed error affecting some users on login.
+
 ====== 5.3.1
 * Now border coloring features can be disabled at the interface options.
 * Hopefully fixed issue causing item cooldowns and locked states to not be shown properly.
