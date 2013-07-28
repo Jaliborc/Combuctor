@@ -1,6 +1,6 @@
 [submodule "libs/Unfit-1.0"]
 	path = libs/Unfit-1.0
-	url = git://github.com/Jaliborc/Unfit-1.0.git
+	url = git://github.com/Jaliborc/Unfit-1.0
 
 [submodule "libs/CustomSearch-1.0"]
 	path = libs/CustomSearch-1.0
