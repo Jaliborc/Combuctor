@@ -190,9 +190,9 @@ function ItemSlot:Update()
 	self:SetCount(count)
 	self:SetLocked(locked)
 	self:SetReadable(readable)
-	self:SetBorderQuality(quality)
 	self:UpdateCooldown()
 	self:UpdateSlotColor()
+	self:UpdateBorder()
 
 	if GameTooltip:IsOwned(self) then
 		self:UpdateTooltip()
@@ -261,44 +261,38 @@ end
 
 --colors the item border
 function ItemSlot:UpdateBorder()
-	local texture, count, locked, quality = self:GetInfo()
-	self:SetBorderQuality(quality)
-end
-
-function ItemSlot:SetBorderQuality(quality)
+	local _,_,_, quality = self:GetInfo() or 0
 	local item = self:GetItem()
+	self:HideBorder()
 
-	self.questBorder:Hide()
-	self.border:Hide()
-
-	if self:HighlightQuestItems() then
-		local isQuestItem, isQuestStarter = self:IsQuestItem()
-		if isQuestItem then
-			return self:SetBorderColor(1, .82, .2)
+	if item then
+		if self:IsNew() then
+			return self.newItemBorder:Show()
 		end
 
-		if isQuestStarter then
-			self.questBorder:SetTexture(TEXTURE_ITEM_QUEST_BANG)
-			self.questBorder:Show()
-			return
+		if self:HighlightQuestItems() then
+			local isQuestItem, isQuestStarter = self:IsQuestItem()
+			if isQuestItem then
+				return self:SetBorderColor(1, .82, .2)
+			end
+
+			if isQuestStarter then
+				self.questBorder:SetTexture(TEXTURE_ITEM_QUEST_BANG)
+				self.questBorder:Show()
+				return
+			end
 		end
-	end
-	
-	if self:HighlightUnusableItems() then
-		if Unfit:IsItemUnusable(item) then
+
+		if self:HighlightUnusableItems() and Unfit:IsItemUnusable(item) then
 			return self:SetBorderColor(RED_FONT_COLOR.r, RED_FONT_COLOR.g, RED_FONT_COLOR.b)
 		end
-	end
 
-	if self:HighlightSetItems() then
-		if ItemSearch:InSet(item) then
-   			return self:SetBorderColor(.1, 1, 1)
-  		end
-  	end
-	
-	if self:HighlightItemsByQuality() then
-		if item and quality and quality > 1 then
-			self:SetBorderColor(GetItemQualityColor(quality))
+		if self:HighlightSetItems() and ItemSearch:InSet(item) then
+	   		return self:SetBorderColor(.1, 1, 1)
+	  	end
+		
+		if self:HighlightItemsByQuality() and quality > 1 then
+			return self:SetBorderColor(GetItemQualityColor(quality))
 		end
 	end
 end
@@ -306,6 +300,12 @@ end
 function ItemSlot:SetBorderColor(r, g, b)
 	self.border:SetVertexColor(r, g, b, self:GetHighlightAlpha())
 	self.border:Show()
+end
+
+function ItemSlot:HideBorder()
+	self.newItemBorder:Hide()
+	self.questBorder:Hide()
+	self.border:Hide()
 end
 
 --cooldown
@@ -381,6 +381,33 @@ end
 
 --[[ Item Type Highlight ]]--
 
+local QUEST_ITEM_SEARCH = string.format('t:%s|%s', select(10, GetAuctionItemClasses()), 'quest')
+function ItemSlot:IsQuestItem()
+	local item = self:GetItem()
+	if not item then
+		return false, false
+	end
+
+	if self:IsCached() then
+		return ItemSearch:Matches(item, QUEST_ITEM_SEARCH), false
+	else
+		local isQuestItem, questID, isActive = GetContainerItemQuestInfo(self:GetBag(), self:GetID())
+		return isQuestItem, (questID and not isActive)
+	end
+end
+
+function ItemSlot:IsTradeBagSlot()
+	return BagInfo:IsTradeBag(self:GetPlayer(), self:GetBag())
+end
+
+function ItemSlot:IsNew()
+	local bag, slot = self:GetBag(), self:GetID()
+	return C_NewItems.IsNewItem(bag, slot) and IsBattlePayItem(bag, slot)
+end
+
+
+--[[ Options ]]--
+
 function ItemSlot:HighlightItemsByQuality()
 	return not Addon:GetSetting('disableItemsByQuality')
 end
@@ -401,28 +428,6 @@ function ItemSlot:GetHighlightAlpha()
 	return 0.5
 end
 
-local QUEST_ITEM_SEARCH = string.format('t:%s|%s', select(10, GetAuctionItemClasses()), 'quest')
-function ItemSlot:IsQuestItem()
-	local item = self:GetItem()
-	if not item then
-		return false, false
-	end
-
-	if self:IsCached() then
-		return ItemSearch:Matches(item, QUEST_ITEM_SEARCH), false
-	else
-		local isQuestItem, questID, isActive = GetContainerItemQuestInfo(self:GetBag(), self:GetID())
-		return isQuestItem, (questID and not isActive)
-	end
-end
-
-
---[[ Item Slot Coloring ]]--
-
-function ItemSlot:IsTradeBagSlot()
-	return BagInfo:IsTradeBag(self:GetPlayer(), self:GetBag())
-end
-
 function ItemSlot:GetTradeSlotColor()	
 	return 0.5, 1, 0.5
 end
@@ -430,9 +435,6 @@ end
 function ItemSlot:ColoringBagSlots()
 	return true
 end
-
-
---[[ Empty Slot Visibility ]]--
 
 function ItemSlot:ShowingEmptyItemSlotTexture()
 	return true

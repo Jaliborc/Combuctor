@@ -273,7 +273,7 @@ function Addon:Toggle(bag, auto)
 end
 
 function Addon:UpdateFrames()
-	for _,frame in pairs(self.frames) do
+	for _,frame in pairs(self.frames or {}) do
 		frame.itemFrame:Regenerate()
 	end
 end
