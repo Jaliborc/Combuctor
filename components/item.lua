@@ -30,12 +30,11 @@ function ItemSlot:Set(parent, bag, slot)
 	end
 end
 
---constructs a brand new item slot
 function ItemSlot:Create()
 	local id = self:GetNextItemSlotID()
 	local item = self:Bind(self:GetBlizzardItemSlot(id) or self:ConstructNewItemSlot(id))
+	local name = item:GetName()
 
-	--add a quality border texture
 	local border = item:CreateTexture(nil, 'OVERLAY')
 	border:SetWidth(67)
 	border:SetHeight(67)
@@ -43,15 +42,12 @@ function ItemSlot:Create()
 	border:SetTexture([[Interface\Buttons\UI-ActionButton-Border]])
 	border:SetBlendMode('ADD')
 	border:Hide()
+
 	item.border = border
-	
-	--add a quality border texture
-	item.questBorder = _G[item:GetName() .. 'IconQuestTexture']
+	item.questBorder = _G[name .. 'IconQuestTexture']
+	item.newItemBorder = _G[name .. 'NewItemTexture']
+	item.cooldown = _G[name .. 'Cooldown']
 
-	--hack, make sure the cooldown model stays visible
-	item.cooldown = _G[item:GetName() .. 'Cooldown']
-
-	--get rid of any registered frame events, and use my own
 	item:SetScript('OnEvent', nil)
 	item:SetScript('OnEnter', item.OnEnter)
 	item:SetScript('OnLeave', item.OnLeave)
@@ -63,12 +59,10 @@ function ItemSlot:Create()
 	return item
 end
 
---creates a new item slot for <id>
 function ItemSlot:ConstructNewItemSlot(id)
 	return CreateFrame('Button', ('%sItem%d'):format(AddonName, id), nil, 'ContainerFrameItemButtonTemplate')
 end
 
---returns an available blizzard item slot for <id>
 function ItemSlot:GetBlizzardItemSlot(id)
 	--only allow reuse of blizzard frames if all frames are enabled
 	if not self:CanReuseBlizzardBagSlots() then
@@ -90,7 +84,6 @@ function ItemSlot:CanReuseBlizzardBagSlots()
 	return true
 end
 
---returns the next available item slot
 function ItemSlot:Restore()
 	local item = ItemSlot.unused and next(ItemSlot.unused)
 	if item then
@@ -99,7 +92,6 @@ function ItemSlot:Restore()
 	end
 end
 
---gets the next unique item slot id
 do
 	local id = 1
 	function ItemSlot:GetNextItemSlotID()
@@ -111,7 +103,7 @@ end
 
 
 
---[[ ItemSlot Destructor ]]--
+--[[ Destructor ]]--
 
 function ItemSlot:Free()
 	self:Hide()
@@ -261,7 +253,7 @@ end
 
 --colors the item border
 function ItemSlot:UpdateBorder()
-	local _,_,_, quality = self:GetInfo() or 0
+	local _,_,_, quality = self:GetInfo()
 	local item = self:GetItem()
 	self:HideBorder()
 
@@ -291,7 +283,7 @@ function ItemSlot:UpdateBorder()
 	   		return self:SetBorderColor(.1, 1, 1)
 	  	end
 		
-		if self:HighlightItemsByQuality() and quality > 1 then
+		if self:HighlightItemsByQuality() and quality and quality > 1 then
 			return self:SetBorderColor(GetItemQualityColor(quality))
 		end
 	end

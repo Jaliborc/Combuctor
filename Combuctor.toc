@@ -1,8 +1,8 @@
-## Interface: 50300
+## Interface: 50400
 ## Title: |cff5FC412Combuctor|r
 ## Author: Tuller and Jaliborc (João Cardoso)
 ## Notes: Pants are a dangerous foe
-## Version: 5.3.2
+## Version: 5.4.0
 ## OptionalDeps: BagBrother, Ace3, LibItemCache-1.0, LibItemSearch-1.2, Unfit-1.0
 ## SavedVariables: CombuctorVersion, CombuctorDB2
 

@@ -1,5 +1,5 @@
 ====== 5.4.0
-* Updated for patch Siege of Ogrimmar.
+* Updated for Siege of Ogrimmar.
 * Added support for the new in-game store features.
 
 ====== 5.3.2
