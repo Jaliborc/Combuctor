@@ -12,7 +12,8 @@
 
 ===== 5.3.0
 * Updated for patch Escalation.
-* Upgraded search engine, which means:** Smarter syntax and better search results.
+* Upgraded search engine, which means:
+** Smarter syntax and better search results.
 ** Now items belonging to equipment sets are colored separately. Packed with ItemRack and Wardrobe support!
 * Fixed bug causing error message on rare login situations.
 
