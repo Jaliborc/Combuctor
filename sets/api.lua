@@ -2,12 +2,11 @@
 	Combuctor Set API
 --]]
 
-local AddonName, Addon = ...
-local CombuctorSet = Addon:NewModule('Sets')
+local ADDON, Addon = ...
+local Sets = Addon:NewModule('Sets')
 local sets = {}
 
-
-CombuctorSet.Send = LibStub('CallbackHandler-1.0'):New(CombuctorSet, 'RegisterMessage', 'UnregisterMessage', 'UnregisterAllMessages').Fire
+Sets.Send = LibStub('CallbackHandler-1.0'):New(Sets, 'RegisterMessage', 'UnregisterMessage', 'UnregisterAllMessages').Fire
 
 --[[
 	true | false = setRule(player, bagType, name, link, quality, level, ilvl, type, subType, stackCount, equipLoc)
@@ -17,7 +16,7 @@ CombuctorSet.Send = LibStub('CallbackHandler-1.0'):New(CombuctorSet, 'RegisterMe
 --]]
 
 --[[
-	CombuctorSet:Register('name', 'icon' [, setRule])
+	Sets:Register('name', 'icon' [, setRule])
 
 	registers a new rule function with combuctor
 	will rewrite if rule exists already for a given name/parent (which in this case is null)
@@ -27,7 +26,7 @@ CombuctorSet.Send = LibStub('CallbackHandler-1.0'):New(CombuctorSet, 'RegisterMe
 --]]
 
 
-function CombuctorSet:Register(name, icon, rule)
+function Sets:Register(name, icon, rule)
 	assert(name, 'Set must include a name')
 	assert(icon, format('No icon specified for set \'%s\'', icon))
 	
@@ -46,7 +45,7 @@ end
 
 
 --[[
-	CombuctorSet:RegisterSubSet('name', 'parent' [, 'icon'] [, setRule])
+	Sets:RegisterSubSet('name', 'parent' [, 'icon'] [, setRule])
 
 	registers a new subrule function with combuctor
 	will blow up if a rule named 'parent' cannot be found
@@ -56,7 +55,7 @@ end
 	if a filter function is not specified, then it is assumed the subset contains all items of the parent set
 --]]
 
-function CombuctorSet:RegisterSubSet(name, parent, icon, rule)
+function Sets:RegisterSubSet(name, parent, icon, rule)
 	assert(name, 'Subset must include a name')
 	assert(self:Get(parent), format('Cannot find a parent set named \'%s\'', parent))
 
@@ -75,7 +74,7 @@ end
 
 
 --[[
-	CombuctorSet:Unregister('name' [, 'parent'])
+	Sets:Unregister('name' [, 'parent'])
 
 	removes the given set from the database
 	in the even that the set has children, those child sets are removed as well
@@ -101,7 +100,7 @@ local function removeSetAndChildren(self, parent)
 	end
 end
 
-function CombuctorSet:Unregister(name, parent)
+function Sets:Unregister(name, parent)
 	if parent then
 		for i,set in pairs(sets) do
 			if set.name == name and set.parent == parent then
@@ -116,12 +115,12 @@ function CombuctorSet:Unregister(name, parent)
 end
 
 --[[
-	set = CombuctorSet:Get('name' [, 'parent'])
+	set = Sets:Get('name' [, 'parent'])
 
 	Returns a set, if found
 --]]
 
-function CombuctorSet:Get(name, parent)
+function Sets:Get(name, parent)
 	for _,set in pairs(sets) do
 		if set.name == name and set.parent == parent then
 			return set
@@ -130,11 +129,11 @@ function CombuctorSet:Get(name, parent)
 end
 
 --[[
-	iterator = CombuctorSet:GetParentSets()
+	iterator = Sets:GetParentSets()
 
 	returns an iterator of all head sets (sets that are not children)
 	example usage:
-	for i, set in CombuctorSet:GetParentSets() do
+	for i, set in Sets:GetParentSets() do
 		print(set.name, set.icon, set.rule)
 	end
 --]]
@@ -148,17 +147,17 @@ local function parentSetIterator(_, i)
 	end
 end
 
-function CombuctorSet:GetParentSets()
+function Sets:GetParentSets()
 	return parentSetIterator, nil, 0
 end
 
 
 --[[
-	iterator  = CombuctorSet:GetChildSets('parent')
+	iterator  = Sets:GetChildSets('parent')
 
 	returns an iterator on all subsets for the given set
 	example usage:
-	for i, set in CombuctorSet:GetChildSets('parentSet') do
+	for i, set in Sets:GetChildSets('parentSet') do
 		print(set.name, set.icon, set.rule)
 	end
 --]]
@@ -172,7 +171,9 @@ local function getChildSetIterator(parent, i)
 	end
 end
 
-function CombuctorSet:GetChildSets(parent)
+function Sets:GetChildSets(parent)
 --	assert(self:Get(parent), format('Cannot find a parent set named \'%s\'', parent))
 	return getChildSetIterator, parent, 0
 end
+
+Sets:Register(ALL, 'Interface/Icons/INV_Misc_EngGizmos_17', function() return true end)

@@ -8,8 +8,7 @@ local ItemFrame = Addon:NewClass('ItemFrame', 'Button')
 local FrameEvents = Addon.FrameEvents
 
 local ItemSearch = LibStub('LibItemSearch-1.2')
-local Cache = LibStub('LibItemCache-1.0')
-local BagInfo = Addon('BagInfo')
+local Cache = LibStub('LibItemCache-1.1')
 
 local function ToIndex(bag, slot)
 	return (bag<0 and bag*100 - slot) or (bag*100 + slot)
@@ -114,12 +113,12 @@ function ItemFrame:AddItem(bag, slot)
 	local item = self.items[index]
 
 	if item then
+		item:SetHighlight(self.highlightBag == bag)
 		item:Update()
-		item:Highlight(self.highlightBag == bag)
 	else
 		local item = Addon.ItemSlot:New()
+		item:SetHighlight(self.highlightBag == bag)
 		item:Set(self, bag, slot)
-		item:Highlight(self.highlightBag == bag)
 
 		self.items[index] = item
 		self.count = self.count + 1
@@ -286,7 +285,7 @@ end
 function ItemFrame:HighlightBag(bag)
 	self.highlightBag = bag
 	for _,item in pairs(self.items) do
-		item:Highlight(item:GetBag() == bag)
+		item:SetHighlight(item:GetBag() == bag)
 	end
 end
 
@@ -294,15 +293,15 @@ end
 --[[ Item Placement ]]--
 
 function ItemFrame:GetBagSize(bag)
-	return BagInfo:GetSize(self:GetPlayer(), bag)
+	return Addon:GetBagSize(self:GetPlayer(), bag)
 end
 
 function ItemFrame:GetBagType(bag)
-	return BagInfo:GetFamily(self:GetPlayer(), bag)
+	return Addon:GetBagFamily(self:GetPlayer(), bag)
 end
 
 function ItemFrame:IsBagCached(bag)
-	return BagInfo:IsCached(self:GetPlayer(), bag)
+	return Addon:IsBagCached(self:GetPlayer(), bag)
 end
 
 function ItemFrame:GetItemLink(bag, slot)

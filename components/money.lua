@@ -4,9 +4,9 @@
 --]]
 
 local AddonName, Addon = ...
-local MoneyFrame = LibStub('Classy-1.0'):New('Frame'); Addon.MoneyFrame = MoneyFrame
+local MoneyFrame = Addon:NewClass('MoneyFrame', 'Frame')
 local L = LibStub('AceLocale-3.0'):GetLocale('Combuctor')
-local ItemCache = LibStub('LibItemCache-1.0')
+local ItemCache = LibStub('LibItemCache-1.1')
 
 
 --[[ Constructor ]]--

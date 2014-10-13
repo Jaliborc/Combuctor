@@ -5,12 +5,14 @@
 
 local AddonName, Addon = ...
 local ItemSlot = Addon:NewClass('ItemSlot', 'Button')
+ItemSlot.dummyBags = {}
+ItemSlot.unused = {}
+ItemSlot.nextID = 0
 
-local Unfit = LibStub('Unfit-1.0')
+local Cache = LibStub('LibItemCache-1.1')
 local ItemSearch = LibStub('LibItemSearch-1.2')
-
-local BagInfo = Addon('BagInfo')
-local Cache = LibStub('LibItemCache-1.0')
+local Unfit = LibStub('Unfit-1.0')
+local QuestSearch = format('t:%s|%s', select(10, GetAuctionItemClasses()), 'quest')
 
 
 --[[ Constructor ]]--
@@ -19,42 +21,46 @@ function ItemSlot:New()
 	return self:Restore() or self:Create()
 end
 
-function ItemSlot:Set(parent, bag, slot)
-	self:SetParent(self:GetDummyBag(parent, bag))
-	self:SetID(slot)
-
-	if self:IsVisible() then
-		self:Update()
-	else
-		self:Show()
-	end
-end
-
 function ItemSlot:Create()
 	local id = self:GetNextItemSlotID()
 	local item = self:Bind(self:GetBlizzardItemSlot(id) or self:ConstructNewItemSlot(id))
 	local name = item:GetName()
 
+	--add a quality border texture
 	local border = item:CreateTexture(nil, 'OVERLAY')
-	border:SetWidth(67)
-	border:SetHeight(67)
+	border:SetSize(67, 67)
 	border:SetPoint('CENTER', item)
 	border:SetTexture([[Interface\Buttons\UI-ActionButton-Border]])
 	border:SetBlendMode('ADD')
 	border:Hide()
 
-	item.border = border
-	item.questBorder = _G[name .. 'IconQuestTexture']
-	item.newItemBorder = _G[name .. 'NewItemTexture']
-	item.cooldown = _G[name .. 'Cooldown']
+	--add flash find animation
+	local flash = item:CreateAnimationGroup()
+	for i = 1, 3 do
+		local fade = flash:CreateAnimation('Alpha')
+		fade:SetDuration(.2)
+		fade:SetChange(-.8)
+		fade:SetOrder(i * 2)
 
-	item:SetScript('OnEvent', nil)
+		local fade = flash:CreateAnimation('Alpha')
+		fade:SetDuration(.3)
+		fade:SetChange(.8)
+		fade:SetOrder(i * 2 + 1)
+	end
+	
+	item.UpdateTooltip = nil
+	item.Border, item.Flash = border, flash
+	item.QuestBorder = _G[name .. 'IconQuestTexture']
+	item.Cooldown = _G[name .. 'Cooldown']
+	item:HookScript('OnClick', item.OnClick)
+	item:SetScript('PreClick', item.OnPreClick)
+	item:HookScript('OnDragStart', item.OnDragStart)
 	item:SetScript('OnEnter', item.OnEnter)
 	item:SetScript('OnLeave', item.OnLeave)
 	item:SetScript('OnShow', item.OnShow)
 	item:SetScript('OnHide', item.OnHide)
-	item:SetScript('PostClick', item.PostClick)
-	item.UpdateTooltip = nil
+	item:SetScript('OnEvent', nil)
+	item:Hide()
 
 	return item
 end
@@ -64,9 +70,8 @@ function ItemSlot:ConstructNewItemSlot(id)
 end
 
 function ItemSlot:GetBlizzardItemSlot(id)
-	--only allow reuse of blizzard frames if all frames are enabled
 	if not self:CanReuseBlizzardBagSlots() then
-		return nil
+		return
 	end
 
 	local bag = ceil(id / MAX_CONTAINER_ITEMS)
@@ -80,38 +85,22 @@ function ItemSlot:GetBlizzardItemSlot(id)
 	end
 end
 
-function ItemSlot:CanReuseBlizzardBagSlots()
-	return true
-end
-
 function ItemSlot:Restore()
-	local item = ItemSlot.unused and next(ItemSlot.unused)
-	if item then
-		ItemSlot.unused[item] = nil
-		return item
-	end
+	return tremove(self.unused)
 end
 
-do
-	local id = 1
-	function ItemSlot:GetNextItemSlotID()
-		local nextID = id
-		id = id + 1
-		return nextID
-	end
+function ItemSlot:GetNextItemSlotID()
+  self.nextID = self.nextID + 1
+  return self.nextID
 end
-
-
-
---[[ Destructor ]]--
 
 function ItemSlot:Free()
 	self:Hide()
 	self:SetParent(nil)
-	self:UnlockHighlight()
-
-	ItemSlot.unused = ItemSlot.unused or {}
-	ItemSlot.unused[self] = true
+	self:UnregisterAllEvents()
+	self:UnregisterAllMessages()
+	self.depositSlot = nil
+	tinsert(self.unused, self)
 end
 
 
@@ -126,38 +115,53 @@ function ItemSlot:OnHide()
 end
 
 function ItemSlot:OnDragStart()
-	if self:IsCached() and CursorHasItemSlot() then
-		ClearCursor()
+	ItemSlot.Cursor = self
+end
+
+function ItemSlot:OnPreClick(button)
+	if button == 'RightButton' and not self.canDeposit then
+		for i = 1,9 do
+			if not GetVoidTransferDepositInfo(i) then
+				self.depositSlot = i
+				return
+			end
+		end
 	end
 end
 
-function ItemSlot:OnModifiedClick(button)
+function ItemSlot:OnClick(button)
+	if IsAltKeyDown() and button == 'LeftButton' then
+		Addon.Settings:FlashFind(self:GetItem())
+	elseif GetNumVoidTransferDeposit() > 0 and button == 'RightButton' then
+		if self.canDeposit and self.depositSlot then
+			ClickVoidTransferDepositSlot(self.depositSlot, true)
+		end
+
+		self.canDeposit = not self.canDeposit
+	end
+end
+
+function ItemSlot:OnModifiedClick(...)
 	local link = self:IsCached() and self:GetItem()
-	if link then
-		HandleModifiedItemClick(link)
+	if link and not HandleModifiedItemClick(link) then
+		self:OnClick(...)
 	end
 end
 
 function ItemSlot:OnEnter()
-	local dummySlot = self:GetDummyItemSlot()
+	local dummySlot = self:GetDummySlot()
+	ResetCursor()
 
 	if self:IsCached() then
 		dummySlot:SetParent(self)
 		dummySlot:SetAllPoints(self)
 		dummySlot:Show()
+	elseif self:GetItem() then
+		self:AnchorTooltip()
+		self:ShowTooltip()
+		self:UpdateBorder()
 	else
-		dummySlot:Hide()
-
-		if self:IsBank() then
-			if self:GetItem() then
-				self:AnchorTooltip()
-				GameTooltip:SetInventoryItem('player', BankButtonIDToInvSlotID(self:GetID()))
-				GameTooltip:Show()
-				CursorUpdate(self)
-			end
-		else
-			ContainerFrameItemButton_OnEnter(self)
-		end
+		self:OnLeave()
 	end
 end
 
@@ -170,6 +174,17 @@ end
 
 --[[ Update Methods ]]--
 
+function ItemSlot:Set(parent, bag, slot)
+  	self:SetParent(self:GetDummyBag(parent, bag))
+  	self:SetID(slot)
+  	self.bag = bag
+
+  	if self:IsVisible() then
+		self:Update()
+	else
+		self:Show()
+	end
+end
 
 function ItemSlot:Update()
 	if not self:IsVisible() then
@@ -184,60 +199,60 @@ function ItemSlot:Update()
 	self:SetReadable(readable)
 	self:UpdateCooldown()
 	self:UpdateSlotColor()
-	self:UpdateBorder()
+	self:UpdateSearch()
+	self:UpdateBagSearch()
 
 	if GameTooltip:IsOwned(self) then
 		self:UpdateTooltip()
 	end
 end
 
---item link
-function ItemSlot:SetItem(itemLink)
-	self.hasItem = itemLink or nil
+function ItemSlot:SetItem(item)
+	self.item = item
 end
 
 function ItemSlot:GetItem()
-	return self.hasItem
+	return self.item
 end
 
---item texture
+
+--[[ Icon ]]--
+
 function ItemSlot:SetTexture(texture)
-	SetItemButtonTexture(self, texture or self:GetEmptyItemTexture())
+	SetItemButtonTexture(self, texture or self:GetEmptyItemIcon())
 end
 
-function ItemSlot:GetEmptyItemTexture()
-	if self:ShowingEmptyItemSlotTexture() then
-		return [[Interface\PaperDoll\UI-Backpack-EmptySlot]]
-	end
-	return nil
+function ItemSlot:GetEmptyItemIcon()
+	return [[Interface\PaperDoll\UI-Backpack-EmptySlot]]
 end
 
---item slot color
+
+--[[ Slot Color ]]--
+
 function ItemSlot:UpdateSlotColor()
 	if (not self:GetItem()) and self:ColoringBagSlots() then
-		if self:IsTradeBagSlot() then
-			local r, g, b = self:GetTradeSlotColor()
-			SetItemButtonTextureVertexColor(self, r, g, b)
-			self:GetNormalTexture():SetVertexColor(r, g, b)
-			return
-		end
+		self:SetSlotColor(self:GetBagColor(self:GetBagType()))
+	else 
+		self:SetSlotColor(1, 1, 1)
 	end
-
-	SetItemButtonTextureVertexColor(self, 1, 1, 1)
-	self:GetNormalTexture():SetVertexColor(1, 1, 1)
 end
 
---item count
+function ItemSlot:SetSlotColor(...)
+	SetItemButtonTextureVertexColor(self, ...)
+	self:GetNormalTexture():SetVertexColor(...)
+end
+
 function ItemSlot:SetCount(count)
 	SetItemButtonCount(self, count)
 end
 
---readable status
 function ItemSlot:SetReadable(readable)
 	self.readable = readable
 end
 
---locked status
+
+--[[ Locked ]]--
+
 function ItemSlot:SetLocked(locked)
 	SetItemButtonDesaturated(self, locked)
 end
@@ -246,12 +261,13 @@ function ItemSlot:UpdateLocked()
 	self:SetLocked(self:IsLocked())
 end
 
---returns true if the slot is locked, and false otherwise
 function ItemSlot:IsLocked()
 	return select(3, self:GetInfo())
 end
 
---colors the item border
+
+--[[ Border Glow ]]--
+
 function ItemSlot:UpdateBorder()
 	local _,_,_, quality = self:GetInfo()
 	local item = self:GetItem()
@@ -259,7 +275,18 @@ function ItemSlot:UpdateBorder()
 
 	if item then
 		if self:IsNew() then
-			return self.newItemBorder:Show()
+			if not self.flashAnim:IsPlaying() then
+				self.flashAnim:Play()
+				self.newitemglowAnim:Play()
+			end
+
+			if self:IsPaid() then
+				return self.BattlepayItemTexture:Show()
+			else
+				self.NewItemTexture:SetAtlas(quality and NEW_ITEM_ATLAS_BY_QUALITY[quality] or 'bags-glow-white')
+				self.NewItemTexture:Show()
+				return
+			end
 		end
 
 		if self:HighlightQuestItems() then
@@ -269,8 +296,8 @@ function ItemSlot:UpdateBorder()
 			end
 
 			if isQuestStarter then
-				self.questBorder:SetTexture(TEXTURE_ITEM_QUEST_BANG)
-				self.questBorder:Show()
+				self.QuestBorder:SetTexture(TEXTURE_ITEM_QUEST_BANG)
+				self.QuestBorder:Show()
 				return
 			end
 		end
@@ -279,46 +306,58 @@ function ItemSlot:UpdateBorder()
 			return self:SetBorderColor(RED_FONT_COLOR.r, RED_FONT_COLOR.g, RED_FONT_COLOR.b)
 		end
 
-		if self:HighlightSetItems() and ItemSearch:InSet(item) then
-	   		return self:SetBorderColor(.1, 1, 1)
-	  	end
-		
 		if self:HighlightItemsByQuality() and quality and quality > 1 then
-			return self:SetBorderColor(GetItemQualityColor(quality))
+			self:SetBorderColor(GetItemQualityColor(quality))
 		end
 	end
 end
 
 function ItemSlot:SetBorderColor(r, g, b)
-	self.border:SetVertexColor(r, g, b, self:GetHighlightAlpha())
-	self.border:Show()
+	self.Border:SetVertexColor(r, g, b, self:GetHighlightAlpha())
+	self.Border:Show()
 end
 
 function ItemSlot:HideBorder()
-	self.newItemBorder:Hide()
-	self.questBorder:Hide()
-	self.border:Hide()
+	self.QuestBorder:Hide()
+	self.Border:Hide()
+	self.NewItemTexture:Hide()
+	self.BattlepayItemTexture:Hide()
 end
 
---cooldown
+
+--[[ Misk ]]--
+
 function ItemSlot:UpdateCooldown()
 	if self:GetItem() and (not self:IsCached()) then
 		ContainerFrame_UpdateCooldown(self:GetBag(), self)
 	else
-		CooldownFrame_SetTimer(self.cooldown, 0, 0, 0)
+		CooldownFrame_SetTimer(self.Cooldown, 0, 0, 0)
 		SetItemButtonTextureVertexColor(self, 1, 1, 1)
 	end
 end
 
---stack split frame
 function ItemSlot:HideStackSplitFrame()
 	if self.hasStackSplit and self.hasStackSplit == 1 then
 		StackSplitFrame:Hide()
 	end
 end
 
---tooltip methods
-ItemSlot.UpdateTooltip = ItemSlot.OnEnter
+
+--[[ Tooltip ]]--
+
+function ItemSlot:UpdateTooltip()
+	self:OnEnter()
+end
+
+function ItemSlot:ShowTooltip()
+	if self:IsBank() then
+		GameTooltip:SetInventoryItem('player', BankButtonIDToInvSlotID(self:GetID()))
+		GameTooltip:Show()
+		CursorUpdate(self)
+	else
+		ContainerFrameItemButton_OnEnter(self)
+	end	
+end
 
 function ItemSlot:AnchorTooltip()
 	if self:GetRight() >= (GetScreenWidth() / 2) then
@@ -328,9 +367,17 @@ function ItemSlot:AnchorTooltip()
 	end
 end
 
---highlight
-function ItemSlot:Highlight(enable)
-	if enable then		
+
+--[[ Search ]]--
+
+function ItemSlot:UpdateSearch()
+end
+
+function ItemSlot:UpdateBagSearch()
+end
+
+function ItemSlot:SetHighlight(enable)
+	if enable then
 		self:LockHighlight()
 	else
 		self:UnlockHighlight()
@@ -338,78 +385,22 @@ function ItemSlot:Highlight(enable)
 end
 
 
+--[[ Settings ]]--
 
---[[ Accessor Methods ]]--
-
-function ItemSlot:GetPlayer()
-	local player
-	if self:GetParent() then
-		local p = self:GetParent():GetParent()
-		player = p and p:GetPlayer()
-	end
-	return player or UnitName('player')
+function ItemSlot:CanReuseBlizzardBagSlots()
+	return true
 end
-
-function ItemSlot:GetBag()
-	return self:GetParent() and self:GetParent():GetID() or -1
-end
-
-function ItemSlot:IsSlot(bag, slot)
-	return self:GetBag() == bag and self:GetID() == slot
-end
-
-function ItemSlot:IsCached()
-	return select(8, self:GetInfo())
-end
-
-function ItemSlot:IsBank()
-	return BagInfo:IsBank(self:GetBag())
-end
-
-function ItemSlot:GetInfo()
-	return Cache:GetItemInfo(self:GetPlayer(), self:GetBag(), self:GetID())
-end
-
-
---[[ Item Type Highlight ]]--
-
-local QUEST_ITEM_SEARCH = string.format('t:%s|%s', select(10, GetAuctionItemClasses()), 'quest')
-function ItemSlot:IsQuestItem()
-	local item = self:GetItem()
-	if not item then
-		return false, false
-	end
-
-	if self:IsCached() then
-		return ItemSearch:Matches(item, QUEST_ITEM_SEARCH), false
-	else
-		local isQuestItem, questID, isActive = GetContainerItemQuestInfo(self:GetBag(), self:GetID())
-		return isQuestItem, (questID and not isActive)
-	end
-end
-
-function ItemSlot:IsTradeBagSlot()
-	return BagInfo:IsTradeBag(self:GetPlayer(), self:GetBag())
-end
-
-function ItemSlot:IsNew()
-	local bag, slot = self:GetBag(), self:GetID()
-	return C_NewItems.IsNewItem(bag, slot) and IsBattlePayItem(bag, slot)
-end
-
-
---[[ Options ]]--
 
 function ItemSlot:HighlightItemsByQuality()
 	return not Addon:GetSetting('disableItemsByQuality')
 end
 
-function ItemSlot:HighlightQuestItems()
-	return not Addon:GetSetting('disableQuestItems')
-end
-
 function ItemSlot:HighlightUnusableItems()
 	return not Addon:GetSetting('disableUnusableItems')
+end
+
+function ItemSlot:HighlightQuestItems()
+	return not Addon:GetSetting('disableQuestItems')
 end
 
 function ItemSlot:HighlightSetItems()
@@ -420,28 +411,94 @@ function ItemSlot:GetHighlightAlpha()
 	return 0.5
 end
 
-function ItemSlot:GetTradeSlotColor()	
-	return 0.5, 1, 0.5
-end
-
 function ItemSlot:ColoringBagSlots()
 	return true
 end
 
-function ItemSlot:ShowingEmptyItemSlotTexture()
-	return true
+function ItemSlot:GetBagColor(bagType)
+	if bagType == 'normal' then
+		return 1,1,1
+	else
+		return 0.5, 1, 0.5
+	end
 end
 
 
---[[ Delicious Hacks ]]--
+--[[ Accessor Methods ]]--
 
--- dummy slot - A hack, used to provide a tooltip for cached items without tainting other item code
-function ItemSlot:GetDummyItemSlot()
-	ItemSlot.dummySlot = ItemSlot.dummySlot or ItemSlot:CreateDummyItemSlot()
-	return ItemSlot.dummySlot
+function ItemSlot:IsQuestItem()
+	local item = self:GetItem()
+	if not item then
+		return false
+	end
+
+	if self:IsCached() then
+		return ItemSearch:Matches(item, QuestSearch), false
+	else
+		local isQuestItem, questID, isActive = GetContainerItemQuestInfo(self:GetBag(), self:GetID())
+		return isQuestItem, (questID and not isActive)
+	end
 end
 
-function ItemSlot:CreateDummyItemSlot()
+function ItemSlot:IsSlot(bag, slot)
+	return self:GetBag() == bag and self:GetID() == slot
+end
+
+function ItemSlot:GetBagType()
+	return Addon:GetBagType(self:GetPlayer(), self:GetBag())
+end
+
+function ItemSlot:GetBag()
+	return self.bag
+end
+
+function ItemSlot:IsNew()
+	return C_NewItems.IsNewItem(self:GetBag(), self:GetID())
+end
+
+function ItemSlot:IsPaid()
+	return IsBattlePayItem(self:GetBag(), self:GetID())
+end
+
+function ItemSlot:IsCached()
+	return select(8, self:GetInfo())
+end
+
+function ItemSlot:IsBank()
+	return Addon:IsBank(self:GetBag())
+end
+
+function ItemSlot:GetInfo()
+	return Cache:GetItemInfo(self:GetPlayer(), self:GetBag(), self:GetID())
+end
+
+function ItemSlot:GetPlayer()
+	return self:GetParent():GetParent():GetPlayer()
+end
+
+function ItemSlot:GetFrameID()
+	return self:GetParent():GetParent():GetFrameID()
+end
+
+
+--[[ Dummies ]]--
+
+function ItemSlot:GetDummyBag(parent, bag)
+	if not self.dummyBags[bag] then
+		self.dummyBags[bag] = CreateFrame('Frame', nil, parent)
+		self.dummyBags[bag]:SetID(tonumber(bag) or 1)
+	end
+
+	return self.dummyBags[bag]
+end
+
+function ItemSlot:GetDummySlot()
+	self.dummySlot = self.dummySlot or self:CreateDummySlot()
+	self.dummySlot:Hide()
+	return self.dummySlot
+end
+
+function ItemSlot:CreateDummySlot()
 	local slot = CreateFrame('Button')
 	slot:RegisterForClicks('anyUp')
 	slot:SetToplevel(true)
@@ -458,8 +515,7 @@ function ItemSlot:CreateDummyItemSlot()
 				local _, specie, level, quality, health, power, speed = strsplit(':', item)
 				local name = item:match('%[(.-)%]')
 				
-				BattlePetToolTip_Show(
-					tonumber(specie), level, tonumber(quality), health, power, speed, name)
+				BattlePetToolTip_Show(tonumber(specie), level, tonumber(quality), health, power, speed, name)
 			else
 				GameTooltip:SetHyperlink(item)
 				GameTooltip:Show()
@@ -491,27 +547,5 @@ function ItemSlot:CreateDummyItemSlot()
 	slot:SetScript('OnLeave', Slot_OnLeave)
 	slot:SetScript('OnShow', Slot_OnEnter)
 	slot:SetScript('OnHide', Slot_OnHide)
-
 	return slot
-end
-
-
---dummy bag, a hack to enforce the internal blizzard rule that item:GetParent():GetID() == bagID
-function ItemSlot:GetDummyBag(parent, bag)
-	local dummyBags = parent.dummyBags
-
-	--metatable magic to create a new frame on demand
-	if not dummyBags then
-		dummyBags = setmetatable({}, {
-			__index = function(t, k)
-				local f = CreateFrame('Frame', nil, parent)
-				f:SetID(k)
-				t[k] = f
-				return f
-			end
-		})
-		parent.dummyBags = dummyBags
-	end
-
-	return dummyBags[bag]
 end

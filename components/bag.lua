@@ -6,7 +6,7 @@
 local AddonName, Addon = ...
 local Bag = Addon:NewClass('Bag', 'Button')
 local L = LibStub('AceLocale-3.0'):GetLocale(AddonName)
-local BagInfo = Addon('BagInfo')
+
 
 --[[ Constructor/Destructor ]]--
 
@@ -333,29 +333,33 @@ function Bag:GetPlayer()
 	return p and p:GetPlayer() or UnitName('player')
 end
 
+function Bag:IsReagents()
+	return Addon:IsReagents(self:GetID())
+end
+
 --returns true if the bag is loaded from offline data, and false otehrwise
 function Bag:IsCached()
-	return BagInfo:IsCached(self:GetPlayer(), self:GetID())
+	return Addon:IsBagCached(self:GetPlayer(), self:GetID())
 end
 
 --returns true if the given bag represents the backpack container
 function Bag:IsBackpack()
-	return BagInfo:IsBackpack(self:GetID())
+	return Addon:IsBackpack(self:GetID())
 end
 
 --returns true if the given bag represetns the main bank container
 function Bag:IsBank()
-	return BagInfo:IsBank(self:GetID())
+	return Addon:IsBank(self:GetID())
 end
 
 --returns true if the given bag slot is an inventory bag slot
 function Bag:IsBackpackBag()
-	return BagInfo:IsBackpackBag(self:GetID())
+	return Addon:IsBackpackBag(self:GetID())
 end
 
 --returns true if the given bag slot is a purchasable bank bag slot
 function Bag:IsBankBag()
-	return BagInfo:IsBankBag(self:GetID())
+	return Addon:IsBankBag(self:GetID())
 end
 
 --returns true if the given bagSlot is one the player can place a bag in
@@ -365,19 +369,21 @@ end
 
 --returns true if the bag is a purchasable bank slot, and false otherwise
 function Bag:IsPurchasable()
-	return BagInfo:IsPurchasable(self:GetPlayer(), self:GetID())
+	if not self:IsCached() then
+		return self:IsBankBag() and (self:GetID() - NUM_BAG_SLOTS) > GetNumBankSlots() or self:IsReagents() and not IsReagentBankUnlocked()
+	end
 end
 
 --returns the inventory slot id representation of the given bag
 function Bag:GetInventorySlot()
-	return BagInfo:ToInventorySlot(self:GetPlayer(), self:GetID())
+	return Addon:BagToInventorySlot(self:GetPlayer(), self:GetID())
 end
 
 function Bag:GetInfo()
-	return BagInfo:GetInfo(self:GetPlayer(), self:GetID())
+	return Addon:GetBagInfo(self:GetPlayer(), self:GetID())
 	-- link, count, texture
 end
 
 function Bag:IsLocked()
-	return BagInfo:IsLocked(self:GetPlayer(), self:GetID())
+	return Addon:IsBagLocked(self:GetPlayer(), self:GetID())
 end

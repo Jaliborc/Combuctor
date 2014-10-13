@@ -21,7 +21,7 @@ BINDING_NAME_COMBUCTOR_TOGGLE_BANK = L.ToggleBank
 
 --[[ Startup ]]--
 
-function Addon:OnInitialize()
+function Addon:OnEnable()
 	self.profile = self:InitDB()
 
 	-- version update
@@ -30,10 +30,15 @@ function Addon:OnInitialize()
 		self:UpdateVersion()
 	end
 
-	-- base set, slash commands
-	self('Sets'):Register(L.All, 'Interface/Icons/INV_Misc_EngGizmos_17', function() return true end)
+	-- slash commands
 	self:RegisterChatCommand('combuctor', 'OnSlashCommand')
 	self:RegisterChatCommand('cbt', 'OnSlashCommand')
+
+	-- startup frames
+	self.Frame:New(L.InventoryTitle, self.profile.inventory, false, 'inventory')
+	self.Frame:New(L.BankTitle, self.profile.bank, true, 'bank')
+	self:HookBagEvents()
+	self:HookTooltips()
 
 	-- option frame loader
 	local f = CreateFrame('Frame', nil, InterfaceOptionsFrame)
@@ -41,15 +46,6 @@ function Addon:OnInitialize()
 		self:SetScript('OnShow', nil)
 		LoadAddOn('Combuctor_Config')
 	end)
-end
-
-function Addon:OnEnable()
-	local profile = self:GetProfile(UnitName('player'))
-
-	self.Frame:New(L.InventoryTitle, profile.inventory, false, 'inventory')
-	self.Frame:New(L.BankTitle, profile.bank, true, 'bank')
-	self:HookTooltips()
-	self:HookBagEvents()
 end
 
 
@@ -104,10 +100,7 @@ end
 --[[ Profiles ]]--
 
 function Addon:GetProfile(player)
-	if not player then
-		player = UnitName('player')
-	end
-	return self.db.profiles[player .. ' - ' .. GetRealmName()]
+	return self.db.profiles[(player or UnitName('player')) .. ' - ' .. GetRealmName()]
 end
 
 

@@ -6,9 +6,6 @@
 local AddonName, Addon = ...
 local BottomTab = Addon:NewClass('BottomTab', 'Button')
 
-
---[[ Contructor ]]--
-
 function BottomTab:New(parent, id)
 	local tab = self:Bind(CreateFrame('Button', parent:GetName() .. 'Tab' .. id, parent, 'CombuctorFrameTabButtonTemplate'))
 	tab:SetScript('OnClick', self.OnClick)
@@ -45,16 +42,13 @@ function BottomTab:UpdateHighlight(setName)
 end
 
 
---[[
-	Side Filter Object
---]]
+--[[ Side Filter Object ]]--
 
-local BottomFilter = LibStub('Classy-1.0'):New('Frame'); Addon.BottomFilter = BottomFilter
+local BottomFilter = Addon:NewClass('BottomFilter', 'Frame')
 
 function BottomFilter:New(parent)
 	local f = self:Bind(CreateFrame('Frame', parent:GetName() .. 'BottomFilter', parent))
 
-	--metatable magic for button creation on demand
 	f.buttons = setmetatable({}, {__index = function(t, k)
 		local tab = BottomTab:New(f, k)
 
