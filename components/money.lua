@@ -28,12 +28,7 @@ function MoneyFrame:New(parent)
 end
 
 function MoneyFrame:Update()
-	local player = self:GetParent():GetPlayer()
-	if player == UnitName('player') or not BagnonDB then
-		MoneyFrame_Update(self:GetName(), GetMoney())
-	else
-		MoneyFrame_Update(self:GetName(), BagnonDB:GetMoney(player))
-	end
+	MoneyFrame_Update(self:GetName(), ItemCache:GetPlayerMoney(self:GetParent():GetPlayer()))
 end
 
 
@@ -64,7 +59,7 @@ function MoneyFrame:OnEnter()
 	-- Total
 	local total = 0
 	for i, player in ItemCache:IteratePlayers() do
-		total = total + ItemCache:GetMoney(player)
+		total = total + ItemCache:GetPlayerMoney(player)
 	end
 
 	GameTooltip:SetOwner(self, 'ANCHOR_BOTTOM')
@@ -73,7 +68,7 @@ function MoneyFrame:OnEnter()
 	
 	-- Each player
 	for i, player in ItemCache:IteratePlayers() do
-		local money = ItemCache:GetMoney(player)
+		local money = ItemCache:GetPlayerMoney(player)
 		if money > 0 then
 			GameTooltip:AddDoubleLine(player, self:GetCoinsText(money), 1,1,1, 1,1,1)
 		end

@@ -21,11 +21,11 @@ end
 
 --[[ Constructor ]]--
 
-function ItemFrame:New(parent)
+function ItemFrame:New(parent, bags)
 	local f = self:Bind(CreateFrame('Button', nil, parent))
-	f.items = {}
-	f.bags = parent.sets.bags
 	f.filter = parent.filter
+	f.bags = bags
+	f.items = {}
 	f.count = 0
 
 	f:RegisterForClicks('anyUp')

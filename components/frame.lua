@@ -33,8 +33,8 @@
 
 		COMBUCTOR_CONFIG_SET_ADD
 		COMBUCTOR_CONFIG_SET_REMOVE
-			key, name
-				If visible, and self.key == key, then update sets
+			frameID, name
+				If visible, and self.frameID == frameID, then update sets
 
 
 	User Events:
@@ -49,35 +49,31 @@
 			Switch to given subset
 --]]
 
-local AddonName, Addon = ...
-local InventoryFrame = Addon:NewClass('Frame', 'Frame')
+local ADDON, Addon = ...
+local Sets = Addon('Sets')
+local L = LibStub('AceLocale-3.0'):GetLocale(ADDON)
+local Frame = Addon:NewClass('Frame', 'Frame')
 Addon.frames = {}
 
---local references
-local L = LibStub('AceLocale-3.0'):GetLocale(AddonName)
-local CombuctorSet = Addon('Sets')
-
---constants
 local BASE_WIDTH = 300
 local BASE_HEIGHT = 300
 local ITEM_FRAME_WIDTH_OFFSET = 278 - BASE_WIDTH
 local ITEM_FRAME_HEIGHT_OFFSET = 205 - BASE_HEIGHT
 
 
---frame constructor
-local lastID = 1
-function InventoryFrame:New(titleText, settings, isBank, key)
-	local f = self:Bind(CreateFrame('Frame', format('CombuctorFrame%d', lastID), UIParent, 'CombuctorInventoryTemplate'))
+--[[ Constructor ]]--
+
+function Frame:New(titleText, bags, settings, frameID)
+	local f = self:Bind(CreateFrame('Frame', 'CombuctorFrame' .. frameID, UIParent, 'CombuctorInventoryTemplate'))
 	f:SetScript('OnShow', self.OnShow)
 	f:SetScript('OnHide', self.OnHide)
 
 	f.sets = settings
-	f.isBank = isBank
-	f.key = key --backthingy to get our sv index
+	f.frameID = frameID
 	f.titleText = titleText
 
 	f.bagButtons = {}
-	f.filter = { quality = 0 }
+	f.filter = {quality = 0}
 
 	f:SetWidth(settings.w or BASE_WIDTH)
 	f:SetHeight(settings.h or BASE_HEIGHT)
@@ -88,7 +84,7 @@ function InventoryFrame:New(titleText, settings, isBank, key)
 	f.qualityFilter = Addon.QualityFilter:New(f)
 	f.qualityFilter:SetPoint('BOTTOMLEFT', 10, 4)
 
-	f.itemFrame = Addon.ItemFrame:New(f)
+	f.itemFrame = Addon.ItemFrame:New(f, bags)
 	f.itemFrame:SetPoint('TOPLEFT', 10, -64)
 
 	f.moneyFrame = Addon.MoneyFrame:New(f)
@@ -98,54 +94,49 @@ function InventoryFrame:New(titleText, settings, isBank, key)
 	f:UpdateTitleText()
 
 	--update if bags are shown or not
-	f:UpdateBagToggleHighlight()
-	f:UpdateBagFrame()
+	f:CreateBags(bags)
+	f:UpdateBagToggle()
 
 	--place the frame
 	f.sideFilter:UpdateFilters()
 	f:LoadPosition()
 	f:UpdateClampInsets()
 
-	lastID = lastID + 1
 	tinsert(UISpecialFrames, f:GetName())
-  	Addon.frames[key] = f
+  	Addon.frames[frameID] = f
 
 	return f
 end
 
 
---[[
-	Title Frame
---]]
+--[[ Title Frame ]]--
 
-function InventoryFrame:UpdateTitleText()
+function Frame:UpdateTitleText()
 	self.title:SetFormattedText(self.titleText, self:GetPlayer())
 end
 
 
---[[
-	Bag Toggle
---]]
+--[[ Bag Toggle ]]--
 
-function InventoryFrame:OnBagToggleClick(toggle, button)
+function Frame:OnBagToggleClick(toggle, button)
 	if button == 'LeftButton' then
 		_G[toggle:GetName() .. 'Icon']:SetTexCoord(0.075, 0.925, 0.075, 0.925)
-		self:ToggleBagFrame()
+		self:ToggleBags()
 	else
-		if self.isBank then
-			Combuctor:Toggle(BACKPACK_CONTAINER)
+		if self:IsBank() then
+			Addon:Toggle(BACKPACK_CONTAINER)
 		else
-			Combuctor:Toggle(BANK_CONTAINER)
+			Addon:Toggle(BANK_CONTAINER)
 		end
 	end
 end
 
-function InventoryFrame:OnBagToggleEnter(toggle)
+function Frame:OnBagToggleEnter(toggle)
 	GameTooltip:SetOwner(toggle, 'ANCHOR_LEFT')
 	GameTooltip:SetText(L.Bags, 1, 1, 1)
 	GameTooltip:AddLine(L.BagToggle)
 
-	if self.isBank then
+	if self:IsBank() then
 		GameTooltip:AddLine(L.InventoryToggle)
 	else
 		GameTooltip:AddLine(L.BankToggle)
@@ -153,7 +144,7 @@ function InventoryFrame:OnBagToggleEnter(toggle)
 	GameTooltip:Show()
 end
 
-function InventoryFrame:OnPortraitEnter(portrait)
+function Frame:OnPortraitEnter(portrait)
 	GameTooltip:SetOwner(portrait, 'ANCHOR_RIGHT')
 	GameTooltip:SetText(self:GetPlayer(), 1, 1, 1)
 	GameTooltip:AddLine('<Left Click> to switch characters')
@@ -161,45 +152,28 @@ function InventoryFrame:OnPortraitEnter(portrait)
 end
 
 
---[[
-	Bag Frame
---]]
+--[[ Bag Frame ]]--
 
-function InventoryFrame:ToggleBagFrame()
+function Frame:CreateBags(slots)
+	for i, slot in ipairs(slots) do
+		tinsert(self.bagButtons, Addon.Bag:New(self, slot))
+	end
+
+	self.bagButtons[1]:SetPoint('TOPRIGHT', -12, -66)
+	for i = 2, #self.bagButtons do
+		self.bagButtons[i]:SetPoint('TOP', self.bagButtons[i-1], 'BOTTOM', 0, -2)
+	end
+end
+
+function Frame:ToggleBags()
 	self.sets.showBags = not self.sets.showBags
-	self:UpdateBagToggleHighlight()
-	self:UpdateBagFrame()
+	self:UpdateBagToggle()
 end
 
-function InventoryFrame:UpdateBagFrame()
-	--remove all the current bags
-	for i,bag in pairs(self.bagButtons) do
-		self.bagButtons[i] = nil
-		bag:Release()
-	end
-
-	if self.sets.showBags then
-		for _,bagID in ipairs(self.sets.bags) do
-			local bag = Addon.Bag:Get()
-			bag:Set(self, bagID)
-			tinsert(self.bagButtons, bag)
-		end
-
-		for i,bag in ipairs(self.bagButtons) do
-			bag:ClearAllPoints()
-			if i > 1 then
-				bag:SetPoint('TOP', self.bagButtons[i-1], 'BOTTOM', 0, -2)
-			else
-				bag:SetPoint('TOPRIGHT', -12, -66)
-			end
-			bag:Show()
-		end
-	end
-
+function Frame:UpdateBagToggle()
 	self:UpdateItemFrameSize()
-end
+	self:UpdateBags()
 
-function InventoryFrame:UpdateBagToggleHighlight()
 	if self.sets.showBags then
 		_G[self:GetName() .. 'BagToggle']:LockHighlight()
 	else
@@ -207,6 +181,12 @@ function InventoryFrame:UpdateBagToggleHighlight()
 	end
 end
 
+function Frame:UpdateBags()
+	for i, bag in pairs(self.bagButtons) do
+		bag:Update()
+		bag:SetShown(self.sets.showBags)
+	end
+end
 
 --[[
 	Filtering
@@ -214,7 +194,7 @@ end
 
 --[[ Generic ]]--
 
-function InventoryFrame:SetFilter(key, value)
+function Frame:SetFilter(key, value)
 	if self.filter[key] ~= value then
 		self.filter[key] = value
 
@@ -223,19 +203,19 @@ function InventoryFrame:SetFilter(key, value)
 	end
 end
 
-function InventoryFrame:GetFilter(key)
+function Frame:GetFilter(key)
 	return self.filter[key]
 end
 
 
 --[[ Player ]]--
 
-function InventoryFrame:SetPlayer(player)
+function Frame:SetPlayer(player)
 	if self:GetPlayer() ~= player then
 		self.player = player
 
 		self:UpdateTitleText()
-		self:UpdateBagFrame()
+		self:UpdateBags()
 		self:UpdateSets()
 
 		self.itemFrame:SetPlayer(player)
@@ -243,25 +223,25 @@ function InventoryFrame:SetPlayer(player)
 	end
 end
 
-function InventoryFrame:GetPlayer()
+function Frame:GetPlayer()
 	return self.player or UnitName('player')
 end
 
 
 --[[ Sets and Subsets ]]--
 
-function InventoryFrame:UpdateSets(category)
+function Frame:UpdateSets(category)
 	self.sideFilter:UpdateFilters()
 	self:SetCategory(category or self:GetCategory())
 	self:UpdateSubSets()
 end
 
-function InventoryFrame:UpdateSubSets(subCategory)
+function Frame:UpdateSubSets(subCategory)
 	self.bottomFilter:UpdateFilters()
 	self:SetSubCategory(subCategory or self:GetSubCategory())
 end
 
-function InventoryFrame:HasSet(name)
+function Frame:HasSet(name)
 	for i,setName in self:GetSets() do
 		if setName == name then
 			return true
@@ -270,7 +250,7 @@ function InventoryFrame:HasSet(name)
 	return false
 end
 
-function InventoryFrame:HasSubSet(name, parent)
+function Frame:HasSubSet(name, parent)
 	if self:HasSet(parent) then
 		local excludeSets = self:GetExcludedSubsets(parent)
 		if excludeSets then
@@ -285,24 +265,24 @@ function InventoryFrame:HasSubSet(name, parent)
 	return false
 end
 
-function InventoryFrame:GetSets()
-	local profile = Combuctor:GetProfile(self:GetPlayer()) or Combuctor:GetProfile(UnitName('player'))
-	return ipairs(profile[self.key].sets)
+function Frame:GetSets()
+	local profile = Addon:GetProfile(self:GetPlayer()) or Addon:GetProfile(UnitName('player'))
+	return ipairs(profile[self.frameID].sets)
 end
 
-function InventoryFrame:GetExcludedSubsets(parent)
-	local profile = Combuctor:GetProfile(self:GetPlayer()) or Combuctor:GetProfile(UnitName('player'))
-	return profile[self.key].exclude[parent]
+function Frame:GetExcludedSubsets(parent)
+	local profile = Addon:GetProfile(self:GetPlayer()) or Addon:GetProfile(UnitName('player'))
+	return profile[self.frameID].exclude[parent]
 end
 
 
 --Set
-function InventoryFrame:SetCategory(name)
-	if not(self:HasSet(name) and CombuctorSet:Get(name)) then
+function Frame:SetCategory(name)
+	if not(self:HasSet(name) and Sets:Get(name)) then
 		name = self:GetDefaultCategory()
 	end
 
-	local set = name and CombuctorSet:Get(name)
+	local set = name and Sets:Get(name)
 	if self:SetFilter('rule', (set and set.rule) or nil) then
 		self.category = name
 		self.sideFilter:UpdateHighlight()
@@ -310,12 +290,12 @@ function InventoryFrame:SetCategory(name)
 	end
 end
 
-function InventoryFrame:GetCategory()
+function Frame:GetCategory()
 	return self.category or self:GetDefaultCategory()
 end
 
-function InventoryFrame:GetDefaultCategory()
-	for _,set in CombuctorSet:GetParentSets() do
+function Frame:GetDefaultCategory()
+	for _,set in Sets:GetParentSets() do
 		if self:HasSet(set.name) then
 			return set.name
 		end
@@ -324,27 +304,27 @@ end
 
 
 --Subset
-function InventoryFrame:SetSubCategory(name)
+function Frame:SetSubCategory(name)
 	local parent = self:GetCategory()
-	if not(parent and self:HasSubSet(name, parent) and CombuctorSet:Get(name, parent)) then
+	if not(parent and self:HasSubSet(name, parent) and Sets:Get(name, parent)) then
 		name = self:GetDefaultSubCategory()
 	end
 
-	local set = name and CombuctorSet:Get(name, parent)
+	local set = name and Sets:Get(name, parent)
 	if self:SetFilter('subRule', (set and set.rule) or nil) then
 		self.subCategory = name
 		self.bottomFilter:UpdateHighlight()
 	end
 end
 
-function InventoryFrame:GetSubCategory()
+function Frame:GetSubCategory()
 	return self.subCategory or self:GetDefaultSubCategory()
 end
 
-function InventoryFrame:GetDefaultSubCategory()
+function Frame:GetDefaultSubCategory()
 	local parent = self:GetCategory()
 	if parent then
-		for _,set in CombuctorSet:GetChildSets(parent) do
+		for _,set in Sets:GetChildSets(parent) do
 			if self:HasSubSet(set.name, parent) then
 				return set.name
 			end
@@ -354,22 +334,22 @@ end
 
 
 --Quality
-function InventoryFrame:AddQuality(quality)
+function Frame:AddQuality(quality)
 	self:SetFilter('quality', self:GetFilter('quality') + quality)
 	self.qualityFilter:UpdateHighlight()
 end
 
-function InventoryFrame:RemoveQuality(quality)
+function Frame:RemoveQuality(quality)
 	self:SetFilter('quality', self:GetFilter('quality') - quality)
 	self.qualityFilter:UpdateHighlight()
 end
 
-function InventoryFrame:SetQuality(quality)
+function Frame:SetQuality(quality)
 	self:SetFilter('quality', quality)
 	self.qualityFilter:UpdateHighlight()
 end
 
-function InventoryFrame:GetQuality()
+function Frame:GetQuality()
 	return self:GetFilter('quality') or 0
 end
 
@@ -378,7 +358,7 @@ end
 	Sizing
 --]]
 
-function InventoryFrame:OnSizeChanged()
+function Frame:OnSizeChanged()
 	local w, h = self:GetWidth(), self:GetHeight()
 	self.sets.w = w
 	self.sets.h = h
@@ -386,24 +366,23 @@ function InventoryFrame:OnSizeChanged()
 	self:UpdateItemFrameSize()
 end
 
-function InventoryFrame:UpdateItemFrameSize()
-	local prevW, prevH = self.itemFrame:GetWidth(), self.itemFrame:GetHeight()
-	local newW = self:GetWidth() + ITEM_FRAME_WIDTH_OFFSET
-	if next(self.bagButtons) then
-		newW = newW - 36
+function Frame:UpdateItemFrameSize()
+	local prevW, prevH = self.itemFrame:GetSize()
+	local width = self:GetWidth() + ITEM_FRAME_WIDTH_OFFSET
+	local height = self:GetHeight() + ITEM_FRAME_HEIGHT_OFFSET
+
+	if self.sets.showBags then
+		width = width - 36
 	end
 
-	local newH = self:GetHeight() + ITEM_FRAME_HEIGHT_OFFSET
-
-	if not((prevW == newW) and (prevH == newH)) then
-		self.itemFrame:SetWidth(newW)
-		self.itemFrame:SetHeight(newH)
+	if prevW ~= width or prevH ~= height then
+		self.itemFrame:SetSize(width, height)
 		self.itemFrame:RequestLayout()
 	end
 end
 
 --updates where we can position the frame based on if the side and bottom filters are shown
-function InventoryFrame:UpdateClampInsets()
+function Frame:UpdateClampInsets()
 	local l, r, b
 
 	if self.bottomFilter:IsShown() then
@@ -433,7 +412,7 @@ end
 	Positioning
 --]]
 
-function InventoryFrame:SavePosition(point, parent, relPoint, x, y)
+function Frame:SavePosition(point, parent, relPoint, x, y)
 	if point then
 		if self.sets.position then
 			self.sets.position[1] = point
@@ -450,7 +429,7 @@ function InventoryFrame:SavePosition(point, parent, relPoint, x, y)
 	self:LoadPosition()
 end
 
-function InventoryFrame:LoadPosition()
+function Frame:LoadPosition()
 	if self.sets.position then
 		local point, parent, relPoint, x, y = unpack(self.sets.position)
 		self:SetPoint(point, self:GetParent(), relPoint, x, y)
@@ -461,7 +440,7 @@ function InventoryFrame:LoadPosition()
 	self:UpdateManagedPosition()
 end
 
-function InventoryFrame:UpdateManagedPosition()
+function Frame:UpdateManagedPosition()
   local shown = self:IsShown()
 
 	if self.sets.position then
@@ -496,14 +475,14 @@ end
 	Display
 --]]
 
-function InventoryFrame:OnShow()
+function Frame:OnShow()
 	PlaySound('igBackPackOpen')
 	Addon('FrameEvents'):Register(self)
 	
 	self:UpdateSets(self:GetDefaultCategory())
 end
 
-function InventoryFrame:OnHide()
+function Frame:OnHide()
 	PlaySound('igBackPackClose')
 	Addon('FrameEvents'):Unregister(self)
 
@@ -514,7 +493,7 @@ function InventoryFrame:OnHide()
 	self:SetPlayer(UnitName('player'))
 end
 
-function InventoryFrame:ToggleFrame(auto)
+function Frame:ToggleFrame(auto)
 	if self:IsShown() then
 		self:HideFrame(auto)
 	else
@@ -522,14 +501,14 @@ function InventoryFrame:ToggleFrame(auto)
 	end
 end
 
-function InventoryFrame:ShowFrame(auto)
+function Frame:ShowFrame(auto)
 	if not self:IsShown() then
 		ShowUIPanel(self)
 		self.autoShown = auto or nil
 	end
 end
 
-function InventoryFrame:HideFrame(auto)
+function Frame:HideFrame(auto)
 	if self:IsShown() then
 		if not auto or self.autoShown then
 			HideUIPanel(self)
@@ -543,12 +522,12 @@ end
 	Side Filter Positioning
 --]]
 
-function InventoryFrame:SetLeftSideFilter(enable)
+function Frame:SetLeftSideFilter(enable)
 	self.sets.leftSideFilter = enable and true or nil
 	self.sideFilter:SetReversed(enable)
 end
 
-function InventoryFrame:IsSideFilterOnLeft()
+function Frame:IsSideFilterOnLeft()
 	return self.sets.leftSideFilter
 end
 
@@ -557,10 +536,10 @@ end
 	Accessors
 --]]
 
-function InventoryFrame:IsBank()
-	return self.isBank
+function Frame:IsBank()
+	return self.frameID == 'bank'
 end
 
-function InventoryFrame:AtBank()
+function Frame:AtBank()
 	return Addon.BagEvents.atBank
 end

@@ -97,8 +97,6 @@ end
 function ItemSlot:Free()
 	self:Hide()
 	self:SetParent(nil)
-	self:UnregisterAllEvents()
-	self:UnregisterAllMessages()
 	self.depositSlot = nil
 	tinsert(self.unused, self)
 end
@@ -197,6 +195,7 @@ function ItemSlot:Update()
 	self:SetCount(count)
 	self:SetLocked(locked)
 	self:SetReadable(readable)
+	self:UpdateBorder()
 	self:UpdateCooldown()
 	self:UpdateSlotColor()
 	self:UpdateSearch()
@@ -370,11 +369,8 @@ end
 
 --[[ Search ]]--
 
-function ItemSlot:UpdateSearch()
-end
-
-function ItemSlot:UpdateBagSearch()
-end
+function ItemSlot:UpdateSearch() end
+function ItemSlot:UpdateBagSearch() end
 
 function ItemSlot:SetHighlight(enable)
 	if enable then

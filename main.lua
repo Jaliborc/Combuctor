@@ -35,8 +35,8 @@ function Addon:OnEnable()
 	self:RegisterChatCommand('cbt', 'OnSlashCommand')
 
 	-- startup frames
-	self.Frame:New(L.InventoryTitle, self.profile.inventory, false, 'inventory')
-	self.Frame:New(L.BankTitle, self.profile.bank, true, 'bank')
+	self.Frame:New(L.InventoryTitle, {0, 1, 2, 3, 4}, self.profile.inventory, 'inventory')
+	self.Frame:New(L.BankTitle, {BANK_CONTAINER, 5, 6, 7, 8, 9, 10, 11, REAGENTBANK_CONTAINER}, self.profile.bank, 'bank')
 	self:HookBagEvents()
 	self:HookTooltips()
 
@@ -67,20 +67,7 @@ function Addon:UpdateSettings(major, minor, bugfix)
 	local expansion, patch, release = strsplit('.', self.db.version)
 	local version = tonumber(expansion) * 10000 + tonumber(patch or 0) * 100 + tonumber(release or 0)
 
-	-- Remove keyring
-	if version < 40309 then
-		for char, prefs in pairs(CombuctorDB2.profiles) do
-			local bags = prefs.inventory and prefs.inventory.bags
-			
-			if bags then
-				for i, bag in ipairs(bags) do
-					if bag == -2 then
-						tremove(bags, i)
-					end
-				end
-			end
-		end
-	end
+	-- nothing to do, yay!
 end
 
 function Addon:UpdateVersion()
@@ -151,7 +138,6 @@ end
 function Addon:GetBaseProfile()
 	return {
 		inventory = {
-			bags = {0, 1, 2, 3, 4},
 			position = {'RIGHT'},
 			showBags = false,
 			leftSideFilter = true,
@@ -160,7 +146,6 @@ function Addon:GetBaseProfile()
 		},
 
 		bank = {
-			bags = {-1, 5, 6, 7, 8, 9, 10, 11},
 			showBags = false,
 			w = 512,
 			h = 512,
