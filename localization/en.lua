@@ -61,11 +61,10 @@ which of your characters possess it.]]
 --these are automatically localized (aka, don't translate them :)
 do
   L.General = GENERAL
-	L.All = ALL
-	L.Weapon, L.Armor, L.Container, L.Consumable, L.Glyph, L.TradeGood, L.Recipe, L.Gem, L.Misc, L.Quest = GetAuctionItemClasses()
-	L.Trinket = _G['INVTYPE_TRINKET']
-	L.Devices, L.Explosives = select(10, GetAuctionItemSubClasses(6))
-	L.SimpleGem = select(8, GetAuctionItemSubClasses(7))
+  L.Weapon, L.Armor, L.Container, L.Consumable, L.Glyph, L.TradeGood, L.Recipe, L.Gem, L.Misc, L.Quest = GetAuctionItemClasses()
+  L.Trinket = _G['INVTYPE_TRINKET']
+  L.Devices, L.Explosives = select(10, GetAuctionItemSubClasses(6))
+  L.SimpleGem = select(8, GetAuctionItemSubClasses(7))
 end
 
 L.Normal = 'Normal'
