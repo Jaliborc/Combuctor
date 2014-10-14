@@ -19,7 +19,6 @@ L.BankTitle = "%s'의 은행"
 
 --tooltips
 L.Inventory = '가방'
-L.Bank = '은행'
 L.Total = '합계'
 L.ClickToPurchase = '<클릭> 으로 구매'
 L.Bags = '가방'

@@ -72,7 +72,7 @@ function Frame:New(titleText, bags, settings, frameID)
 	f.frameID = frameID
 	f.titleText = titleText
 
-	f.bagButtons = {}
+	f.bags = {}
 	f.filter = {quality = 0}
 
 	f:SetWidth(settings.w or BASE_WIDTH)
@@ -116,6 +116,56 @@ function Frame:UpdateTitleText()
 end
 
 
+--[[ Sort Button ]]--
+
+function Frame:OnSortButtonClick(button)
+	if button == 'RightButton' then
+		return DepositReagentBank()
+	end
+
+	-- Override blizz settings
+	SetSortBagsRightToLeft(true)
+	SetBackpackAutosortDisabled(false)
+	SetBankAutosortDisabled(false)
+
+	for i, bag in ipairs(self.bags) do
+		local slot = bag:GetSlot()
+
+		if slot > NUM_BAG_SLOTS then
+			slot = slot - NUM_BAG_SLOTS
+
+			for flag = LE_BAG_FILTER_FLAG_IGNORE_CLEANUP, NUM_LE_BAG_FILTER_FLAGS do
+				if GetBankBagSlotFlag(slot, flag) then
+					SetBankBagSlotFlag(slot, flag, false)
+				end
+			end
+		elseif slot > 0 then
+			for flag = LE_BAG_FILTER_FLAG_IGNORE_CLEANUP, NUM_LE_BAG_FILTER_FLAGS do
+				if GetBagSlotFlag(slot, flag) then
+					SetBagSlotFlag(slot, flag, false)
+				end
+			end
+		end
+	end
+
+	-- Sort
+	if self.frameID == 'bank' then
+		SortReagentBankBags()
+		SortBankBags()
+	else
+		SortBags()
+	end
+end
+
+function Frame:OnSortButtonEnter(button)
+	GameTooltip:SetOwner(button)
+	GameTooltip:SetText(BAG_CLEANUP_BAGS, 1,1,1)
+	GameTooltip:AddLine(L.SortItems)
+	GameTooltip:AddLine(L.DepositReagents)
+	GameTooltip:Show()
+end
+
+
 --[[ Bag Toggle ]]--
 
 function Frame:OnBagToggleClick(toggle, button)
@@ -156,12 +206,12 @@ end
 
 function Frame:CreateBags(slots)
 	for i, slot in ipairs(slots) do
-		tinsert(self.bagButtons, Addon.Bag:New(self, slot))
+		tinsert(self.bags, Addon.Bag:New(self, slot))
 	end
 
-	self.bagButtons[1]:SetPoint('TOPRIGHT', -12, -66)
-	for i = 2, #self.bagButtons do
-		self.bagButtons[i]:SetPoint('TOP', self.bagButtons[i-1], 'BOTTOM', 0, -2)
+	self.bags[1]:SetPoint('TOPRIGHT', -12, -66)
+	for i = 2, #self.bags do
+		self.bags[i]:SetPoint('TOP', self.bags[i-1], 'BOTTOM', 0, -2)
 	end
 end
 
@@ -182,17 +232,14 @@ function Frame:UpdateBagToggle()
 end
 
 function Frame:UpdateBags()
-	for i, bag in pairs(self.bagButtons) do
+	for i, bag in pairs(self.bags) do
 		bag:Update()
 		bag:SetShown(self.sets.showBags)
 	end
 end
 
---[[
-	Filtering
---]]
 
---[[ Generic ]]--
+--[[ Filters ]]--
 
 function Frame:SetFilter(key, value)
 	if self.filter[key] ~= value then
@@ -354,9 +401,7 @@ function Frame:GetQuality()
 end
 
 
---[[
-	Sizing
---]]
+--[[ Sizing ]]--
 
 function Frame:OnSizeChanged()
 	local w, h = self:GetWidth(), self:GetHeight()
@@ -408,9 +453,7 @@ function Frame:UpdateClampInsets()
 end
 
 
---[[
-	Positioning
---]]
+--[[ Positioning ]]--
 
 function Frame:SavePosition(point, parent, relPoint, x, y)
 	if point then
@@ -471,9 +514,7 @@ function Frame:UpdateManagedPosition()
 end
 
 
---[[
-	Display
---]]
+--[[ Display ]]--
 
 function Frame:OnShow()
 	PlaySound('igBackPackOpen')
@@ -518,9 +559,7 @@ function Frame:HideFrame(auto)
 end
 
 
---[[
-	Side Filter Positioning
---]]
+--[[ Side Filter Positioning ]]--
 
 function Frame:SetLeftSideFilter(enable)
 	self.sets.leftSideFilter = enable and true or nil
@@ -532,9 +571,7 @@ function Frame:IsSideFilterOnLeft()
 end
 
 
---[[
-	Accessors
---]]
+--[[ Accessors ]]--
 
 function Frame:IsBank()
 	return self.frameID == 'bank'

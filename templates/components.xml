@@ -147,7 +147,7 @@
 		<HighlightTexture alphaMode="ADD" file="Interface\Minimap\UI-Minimap-ZoomButton-Highlight"/>
 	</Button>
 
-	<EditBox name="CombuctorSearchBoxTemplate" autoFocus="false" inherits="InputBoxTemplate" virtual="true">
+	<EditBox name="CombuctorSearchBoxTemplate" autoFocus="false" inherits="SearchBoxTemplate" virtual="true">
 		<Size x="0" y="20"/>
 
 		<Anchors>
@@ -160,57 +160,50 @@
 		</Anchors>
 
 		<Scripts>
-			<OnShow>
-				if self:GetText() == '' then
-					self:SetText(SEARCH)
-				end
-			</OnShow>
 			<OnEnterPressed>
 				self:ClearFocus()
 			</OnEnterPressed>
 			<OnTextChanged>
-				if self:HasFocus() then
-					local text = self:GetText()
-					if text == '' then
-						text = nil
-					end
-					self:GetParent():SetFilter('name', text and text:lower() or nil, true)
+				local text = self:GetText()
+
+				if not self:HasFocus() then
+					SearchBoxTemplate_OnEditFocusLost(self)
+					self.Instructions:SetShown(text == '')
 				end
+
+				self:GetParent():SetFilter('name', text ~= '' and text:lower() or nil, true)
 			</OnTextChanged>
 			<OnEditFocusLost>
 				self:HighlightText(0, 0)
-				if self:GetText() == '' then
-					self:SetText(SEARCH)
-				end
+				self.Instructions:SetShown(self:GetText() == '')
+				SearchBoxTemplate_OnEditFocusLost(self)
 			</OnEditFocusLost>
 			<OnEditFocusGained>
 				self:HighlightText()
-				if self:GetText() == SEARCH then
-					self:SetText('')
-				end
+				self.Instructions:Hide()
+				SearchBoxTemplate_OnEditFocusGained(self)
 			</OnEditFocusGained>
 		</Scripts>
 	</EditBox>
 
-	<Button name="CombuctorResetButtonTemplate" virtual="true">
-		<Size x="39" y="39"/>
+	<Button name="CombuctorSortButtonTemplate" inherits="BankAutoSortButtonTemplate" virtual="true">
+		<Size x="22" y="22"/>
+		<HighlightTexture file="Interface\Buttons\ButtonHilight-Square" alphaMode="ADD">
+			<Size x="18" y="18"/>
+			<Anchors>
+				<Anchor point="CENTER" x="0" y="0"/>
+			</Anchors>
+		</HighlightTexture>
 
 		<Scripts>
 			<OnClick>
-				local parent = self:GetParent()
-				local searchBox = getglobal(parent:GetName() .. 'Search')
-				if searchBox:HasFocus() then
-					searchBox:SetText('')
-				else
-					searchBox:SetText(SEARCH)
-					self:GetParent():SetFilter('name', nil, true)
-				end
+				self:GetParent():OnSortButtonClick(button)
 			</OnClick>
-		</Scripts>
 
-		<NormalTexture file="Interface\Buttons\CancelButton-Up"/>
-		<PushedTexture file="Interface\Buttons\CancelButton-Down"/>
-		<HighlightTexture file="Interface\Buttons\CancelButton-Highlight" alphaMode="ADD"/>
+			<OnEnter>
+				self:GetParent():OnSortButtonEnter(self)
+			</OnEnter>
+		</Scripts>
 	</Button>
 
 	<Button name="CombuctorDragFrameTemplate" topLevel="true" virtual="true" text="TEXT">

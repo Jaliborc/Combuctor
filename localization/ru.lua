@@ -18,7 +18,6 @@ L.BankTitle = "%s: Банк"
 
 --tooltips
 L.Inventory = 'Инвентарь'
-L.Bank = 'Банк'
 L.Total = 'Всего'
 L.ClickToPurchase = '<Кликните> чтобы приобрести'
 L.Bags = 'Сумки'

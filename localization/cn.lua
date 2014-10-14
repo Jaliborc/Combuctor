@@ -17,7 +17,6 @@ L.BankTitle = "%s的银行"
 
 --tooltips
 L.Inventory = '存货清单'
-L.Bank = '银行'
 L.Total = '总计'
 L.ClickToPurchase = '<点击>购买'
 L.Bags = '背包'

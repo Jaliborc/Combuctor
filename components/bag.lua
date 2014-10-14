@@ -214,8 +214,8 @@ function Bag:UpdateTooltip()
 
 	-- title
 	if self:IsPurchasable() then
-		GameTooltip:SetText(BANK_BAG_PURCHASE, 1, 1, 1)
-		GameTooltip:AddLine(L.TipPurchaseBag)
+		GameTooltip:SetText(self:IsReagents() and REAGENT_BANK or BANK_BAG_PURCHASE, 1, 1, 1)
+		GameTooltip:AddLine(L.PurchaseBag)
 		SetTooltipMoney(GameTooltip, self:GetCost())
 	elseif self:IsBackpack() then
 		GameTooltip:SetText(BACKPACK_TOOLTIP, 1,1,1)

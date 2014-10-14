@@ -17,13 +17,14 @@ L.BankTitle = "%s's Bank"
 
 --tooltips
 L.Inventory = 'Inventory'
-L.Bank = 'Bank'
 L.Total = 'Total'
-L.ClickToPurchase = '<Click> to purchase'
 L.Bags = 'Bags'
 L.BagToggle = '<Left-Click> to toggle the bag display'
 L.InventoryToggle = '<Right-Click> to toggle your inventory'
 L.BankToggle = '<Right-Click> to toggle your bank'
+L.SortItems = '<Left-Click> to sort items.'
+L.DepositReagents = '<Right-Click> to deposit reagents in reagent bank.'
+L.PurchaseBag = 'Click to purchase this bank slot.'
 
 --itemcount tooltips
 L.TipCount1 = 'Equipped: %d'

@@ -18,7 +18,6 @@ L.BankTitle = "Banco de %s"
 
 --tooltips
 L.Inventory = 'Mochila'
-L.Bank = 'Banco'
 L.Total = 'Total'
 L.ClickToPurchase = '<Clique> para comprar'
 L.Bags = 'Sacos'
