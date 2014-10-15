@@ -71,8 +71,9 @@ function Frame:New(titleText, bags, settings, frameID)
 	f.sets = settings
 	f.frameID = frameID
 	f.titleText = titleText
+	f.bags = bags
 
-	f.bags = {}
+	f.bagButtons = {}
 	f.filter = {quality = 0}
 
 	f:SetWidth(settings.w or BASE_WIDTH)
@@ -94,7 +95,7 @@ function Frame:New(titleText, bags, settings, frameID)
 	f:UpdateTitleText()
 
 	--update if bags are shown or not
-	f:CreateBags(bags)
+	f:CreateBags()
 	f:UpdateBagToggle()
 
 	--place the frame
@@ -128,9 +129,7 @@ function Frame:OnSortButtonClick(button)
 	SetBackpackAutosortDisabled(false)
 	SetBankAutosortDisabled(false)
 
-	for i, bag in ipairs(self.bags) do
-		local slot = bag:GetSlot()
-
+	for i, slot in ipairs(self.bags) do
 		if slot > NUM_BAG_SLOTS then
 			slot = slot - NUM_BAG_SLOTS
 
@@ -204,14 +203,14 @@ end
 
 --[[ Bag Frame ]]--
 
-function Frame:CreateBags(slots)
-	for i, slot in ipairs(slots) do
-		tinsert(self.bags, Addon.Bag:New(self, slot))
+function Frame:CreateBags()
+	for i, slot in ipairs(self.bags) do
+		tinsert(self.bagButtons, Addon.Bag:New(self, slot))
 	end
 
-	self.bags[1]:SetPoint('TOPRIGHT', -12, -66)
-	for i = 2, #self.bags do
-		self.bags[i]:SetPoint('TOP', self.bags[i-1], 'BOTTOM', 0, -2)
+	self.bagButtons[1]:SetPoint('TOPRIGHT', -12, -66)
+	for i = 2, #self.bagButtons do
+		self.bagButtons[i]:SetPoint('TOP', self.bagButtons[i-1], 'BOTTOM', 0, -2)
 	end
 end
 
@@ -232,7 +231,7 @@ function Frame:UpdateBagToggle()
 end
 
 function Frame:UpdateBags()
-	for i, bag in pairs(self.bags) do
+	for i, bag in pairs(self.bagButtons) do
 		bag:Update()
 		bag:SetShown(self.sets.showBags)
 	end

@@ -147,13 +147,13 @@ function ItemSlot:OnModifiedClick(...)
 end
 
 function ItemSlot:OnEnter()
-	local dummySlot = self:GetDummySlot()
 	ResetCursor()
 
 	if self:IsCached() then
-		dummySlot:SetParent(self)
-		dummySlot:SetAllPoints(self)
-		dummySlot:Show()
+		local dummy = self:GetDummySlot()
+		dummy:SetParent(self)
+		dummy:SetAllPoints(self)
+		dummy:Show()
 	elseif self:GetItem() then
 		self:AnchorTooltip()
 		self:ShowTooltip()
@@ -348,22 +348,25 @@ function ItemSlot:UpdateTooltip()
 	self:OnEnter()
 end
 
-function ItemSlot:ShowTooltip()
-	if self:IsBank() then
-		GameTooltip:SetInventoryItem('player', BankButtonIDToInvSlotID(self:GetID()))
-		GameTooltip:Show()
-		CursorUpdate(self)
-	else
-		ContainerFrameItemButton_OnEnter(self)
-	end	
-end
-
 function ItemSlot:AnchorTooltip()
 	if self:GetRight() >= (GetScreenWidth() / 2) then
 		GameTooltip:SetOwner(self, 'ANCHOR_LEFT')
 	else
 		GameTooltip:SetOwner(self, 'ANCHOR_RIGHT')
 	end
+end
+
+function ItemSlot:ShowTooltip()
+	local bag = self:GetBag()
+	local getSlot = Addon:IsBank(bag) and BankButtonIDToInvSlotID or Addon:IsReagents(bag) and ReagentBankButtonIDToInvSlotID
+	
+	if getSlot then
+		GameTooltip:SetInventoryItem('player', getSlot(self:GetID()))
+		GameTooltip:Show()
+		CursorUpdate(self)
+	else
+		ContainerFrameItemButton_OnEnter(self)
+	end	
 end
 
 
@@ -458,10 +461,6 @@ end
 
 function ItemSlot:IsCached()
 	return select(8, self:GetInfo())
-end
-
-function ItemSlot:IsBank()
-	return Addon:IsBank(self:GetBag())
 end
 
 function ItemSlot:GetInfo()

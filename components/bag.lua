@@ -271,7 +271,7 @@ function Bag:Purchase()
 				text = CONFIRM_BUY_BANK_SLOT,
 				button1 = YES,
 				button2 = NO,
-				OnAccept = Purchase,
+				OnAccept = PurchaseSlot,
 				OnShow = function(self)
 					MoneyFrame_Update(self.moneyFrame, GetBankSlotCost(GetNumBankSlots()))
 				end,

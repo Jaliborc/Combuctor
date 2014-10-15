@@ -110,12 +110,12 @@ local function addSet(sets, exclude, name, ...)
 end
 
 local function getDefaultInventorySets(class)
-	local sets, exclude = addSet(sets, exclude, L.All, L.All)
+	local sets, exclude = addSet(sets, exclude, ALL, ALL)
 	return sets, exclude
 end
 
 local function getDefaultBankSets(class)
-	local sets, exclude = addSet(sets, exclude, L.All, L.All)
+	local sets, exclude = addSet(sets, exclude, ALL, ALL)
 	sets, exclude = addSet(sets, exclude, L.Equipment)
 	sets, exclude = addSet(sets, exclude, L.TradeGood)
 	sets, exclude = addSet(sets, exclude, L.Misc)
@@ -219,7 +219,7 @@ end
 
 function Addon:Show(bag, auto)
 	for _,frame in pairs(self.frames) do
-		for _,bagID in pairs(frame.sets.bags) do
+		for _,bagID in pairs(frame.bags) do
 			if bagID == bag then
 				frame:ShowFrame(auto)
 				return
@@ -230,7 +230,7 @@ end
 
 function Addon:Hide(bag, auto)
 	for _,frame in pairs(self.frames) do
-		for _,bagID in pairs(frame.sets.bags) do
+		for _,bagID in pairs(frame.bags) do
 			if bagID == bag then
 				frame:HideFrame(auto)
 				return
@@ -241,7 +241,7 @@ end
 
 function Addon:Toggle(bag, auto)
 	for _,frame in pairs(self.frames) do
-		for _,bagID in pairs(frame.sets.bags) do
+		for _,bagID in pairs(frame.bags) do
 			if bagID == bag then
 				frame:ToggleFrame(auto)
 				return
