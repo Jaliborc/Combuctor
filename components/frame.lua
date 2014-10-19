@@ -520,6 +520,7 @@ function Frame:OnShow()
 	Addon('FrameEvents'):Register(self)
 	
 	self:UpdateSets(self:GetDefaultCategory())
+	self:OnSizeChanged()
 end
 
 function Frame:OnHide()
