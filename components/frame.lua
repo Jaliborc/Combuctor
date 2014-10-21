@@ -121,38 +121,16 @@ end
 
 function Frame:OnSortButtonClick(button)
 	if button == 'RightButton' then
-		return DepositReagentBank()
-	end
-
-	-- Override blizz settings
-	SetSortBagsRightToLeft(true)
-	SetBackpackAutosortDisabled(false)
-	SetBankAutosortDisabled(false)
-
-	for i, slot in ipairs(self.bags) do
-		if slot > NUM_BAG_SLOTS then
-			slot = slot - NUM_BAG_SLOTS
-
-			for flag = LE_BAG_FILTER_FLAG_IGNORE_CLEANUP, NUM_LE_BAG_FILTER_FLAGS do
-				if GetBankBagSlotFlag(slot, flag) then
-					SetBankBagSlotFlag(slot, flag, false)
-				end
-			end
-		elseif slot > 0 then
-			for flag = LE_BAG_FILTER_FLAG_IGNORE_CLEANUP, NUM_LE_BAG_FILTER_FLAGS do
-				if GetBagSlotFlag(slot, flag) then
-					SetBagSlotFlag(slot, flag, false)
-				end
-			end
-		end
-	end
-
-	-- Sort
-	if self.frameID == 'bank' then
-		SortReagentBankBags()
-		SortBankBags()
+		DepositReagentBank()
 	else
-		SortBags()
+		SetSortBagsRightToLeft(true)
+
+		if self.frameID == 'bank' then
+			SortReagentBankBags()
+			SortBankBags()
+		else
+			SortBags()
+		end
 	end
 end
 

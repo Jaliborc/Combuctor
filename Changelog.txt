@@ -1,3 +1,22 @@
+====== 6.0.4
+* Now supports all the Blizzard item sorting features, such as:
+** Ignoring bags for auto sort.
+** Setting bags to a specific type of loot.
+* Bags now display the number of empy slots available.
+* Reagents now take priority in going to the reagent bank before other bag slots when depositing.
+* Items in the bank reagents slot are now properly accounted on item tooltips.
+* Changed item glow flashes:
+** Now are optional.
+** If enabled, stay for a limited period of time, but remains with a bolder glow than regular items until the bag is closed or mouse over.
+* Now the player dropdown list displays class colors and race icons. This should make it much easier to find players in long lists.
+* Now only characters from the same faction as yours will be displayed in the character list.
+** You must login again in your characters so that BagBrother can learn their factions!
+* Fixed issue preventing right clicking on the sort button to work at all.
+* More minor bugfixes.
+
+====== 6.0.3
+* Removed two developer files that caused error messages.
+
 ====== 6.0.2
 * Fixed initialization issue.
 * Fixed bug causing tooltips not to appear on the reagents bank slot.

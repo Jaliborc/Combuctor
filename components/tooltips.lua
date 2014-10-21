@@ -6,9 +6,7 @@
 local ADDON, Addon = ...
 local L = LibStub('AceLocale-3.0'):GetLocale(ADDON)
 
-local TEAL = '|cff00ff9a%s|r'
 local SILVER = '|cffc7c7cf%s|r'
-local CLASS_COLOR = '|cff%02x%02x%02x'
 local HEARTHSTONE = tostring(HEARTHSTONE_ITEM_ID)
 local TOTAL = SILVER:format(L.Total)
 
@@ -16,17 +14,7 @@ local ItemCache = LibStub('LibItemCache-1.1')
 local ItemText, ItemCount, Enabled, Hooked = {}, {}
 
 
---[[ Methods ]]--
-
-local function GetColor(class)
-	if class then
-		local colors = CUSTOM_CLASS_COLORS or RAID_CLASS_COLORS
-    	local color = colors[class]
-		return CLASS_COLOR:format(color.r * 255, color.g * 255, color.b * 255) .. '%s|r'
-	else
-		return TEAL
-	end
-end
+--[[ Local Functions ]]--
 
 local function FormatCounts(color, ...)
 	local places = 0
@@ -62,10 +50,9 @@ local function AddOwners(tooltip, link)
 	local total = 0
 	
 	for i, player in ItemCache:IteratePlayers() do
-		local class = ItemCache:GetPlayerInfo(player)
+		local color = Addon:GetPlayerColorString(player)
 		local countText = ItemText[player][id]
 		local count = ItemCount[player][id]
-		local color = GetColor(class)
 		
 		if countText == nil then
 			count, countText = FormatCounts(color, ItemCache:GetItemCounts(player, id))
@@ -110,7 +97,7 @@ local function hookTip(tooltip)
 end
 
 
---[[ Start this Thing! ]]--
+--[[ Public Methods ]]--
 
 function Addon:ToggleTipCounts()
 	self.profile.tipCounts = not self.profile.tipCounts or nil
@@ -118,7 +105,7 @@ function Addon:ToggleTipCounts()
 end
 
 function Addon:IsTipCountEnabled()
-	return not self:GetProfile().tipCounts
+	return not self.profile.tipCounts
 end
 
 function Addon:HookTooltips()

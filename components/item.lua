@@ -3,7 +3,7 @@
 		An item slot button
 --]]
 
-local AddonName, Addon = ...
+local ADDON, Addon = ...
 local ItemSlot = Addon:NewClass('ItemSlot', 'Button')
 ItemSlot.dummyBags = {}
 ItemSlot.unused = {}
@@ -26,7 +26,7 @@ function ItemSlot:Create()
 	local item = self:Bind(self:GetBlizzardItemSlot(id) or self:ConstructNewItemSlot(id))
 	local name = item:GetName()
 
-	--add a quality border texture
+	-- add a quality border texture
 	local border = item:CreateTexture(nil, 'OVERLAY')
 	border:SetSize(67, 67)
 	border:SetPoint('CENTER', item)
@@ -34,7 +34,7 @@ function ItemSlot:Create()
 	border:SetBlendMode('ADD')
 	border:Hide()
 
-	--add flash find animation
+	-- add flash find animation
 	local flash = item:CreateAnimationGroup()
 	for i = 1, 3 do
 		local fade = flash:CreateAnimation('Alpha')
@@ -50,6 +50,7 @@ function ItemSlot:Create()
 	
 	item.UpdateTooltip = nil
 	item.Border, item.Flash = border, flash
+	item.newitemglowAnim:SetLooping('NONE')
 	item.QuestBorder = _G[name .. 'IconQuestTexture']
 	item.Cooldown = _G[name .. 'Cooldown']
 	item:HookScript('OnClick', item.OnClick)
@@ -66,7 +67,7 @@ function ItemSlot:Create()
 end
 
 function ItemSlot:ConstructNewItemSlot(id)
-	return CreateFrame('Button', ('%sItem%d'):format(AddonName, id), nil, 'ContainerFrameItemButtonTemplate')
+	return CreateFrame('Button', ('%s%s%d'):format(ADDON, self.Name, id), nil, 'ContainerFrameItemButtonTemplate')
 end
 
 function ItemSlot:GetBlizzardItemSlot(id)
@@ -109,7 +110,13 @@ function ItemSlot:OnShow()
 end
 
 function ItemSlot:OnHide()
-	self:HideStackSplitFrame()
+	if self.hasStackSplit == 1 then
+		StackSplitFrame:Hide()
+	end
+
+	if self:IsNew() then
+		C_NewItems.RemoveNewItem(self:GetBag(), self:GetID())
+	end
 end
 
 function ItemSlot:OnDragStart()
@@ -117,20 +124,24 @@ function ItemSlot:OnDragStart()
 end
 
 function ItemSlot:OnPreClick(button)
-	if button == 'RightButton' and not self.canDeposit then
-		for i = 1,9 do
-			if not GetVoidTransferDepositInfo(i) then
-				self.depositSlot = i
-				return
+	if button == 'RightButton' then 
+		if Addon.BagEvents.atBank and IsReagentBankUnlocked() then
+			return UseContainerItem(self:GetBag(), self:GetID(), nil, true)
+		end
+
+		if not self.canDeposit then
+			for i = 1,9 do
+				if not GetVoidTransferDepositInfo(i) then
+					self.depositSlot = i
+					return
+				end
 			end
 		end
 	end
 end
 
 function ItemSlot:OnClick(button)
-	if IsAltKeyDown() and button == 'LeftButton' then
-		Addon.Settings:FlashFind(self:GetItem())
-	elseif GetNumVoidTransferDeposit() > 0 and button == 'RightButton' then
+	if GetNumVoidTransferDeposit() > 0 and button == 'RightButton' then
 		if self.canDeposit and self.depositSlot then
 			ClickVoidTransferDepositSlot(self.depositSlot, true)
 		end
@@ -176,12 +187,8 @@ function ItemSlot:Set(parent, bag, slot)
   	self:SetParent(self:GetDummyBag(parent, bag))
   	self:SetID(slot)
   	self.bag = bag
-
-  	if self:IsVisible() then
-		self:Update()
-	else
-		self:Show()
-	end
+	self:Update()
+	self:Show()
 end
 
 function ItemSlot:Update()
@@ -218,11 +225,7 @@ end
 --[[ Icon ]]--
 
 function ItemSlot:SetTexture(texture)
-	SetItemButtonTexture(self, texture or self:GetEmptyItemIcon())
-end
-
-function ItemSlot:GetEmptyItemIcon()
-	return [[Interface\PaperDoll\UI-Backpack-EmptySlot]]
+	SetItemButtonTexture(self, texture or [[Interface\PaperDoll\UI-Backpack-EmptySlot]])
 end
 
 
@@ -273,9 +276,10 @@ function ItemSlot:UpdateBorder()
 	self:HideBorder()
 
 	if item then
-		if self:IsNew() then
+		if self:HighlightNewItems() and self:IsNew() then
 			if not self.flashAnim:IsPlaying() then
 				self.flashAnim:Play()
+				self.newitemglowAnim:SetLooping('NONE')
 				self.newitemglowAnim:Play()
 			end
 
@@ -335,12 +339,6 @@ function ItemSlot:UpdateCooldown()
 	end
 end
 
-function ItemSlot:HideStackSplitFrame()
-	if self.hasStackSplit and self.hasStackSplit == 1 then
-		StackSplitFrame:Hide()
-	end
-end
-
 
 --[[ Tooltip ]]--
 
@@ -392,6 +390,10 @@ end
 
 function ItemSlot:HighlightItemsByQuality()
 	return not Addon:GetSetting('disableItemsByQuality')
+end
+
+function ItemSlot:HighlightNewItems()
+	return not Addon:GetSetting('disableNewItems')
 end
 
 function ItemSlot:HighlightUnusableItems()
@@ -468,23 +470,22 @@ function ItemSlot:GetInfo()
 end
 
 function ItemSlot:GetPlayer()
-	return self:GetParent():GetParent():GetPlayer()
-end
-
-function ItemSlot:GetFrameID()
-	return self:GetParent():GetParent():GetFrameID()
+	local parent = self:GetParent()
+	return parent and parent:GetParent():GetPlayer()
 end
 
 
 --[[ Dummies ]]--
 
 function ItemSlot:GetDummyBag(parent, bag)
-	if not self.dummyBags[bag] then
-		self.dummyBags[bag] = CreateFrame('Frame', nil, parent)
-		self.dummyBags[bag]:SetID(tonumber(bag) or 1)
+	parent.dummyBags = parent.dummyBags or {}
+
+	if not parent.dummyBags[bag] then
+		parent.dummyBags[bag] = CreateFrame('Frame', nil, parent)
+		parent.dummyBags[bag]:SetID(tonumber(bag) or 1)
 	end
 
-	return self.dummyBags[bag]
+	return parent.dummyBags[bag]
 end
 
 function ItemSlot:GetDummySlot()
@@ -497,7 +498,6 @@ function ItemSlot:CreateDummySlot()
 	local slot = CreateFrame('Button')
 	slot:RegisterForClicks('anyUp')
 	slot:SetToplevel(true)
-	slot:Hide()
 
 	local function Slot_OnEnter(self)
 		local parent = self:GetParent()

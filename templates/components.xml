@@ -196,6 +196,10 @@
 		</HighlightTexture>
 
 		<Scripts>
+			<OnLoad>
+				self:RegisterForClicks('LeftButtonUp', 'RightButtonUp')
+			</OnLoad>
+
 			<OnClick>
 				self:GetParent():OnSortButtonClick(button)
 			</OnClick>
