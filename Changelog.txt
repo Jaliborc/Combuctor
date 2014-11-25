@@ -1,3 +1,13 @@
+====== 6.0.5
+* Fixed issue causing window to behave strangely when clicking on the "loot won" frame.
+* Fixed issues with item coloring (ex: highlight item sets not working properly).
+* No longer displays warning messages when depositing non-reagents in the bank or when the reagent bank is full.
+* No longer causes cursor flickering at vendors.
+* The player dropdown list now displays all your connected realm characters.
+** The new class and race introduced in 6.0.10 should help to keep the list manageable for players with many characters.
+** Tooltips still only display players from the same faction (to keep tooltip sizes manageable) as only BOA accounts are sharable between these characters.
+* Other minor bug fixes.
+
 ====== 6.0.4
 * Now supports all the Blizzard item sorting features, such as:
 ** Ignoring bags for auto sort.

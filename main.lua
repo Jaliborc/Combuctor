@@ -172,6 +172,10 @@ function Addon:HookBagEvents()
 		self:Toggle(bag)
 	end
 
+	OpenBag = function(bag)
+		self:Show(bag)
+	end
+
 	ToggleBackpack = function()
 		self:Toggle(BACKPACK_CONTAINER)
 	end
