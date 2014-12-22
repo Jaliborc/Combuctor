@@ -1,8 +1,8 @@
 <Bindings>
-	<Binding name="COMBUCTOR_TOGGLE_INVENTORY" description="BINDING_NAME_COMBUCTOR_TOGGLE_INVENTORY" header="COMBUCTOR">
+	<Binding name="COMBUCTOR_TOGGLE_INVENTORY" header="COMBUCTOR" category="ADDONS">
 		Combuctor:Toggle(0)
 	</Binding>
-	<Binding name="COMBUCTOR_TOGGLE_BANK" description="BINDING_NAME_COMBUCTOR_TOGGLE_BANK">
+	<Binding name="COMBUCTOR_TOGGLE_BANK" header="COMBUCTOR" category="ADDONS">
 		Combuctor:Toggle(-1)
 	</Binding>
 </Bindings>
