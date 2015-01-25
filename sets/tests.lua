@@ -1,4 +1,8 @@
-﻿local Sets = Combuctor:GetModule('Sets')
+﻿if not WoWUnit then
+	return
+end
+
+local Sets = Combuctor:GetModule('Sets')
 local Exists, None = WoWUnit.Exists, WoWUnit.IsFalse
 local Tests = WoWUnit('Combuctor.Sets')
 
