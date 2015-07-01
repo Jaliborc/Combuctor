@@ -198,11 +198,13 @@ function Addon:HookBagEvents()
 	BankFrame:UnregisterAllEvents()
 	
 	self.BagEvents.Listen(self, 'BANK_OPENED', function()
+		LibStub('LibItemCache-1.1').AtBank = true
 		self:Show(BANK_CONTAINER, true)
 		self:Show(BACKPACK_CONTAINER, true)
 	end)
 	
 	self.BagEvents.Listen(self, 'BANK_CLOSED', function()
+		LibStub('LibItemCache-1.1').AtBank = false
 		self:Hide(BANK_CONTAINER, true)
 		self:Hide(BACKPACK_CONTAINER, true)
 	end)

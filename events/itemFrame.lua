@@ -36,8 +36,8 @@ function FrameEvents:Startup()
 	Events.Listen(self, 'ITEM_SLOT_REMOVE')
 
 	Events.Listen(self, 'BAG_UPDATE_TYPE')
-	Events.Listen(self, 'BANK_OPENED', 'GET_ITEM_INFO_RECEIVED')
-	Events.Listen(self, 'BANK_CLOSED', 'GET_ITEM_INFO_RECEIVED')
+	Events.Listen(self, 'BANK_OPENED')
+	Events.Listen(self, 'BANK_CLOSED')
 end
 
 
@@ -88,7 +88,7 @@ function FrameEvents:BAG_UPDATE_TYPE(event, ...)
 end
 
 function FrameEvents:UNIT_QUEST_LOG_CHANGED(...)
-		for f in self:GetFrames() do
+	for f in self:GetFrames() do
 		if f:GetPlayer() == UnitName('player') then
 			f:UpdateBorder(...)
 		end
@@ -96,6 +96,16 @@ function FrameEvents:UNIT_QUEST_LOG_CHANGED(...)
 end
 
 function FrameEvents:GET_ITEM_INFO_RECEIVED()
+	Addon:UpdateFrames()
+end
+
+function FrameEvents:BANK_OPENED()
+	LibStub('LibItemCache-1.1').AtBank = true
+	Addon:UpdateFrames()
+end
+
+function FrameEvents:BANK_CLOSED()
+	LibStub('LibItemCache-1.1').AtBank = false
 	Addon:UpdateFrames()
 end
 

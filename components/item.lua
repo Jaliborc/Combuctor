@@ -22,8 +22,8 @@ function ItemSlot:New()
 end
 
 function ItemSlot:Create()
-	local id = self:GetNextItemSlotID()
-	local item = self:Bind(self:GetBlizzardItemSlot(id) or self:ConstructNewItemSlot(id))
+	local id = self:GetNextID()
+	local item = self:Bind(self:GetBlizzardItemSlot(id) or self:Construct(id))
 	local name = item:GetName()
 
 	-- add a quality border texture
@@ -66,7 +66,7 @@ function ItemSlot:Create()
 	return item
 end
 
-function ItemSlot:ConstructNewItemSlot(id)
+function ItemSlot:Construct(id)
 	return CreateFrame('Button', ('%s%s%d'):format(ADDON, self.Name, id), nil, 'ContainerFrameItemButtonTemplate')
 end
 
@@ -90,7 +90,7 @@ function ItemSlot:Restore()
 	return tremove(self.unused)
 end
 
-function ItemSlot:GetNextItemSlotID()
+function ItemSlot:GetNextID()
   self.nextID = self.nextID + 1
   return self.nextID
 end

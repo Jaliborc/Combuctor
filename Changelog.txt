@@ -1,3 +1,10 @@
+===== 6.2
+* Updated for Fury of Hellfire
+* Update for new library versions
+
+===== 6.1
+* Updated for patch 6.1
+
 ====== 6.0.6
 * Fixed issue preventing proper stack splitting on right click.
 
