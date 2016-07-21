@@ -12,7 +12,7 @@ ItemSlot.nextID = 0
 local Cache = LibStub('LibItemCache-1.1')
 local ItemSearch = LibStub('LibItemSearch-1.2')
 local Unfit = LibStub('Unfit-1.0')
-local QuestSearch = format('t:%s|%s', select(10, GetAuctionItemClasses()), 'quest')
+local QuestSearch = format('t:%s|%s', AUCTION_CATEGORY_QUEST_ITEMS, 'quest')
 
 
 --[[ Constructor ]]--
@@ -39,12 +39,14 @@ function ItemSlot:Create()
 	for i = 1, 3 do
 		local fade = flash:CreateAnimation('Alpha')
 		fade:SetDuration(.2)
-		fade:SetChange(-.8)
+        fade:SetFromAlpha(0)
+        fade:SetToAlpha(-.8)
 		fade:SetOrder(i * 2)
 
 		local fade = flash:CreateAnimation('Alpha')
 		fade:SetDuration(.3)
-		fade:SetChange(.8)
+        fade:SetFromAlpha(-.8)
+        fade:SetToAlpha(0)
 		fade:SetOrder(i * 2 + 1)
 	end
 	
@@ -142,7 +144,7 @@ end
 
 function ItemSlot:OnClick(button)
 	if IsAltKeyDown() and button == 'LeftButton' then
-		Addon.sets:FlashFind(self:GetItem())
+		Addon.Settings:FlashFind(self:GetItem())
 	elseif GetNumVoidTransferDeposit() > 0 and button == 'RightButton' then
 		if self.canDeposit and self.depositSlot then
 			ClickVoidTransferDepositSlot(self.depositSlot, true)
@@ -336,7 +338,7 @@ function ItemSlot:UpdateCooldown()
 	if self:GetItem() and (not self:IsCached()) then
 		ContainerFrame_UpdateCooldown(self:GetBag(), self)
 	else
-		CooldownFrame_SetTimer(self.Cooldown, 0, 0, 0)
+		CooldownFrame_Set(self.Cooldown, 0, 0, 0)
 		SetItemButtonTextureVertexColor(self, 1, 1, 1)
 	end
 end
