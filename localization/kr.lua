@@ -44,3 +44,19 @@ L.TipCounts = '툴팁에 아이템 갯수를 표시'
 L.LeftFiltersTip = [[체크하면 탭을 패널왼쪽에 표시합니다]]
 L.ActPanelTip = [[체크하면 자동으로 마법책이나 던전 찾기 처럼 표준 패널로 지정되고 이동이 불가능해집니다]]
 L.TipCountsTip = [[체크하면 아이템툴팁에 보유량을 표시합니다]]
+
+--these are automatically localized (aka, don't translate them :)
+do
+  L.General = GENERAL
+  L.Weapon = GetItemClassInfo(LE_ITEM_CLASS_WEAPON)
+  L.Armor = GetItemClassInfo(LE_ITEM_CLASS_ARMOR)
+  L.Container = GetItemClassInfo(LE_ITEM_CLASS_CONTAINER)
+  L.Consumable = GetItemClassInfo(LE_ITEM_CLASS_CONSUMABLE)
+  L.Glyph = GetItemClassInfo(LE_ITEM_CLASS_GLYPH)
+  L.TradeGood = GetItemClassInfo(LE_ITEM_CLASS_TRADEGOODS)
+  L.Recipe = GetItemClassInfo(LE_ITEM_CLASS_RECIPE)
+  L.Gem = GetItemClassInfo(LE_ITEM_CLASS_GEM)
+  L.Misc = GetItemClassInfo(LE_ITEM_CLASS_MISCELLANEOUS)
+  L.Quest = GetItemClassInfo(LE_ITEM_CLASS_QUESTITEM)
+  L.Trinket = _G['INVTYPE_TRINKET']
+end
