@@ -38,3 +38,19 @@ L.Usable = '消耗品'
 L.TipCount1 = ', 已裝備: %d'
 L.TipCount2 = ', 背包: %d'
 L.TipCount3 = ', 銀行: %d'
+
+--these are automatically localized (aka, don't translate them :)
+do
+  L.General = GENERAL
+  L.Weapon = GetItemClassInfo(LE_ITEM_CLASS_WEAPON)
+  L.Armor = GetItemClassInfo(LE_ITEM_CLASS_ARMOR)
+  L.Container = GetItemClassInfo(LE_ITEM_CLASS_CONTAINER)
+  L.Consumable = GetItemClassInfo(LE_ITEM_CLASS_CONSUMABLE)
+  L.Glyph = GetItemClassInfo(LE_ITEM_CLASS_GLYPH)
+  L.TradeGood = GetItemClassInfo(LE_ITEM_CLASS_TRADEGOODS)
+  L.Recipe = GetItemClassInfo(LE_ITEM_CLASS_RECIPE)
+  L.Gem = GetItemClassInfo(LE_ITEM_CLASS_GEM)
+  L.Misc = GetItemClassInfo(LE_ITEM_CLASS_MISCELLANEOUS)
+  L.Quest = GetItemClassInfo(LE_ITEM_CLASS_QUESTITEM)
+  L.Trinket = _G['INVTYPE_TRINKET']
+end
