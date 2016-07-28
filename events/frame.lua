@@ -35,7 +35,7 @@ end
 
 function FrameEvents:UpdateSetConfig(msg, key, name)
 	for f in self:GetFrames() do
-		if f.key == key then
+		if f.frameID == key then
 			f:UpdateSets()
 		end
 	end
@@ -43,7 +43,7 @@ end
 
 function FrameEvents:UpdateSubSetConfig(msg, key, name, parent)
 	for f in self:GetFrames() do
-		if f.key == key and f:GetCategory() == parent then
+		if f.frameID == key and f:GetCategory() == parent then
 			f:UpdateSubSets()
 		end
 	end
