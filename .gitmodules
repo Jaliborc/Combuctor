@@ -16,3 +16,6 @@
 [submodule "libs/LibItemCache-1.1"]
 	path = libs/LibItemCache-1.1
 	url = https://jaliborc@github.com/Jaliborc/LibItemCache-1.1.git
+[submodule "common"]
+	path = common
+	url = https://jaliborc@github.com/tullamods/Wildpants.git
