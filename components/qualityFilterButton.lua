@@ -38,17 +38,17 @@ end
 --[[ Frame Events ]]--
 
 function FilterButton:OnClick()
-	local frame = self:GetParent():GetParent()
-	if bit.band(frame:GetQuality(), self.qualityFlag) > 0 then
-		if IsModifierKeyDown() or frame:GetQuality() == self.qualityFlag then
-			frame:RemoveQuality(self.qualityFlag)
+	local parent = self:GetParent()
+	if self:IsSelected() then
+		if IsModifierKeyDown() or parent:GetQuality() == self.qualityFlag then
+			parent:RemoveQuality(self.qualityFlag)
 		else
-			frame:SetQuality(self.qualityFlag)
+			parent:SetQuality(self.qualityFlag)
 		end
 	elseif IsModifierKeyDown() then
-		frame:AddQuality(self.qualityFlag)
+		parent:AddQuality(self.qualityFlag)
 	else
-		frame:SetQuality(self.qualityFlag)
+		parent:SetQuality(self.qualityFlag)
 	end
 end
 
@@ -71,14 +71,18 @@ function FilterButton:OnLeave()
 end
 
 
---[[ Update ]]--
+--[[ API ]]--
 
-function FilterButton:UpdateHighlight(quality)
-	if bit.band(quality, self.qualityFlag) > 0 then
+function FilterButton:UpdateHighlight()
+	if self:IsSelected() then
 		self:LockHighlight()
 		self.bg:SetVertexColor(.95, .95, .95)
 	else
 		self:UnlockHighlight()
 		self.bg:SetVertexColor(.4, .4, .4)
 	end
+end
+
+function FilterButton:IsSelected()
+	return bit.band(self:GetParent():GetQuality(), self.qualityFlag) > 0
 end

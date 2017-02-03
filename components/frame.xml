@@ -1,5 +1,5 @@
 <Ui xmlns="http://www.blizzard.com/wow/ui/">
-	<Frame name="CombuctorInventoryTemplate" resizable="true" clampedToScreen="true" enableMouse="true" movable="true" topLevel="true" frameStrata="HIGH" parent="UIParent" hidden="true" inherits="ButtonFrameTemplate" virtual="true">
+	<Frame name="CombuctorFrameTemplate" resizable="true" clampedToScreen="true" enableMouse="true" movable="true" topLevel="true" frameStrata="HIGH" parent="UIParent" hidden="true" inherits="ButtonFrameTemplate" virtual="true">
 		<Size x="300" y="400"/>
 
 		<HitRectInsets>
@@ -46,19 +46,19 @@
 		</Layers>
 
 		<Frames>
-			<Button name="$parentIconButton" inherits="CombuctorIconButtonTemplate"/>
-			<Button parentKey = 'title' name="$parentTitle" inherits="CombuctorDragFrameTemplate"/>
-			<EditBox parentKey = 'nameFilter' name="$parentSearch" inherits="CombuctorSearchBoxTemplate"/>
+			<Button parentKey="title" name="$parentTitle" inherits="CombuctorDragFrameTemplate"/>
+			<EditBox parentKey="searchBox" name="$parentSearchBox" inherits="CombuctorSearchBoxTemplate"/>
+			<Button parentKey="portraitButton" name="$parentPortraitButton" inherits="CombuctorPortraitButtonTemplate"/>
 			
-			<Button name="$parentAutoSort" inherits="CombuctorSortButtonTemplate">
+			<Button parentKey="sortButton" name="$parentSortButton" inherits="CombuctorSortButtonTemplate">
 				<Anchors>
-					<Anchor point="LEFT" relativeTo="$parentSearch" relativePoint="RIGHT" x="9" y="-1"/>
+					<Anchor point="LEFT" relativeTo="$parentSearchBox" relativePoint="RIGHT" x="9" y="-1"/>
 				</Anchors>
 			</Button>
 
-			<Button name="$parentBagToggle" inherits="CombuctorBagToggleTemplate">
+			<Button parentKey="bagToggle" name="$parentBagToggle" inherits="CombuctorBagToggleTemplate">
 				<Anchors>
-					<Anchor point="LEFT" relativeTo="$parentAutoSort" relativePoint="RIGHT" x="7"/>
+					<Anchor point="LEFT" relativeTo="$parentSortButton" relativePoint="RIGHT" x="7"/>
 				</Anchors>
 			</Button>
 
@@ -90,14 +90,5 @@
 				<HighlightTexture file="Interface\ChatFrame\UI-ChatIM-SizeGrabber-Highlight" alphaMode="ADD" setAllPoints="true"/>
 			</Button>
 		</Frames>
-
-		<Scripts>
-			<OnLoad>
-				self:SetMinResize(self:GetWidth(), self:GetHeight())
-			</OnLoad>
-			<OnSizeChanged>
-				self:OnSizeChanged()
-			</OnSizeChanged>
-		</Scripts>
 	</Frame>
 </Ui>

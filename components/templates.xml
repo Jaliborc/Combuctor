@@ -33,7 +33,7 @@
 		</Scripts>
 	</Button>
 
-	<Button name="CombuctorIconButtonTemplate" virtual="true">
+	<Button name="CombuctorPortraitButtonTemplate" virtual="true">
 		<Size x="64" y="64"/>
 
 		<Anchors>
@@ -45,31 +45,29 @@
 		<Scripts>
 			<OnLoad>
 				self:RegisterForClicks("anyUp")
-				self.icon = self:GetParent().portrait
-				self.icon:ClearAllPoints()
-				self.icon:SetPoint("CENTER", self)
+				self.portrait = self:GetParent().portrait
+				self.portrait:ClearAllPoints()
+				self.portrait:SetPoint("CENTER", self)
 			</OnLoad>
 			<OnEvent>
 				if (self:IsShown() and arg1 == "player") then
-					SetPortraitTexture(self.icon, arg1)
+					SetPortraitTexture(self.portrait, arg1)
 				end
 			</OnEvent>
 			<OnShow>
-				SetPortraitTexture(self.icon, "player")
+				SetPortraitTexture(self.portrait, "player")
 				self:RegisterEvent("UNIT_PORTRAIT_UPDATE")
 			</OnShow>
 			<OnHide>
 				self:UnregisterEvent("UNIT_PORTRAIT_UPDATE")
 			</OnHide>
 			<OnMouseDown>
-				self.icon:SetWidth(56)
-				self.icon:SetHeight(56)
-				self.icon:SetTexCoord(0.075, 0.925, 0.075, 0.925)
+				self.portrait:SetSize(56, 56)
+				self.portrait:SetTexCoord(0.075, 0.925, 0.075, 0.925)
 			</OnMouseDown>
 			<OnMouseUp>
-				self.icon:SetWidth(62)
-				self.icon:SetHeight(62)
-				self.icon:SetTexCoord(0, 1, 0, 1)
+				self.portrait:SetSize(62, 62)
+				self.portrait:SetTexCoord(0, 1, 0, 1)
 			</OnMouseUp>
 			<OnClick>
 				if Combuctor.TogglePlayerDropdown then
@@ -78,7 +76,7 @@
 			</OnClick>
 			<OnEnter>
 				if Combuctor.TogglePlayerDropdown then
-					self:GetParent():OnPortraitEnter(self)
+					self:GetParent():OnPortraitEnter()
 				end
 			</OnEnter>
 			<OnLeave>
@@ -129,7 +127,7 @@
 				_G[self:GetName() .. "Border"]:SetAlpha(0.6)
 			</OnLoad>
 			<OnClick>
-				self:GetParent():OnBagToggleClick(self, button)
+				self:GetParent():OnBagToggleClick(button)
 			</OnClick>
 			<OnMouseDown>
 				_G[self:GetName() .. "Icon"]:SetTexCoord(0,1,0,1)
@@ -171,7 +169,7 @@
 					self.Instructions:SetShown(text == '')
 				end
 
-				self:GetParent():SetFilter('name', text ~= '' and text:lower() or nil, true)
+				self:GetParent():OnSearchTextChanged(text ~= '' and text:lower() or nil)
 			</OnTextChanged>
 			<OnEditFocusLost>
 				self:HighlightText(0, 0)
@@ -219,10 +217,10 @@
 				self:SetPoint('TOP', self:GetParent().TitleText)
 			</OnLoad>
 			<OnMouseDown>
-        if self:GetParent().sets.position then
-          self.isMoving = true
-          self:GetParent():StartMoving()
-        end
+		        if self:GetParent().sets.position then
+		          self.isMoving = true
+		          self:GetParent():StartMoving()
+		        end
 			</OnMouseDown>
 			<OnMouseUp>
 				if self.isMoving then

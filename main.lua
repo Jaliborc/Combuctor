@@ -1,297 +1,288 @@
 --[[
-	Combuctor.lua
+	main.lua
 		Some sort of crazy visual inventory management system
 --]]
 
 local ADDON, Addon = ...
-LibStub('AceAddon-3.0'):NewAddon(Addon, ADDON, 'AceEvent-3.0', 'AceConsole-3.0')
-Addon.__call = Addon.GetModule
-_G[ADDON] = setmetatable(Addon, Addon)
-
-
---[[ Constants ]]--
+_G[ADDON] = Addon
+Addon.frames = {}
 
 local L = LibStub('AceLocale-3.0'):GetLocale(ADDON)
-local CURRENT_VERSION = GetAddOnMetadata(ADDON, 'Version')
-
-BINDING_HEADER_COMBUCTOR = ADDON
-BINDING_NAME_COMBUCTOR_TOGGLE_INVENTORY = L.ToggleInventory
-BINDING_NAME_COMBUCTOR_TOGGLE_BANK = L.ToggleBank
+_G['BINDING_HEADER_' .. ADDON] = ADDON
+_G['BINDING_NAME_' .. ADDON .. '_TOGGLE'] = L.ToggleBags
+_G['BINDING_NAME_' .. ADDON .. '_BANK_TOGGLE'] = L.ToggleBank
+_G['BINDING_NAME_' .. ADDON .. '_VAULT_TOGGLE'] = L.ToggleVault
+_G['BINDING_NAME_' .. ADDON .. '_GUILD_TOGGLE'] = L.ToggleGuild
 
 
 --[[ Startup ]]--
 
 function Addon:OnEnable()
-	self.profile = self:InitDB()
-
-	-- version update
-	if self.db.version ~= CURRENT_VERSION then
-		self:UpdateSettings()
-		self:UpdateVersion()
-	end
-
-	-- slash commands
-	self:RegisterChatCommand('combuctor', 'OnSlashCommand')
-	self:RegisterChatCommand('cbt', 'OnSlashCommand')
-
-	-- startup frames
-	self.Frame:New(L.InventoryTitle, {0, 1, 2, 3, 4}, self.profile.inventory, 'inventory')
-	self.Frame:New(L.BankTitle, {BANK_CONTAINER, 5, 6, 7, 8, 9, 10, 11, REAGENTBANK_CONTAINER}, self.profile.bank, 'bank')
-	self:HookBagEvents()
+	self:StartupSettings()
+	self:RegisterEvents()
+	self:HookBagClickEvents()
 	self:HookTooltips()
+	self:AddSlashCommands()
 
-	-- option frame loader
+	self:CreateFrame('inventory')
+	self:CreateFrameLoader('GuildBank', 'GuildBankFrame_LoadUI')
+	self:CreateFrameLoader('VoidStorage', 'VoidStorage_LoadUI')
+	self:CreateOptionsLoader()
+end
+
+function Addon:CreateFrameLoader(module, method)
+	local addon = ADDON .. '_' .. module
+	if GetAddOnEnableState(UnitName('player'), addon) >= 2 then
+		_G[method] = function()
+			if LoadAddOn(addon) then
+				self:GetModule(module):OnOpen()
+			end
+		end
+	end
+end
+
+function Addon:CreateOptionsLoader()
 	local f = CreateFrame('Frame', nil, InterfaceOptionsFrame)
 	f:SetScript('OnShow', function(self)
 		self:SetScript('OnShow', nil)
-		LoadAddOn('Combuctor_Config')
+		LoadAddOn(ADDON .. '_Config')
 	end)
 end
 
 
---[[ Settings ]]--
+--[[ Bags ]]--
 
-function Addon:InitDB()
-	CombuctorDB2 = CombuctorDB2 or {
-		version = CURRENT_VERSION,
-		global = {}, profiles = {}
-	}
-
-	self.db = CombuctorDB2
-	self.sets = self.db.global
-
-	return self:GetProfile() or self:InitProfile()
-end
-
-function Addon:UpdateSettings(major, minor, bugfix)
-	local expansion, patch, release = strsplit('.', self.db.version)
-	local version = tonumber(expansion) * 10000 + tonumber(patch or 0) * 100 + tonumber(release or 0)
-
-	-- nothing to do, yay!
-end
-
-function Addon:UpdateVersion()
-	self.db.version = CURRENT_VERSION
-	self:Print(format(L.Updated, self.db.version))
-end
-
-function Addon:ToggleSetting(set)
-	self.sets[set] = not self.sets[set] or nil
-end
-
-function Addon:GetSetting(set)
-	return self.sets[set]
-end
-
-
---[[ Profiles ]]--
-
-function Addon:GetProfile(player)
-	return self.db.profiles[(player or UnitName('player')) .. ' - ' .. GetRealmName()]
-end
-
-
-local function addSet(sets, exclude, name, ...)
-	if sets then
-		tinsert(sets, name)
-	else
-		sets = {name}
+function Addon:ToggleBag(frame, bag)
+	if self:ControlsBag(frame, bag) then
+		return self:ToggleFrame(frame)
 	end
-
-	if select('#', ...) > 0 then
-		if exclude then
-			tinsert(exclude, {[name] = {...}})
-		else
-			exclude = {[name] = {...}}
-		end
-	end
-
-	return sets, exclude
 end
 
-local function getDefaultInventorySets(class)
-	local sets, exclude = addSet(sets, exclude, ALL, ALL)
-	return sets, exclude
+function Addon:ShowBag(frame, bag)
+	if self:ControlsBag(frame, bag) then
+		return self:ShowFrame(frame)
+	end
 end
 
-local function getDefaultBankSets(class)
-	local sets, exclude = addSet(sets, exclude, ALL, ALL)
-	sets, exclude = addSet(sets, exclude, L.Equipment)
-	sets, exclude = addSet(sets, exclude, L.TradeGood)
-	sets, exclude = addSet(sets, exclude, L.Misc)
-
-	return sets, exclude
-end
-
-function Addon:InitProfile()
-	local player, realm = UnitName('player'), GetRealmName()
-	local class = select(2, UnitClass('player'))
-	local profile = self:GetBaseProfile()
-
-	profile.inventory.sets, profile.inventory.exclude = getDefaultInventorySets(class)
-	profile.bank.sets, profile.bank.exclude = getDefaultBankSets(class)
-
-	self.db.profiles[player .. ' - ' .. realm] = profile
-	return profile
-end
-
-function Addon:GetBaseProfile()
-	return {
-		inventory = {
-			position = {'RIGHT'},
-			showBags = false,
-			leftSideFilter = true,
-			w = 384,
-			h = 512,
-		},
-
-		bank = {
-			showBags = false,
-			w = 512,
-			h = 512,
-		}
-	}
-end
-
-
---[[ Events ]]--
-
-function Addon:HookBagEvents()
-	local AutoShowInventory = function()
-		self:Show(BACKPACK_CONTAINER, true)
-	end
-	local AutoHideInventory = function()
-		self:Hide(BACKPACK_CONTAINER, true)
-	end
-
-	--auto magic display code
-	OpenBackpack = AutoShowInventory
-	hooksecurefunc('CloseBackpack', AutoHideInventory)
-
-	ToggleBag = function(bag)
-		self:Toggle(bag)
-	end
-
-	OpenBag = function(bag)
-		self:Show(bag)
-	end
-
-	ToggleBackpack = function()
-		self:Toggle(BACKPACK_CONTAINER)
-	end
-
-	OpenAllBags = function(frame)
-		self:Show(BACKPACK_CONTAINER)
-	end
-
-	if _G['ToggleAllBags'] then
-		ToggleAllBags = function()
-			self:Toggle(BACKPACK_CONTAINER)
-		end
-	end
-
-	--closing the game menu triggers this function, and can be done in combat,
-	hooksecurefunc('CloseAllBags', function()
-		self:Hide(BACKPACK_CONTAINER)
-	end)
-	
-	BankFrame:UnregisterAllEvents()
-	
-	self.BagEvents.Listen(self, 'BANK_OPENED', function()
-		LibStub('LibItemCache-1.1').AtBank = true
-		self:Show(BANK_CONTAINER, true)
-		self:Show(BACKPACK_CONTAINER, true)
-	end)
-	
-	self.BagEvents.Listen(self, 'BANK_CLOSED', function()
-		LibStub('LibItemCache-1.1').AtBank = false
-		self:Hide(BANK_CONTAINER, true)
-		self:Hide(BACKPACK_CONTAINER, true)
-	end)
-
-	self:RegisterEvent('MAIL_CLOSED', AutoHideInventory)
-	self:RegisterEvent('TRADE_SHOW', AutoShowInventory)
-	self:RegisterEvent('TRADE_CLOSED', AutoHideInventory)
-	self:RegisterEvent('TRADE_SKILL_SHOW', AutoShowInventory)
-	self:RegisterEvent('TRADE_SKILL_CLOSE', AutoHideInventory)
-	self:RegisterEvent('AUCTION_HOUSE_SHOW', AutoShowInventory)
-	self:RegisterEvent('AUCTION_HOUSE_CLOSED', AutoHideInventory)
-	self:RegisterEvent('AUCTION_HOUSE_SHOW', AutoShowInventory)
-	self:RegisterEvent('AUCTION_HOUSE_CLOSED', AutoHideInventory)
+function Addon:ControlsBag(frame, bag)
+	return true
 end
 
 
 --[[ Frames ]]--
 
-function Addon:Show(bag, auto)
-	for _,frame in pairs(self.frames) do
-		for _,bagID in pairs(frame.bags) do
-			if bagID == bag then
-				frame:ShowFrame(auto)
-				return
-			end
-		end
-	end
-end
-
-function Addon:Hide(bag, auto)
-	for _,frame in pairs(self.frames) do
-		for _,bagID in pairs(frame.bags) do
-			if bagID == bag then
-				frame:HideFrame(auto)
-				return
-			end
-		end
-	end
-end
-
-function Addon:Toggle(bag, auto)
-	for _,frame in pairs(self.frames) do
-		for _,bagID in pairs(frame.bags) do
-			if bagID == bag then
-				frame:ToggleFrame(auto)
-				return
-			end
-		end
-	end
-end
-
 function Addon:UpdateFrames()
-	for _,frame in pairs(self.frames or {}) do
-		frame.itemFrame:Regenerate()
+	self:SendMessage('UPDATE_ALL')
+	self:UpdateEvents()
+end
+
+function Addon:AreBasicFramesEnabled()
+	return true
+end
+
+function Addon:ToggleFrame(id)
+	if self:IsFrameShown(id) then
+		return self:HideFrame(id, true)
+	else
+		return self:ShowFrame(id)
 	end
 end
 
-function Addon:GetFrame(key)
-  return self.frames[key]
+function Addon:ShowFrame(id)
+	local frame = self:CreateFrame(id)
+	if frame then
+		frame:ShowFrame()
+	end
+	return frame
+end
+
+function Addon:HideFrame(id, force)
+	local frame = self:GetFrame(id)
+	if frame then
+		frame:HideFrame(force)
+	end
+	return frame
+end
+
+function Addon:CreateFrame(id)
+	if self:IsFrameEnabled(id) then
+ 		--self.frames[id] = self.frames[id] or self[id:gsub('^.', id.upper) .. 'Frame']:New(id)
+ 		self.frames[id] = self.frames[id] or self.Frame:New(id)
+ 		return self.frames[id]
+ 	end
+end
+
+function Addon:IsFrameShown(id)
+	local frame = self:GetFrame(id)
+	return frame and frame:IsShown()
+end
+
+function Addon:IsFrameEnabled(id)
+	return true
+end
+
+function Addon:GetFrame(id)
+	return self.frames[id]
+end
+
+function Addon:IterateFrames()
+	return pairs(self.frames)
 end
 
 
---[[ Extras ]]--
+--[[ Bank Display ]]--
+
+function Addon:RegisterEvents()
+	self:RegisterEvent('BANKFRAME_CLOSED')
+	self:RegisterMessage('BANK_OPENED')
+	BankFrame:UnregisterAllEvents()
+end
+
+function Addon:BANK_OPENED()
+	if self:GetFrame('bank') then
+		self:GetFrame('bank'):SetPlayer(nil)
+	end
+	
+	self.Cache.AtBank = true
+	self:ShowFrame('bank')
+
+	if self.sets.displayBank then
+		self:ShowFrame('inventory')
+	end
+end
+
+function Addon:BANKFRAME_CLOSED()
+	self.Cache.AtBank = nil
+	self:HideFrame('bank')
+
+	if self.sets.closeBank then
+		self:HideFrame('inventory')
+	end
+end
+
+
+--[[ Bag Buttons Hooks ]]--
+
+function Addon:HookBagClickEvents()
+	-- inventory
+	local canHide = true
+	local onMerchantHide = MerchantFrame:GetScript('OnHide')
+
+	local hideInventory = function()
+		if canHide then
+			self:HideFrame('inventory')
+		end
+	end
+
+	MerchantFrame:SetScript('OnHide', function(...)
+		canHide = false
+		onMerchantHide(...)
+		canHide = true
+	end)
+
+	hooksecurefunc('CloseBackpack', hideInventory)
+	hooksecurefunc('CloseAllBags', hideInventory)
+
+	-- backpack
+	local oToggleBackpack = ToggleBackpack
+	ToggleBackpack = function()
+		if not self:ToggleBag('inventory', BACKPACK_CONTAINER) then
+			oToggleBackpack()
+		end
+	end
+
+	local oOpenBackpack = OpenBackpack
+	OpenBackpack = function()
+		if not self:ShowBag('inventory', BACKPACK_CONTAINER) then
+			oOpenBackpack()
+		end
+	end
+
+	-- single bag
+	local oToggleBag = ToggleBag
+	ToggleBag = function(bag)
+		local frame = self:IsBankBag(bag) and 'bank' or 'inventory'
+		if not self:ToggleBag(frame, bag) then
+			oToggleBag(bag)
+		end
+	end
+
+	local oOpenBag = OpenBag
+	OpenBag = function(bag)
+		local frame = self:IsBankBag(bag) and 'bank' or 'inventory'
+		if not self:ShowBag(frame, bag) then
+			oOpenBag(bag)
+		end
+	end
+
+	-- all bags
+	local oOpenAllBags = OpenAllBags
+	OpenAllBags = function(frame)
+		if not self:ShowFrame('inventory') then
+			oOpenAllBags(frame)
+		end
+	end
+
+	if ToggleAllBags then
+		local oToggleAllBags = ToggleAllBags
+		ToggleAllBags = function()
+			if not self:ToggleFrame('inventory') then
+				oToggleAllBags()
+			end
+		end
+	end
+
+	local function checkIfInventoryShown(button)
+		if self:IsFrameEnabled('inventory') then
+			button:SetChecked(self:IsFrameShown('inventory'))
+		end
+	end
+
+	hooksecurefunc('BagSlotButton_UpdateChecked', checkIfInventoryShown)
+	hooksecurefunc('BackpackButton_UpdateChecked', checkIfInventoryShown)
+end
+
+
+--[[ Slash Commands ]]--
+
+function Addon:AddSlashCommands()
+	self:RegisterChatCommand(ADDON:lower(), 'HandleSlashCommand')
+	self:RegisterChatCommand('cbt', 'HandleSlashCommand')
+end
+
+function Addon:HandleSlashCommand(cmd)
+	cmd = cmd and cmd:lower() or ''
+	
+	if cmd == 'bank' then
+		self:ToggleFrame('bank')
+	elseif cmd == 'bags' or cmd == 'inventory' then
+		self:ToggleFrame('inventory')
+	elseif cmd == 'guild' and LoadAddOn(ADDON .. '_GuildBank') then
+		self:ToggleFrame('guild')
+	elseif cmd == 'vault' and LoadAddOn(ADDON .. '_VoidStorage') then
+		self:ToggleFrame('vault')
+	elseif cmd == 'version' then
+		self:Print(GetAddOnMetadata(ADDON, 'Version'))
+	elseif cmd == '?' or cmd == 'help' or not self:ShowOptions() and cmd ~= 'config' and cmd ~= 'options' then
+		self:PrintHelp()
+	end
+end
+
+function Addon:PrintHelp()
+	local function PrintCmd(cmd, desc)
+		print(format(' - |cFF33FF99%s|r: %s', cmd, desc))
+	end
+
+	self:Print(L.Commands)
+	PrintCmd('bags', L.CmdShowInventory)
+	PrintCmd('bank', L.CmdShowBank)
+	PrintCmd('version', L.CmdShowVersion)
+end
 
 function Addon:ShowOptions()
-	if LoadAddOn('Combuctor_Config') then
+	if LoadAddOn(ADDON .. '_Config') then
 		InterfaceOptionsFrame_OpenToCategory(ADDON)
 		InterfaceOptionsFrame_OpenToCategory(ADDON) -- sometimes once not enough
+		return true
 	end
-end
-
-function Addon:OnSlashCommand(msg)
-	local msg = msg and msg:lower()
-
-	if msg == 'bank' then
-		self:Toggle(BANK_CONTAINER)
-	elseif msg == 'bags' then
-		self:Toggle(BACKPACK_CONTAINER)
-	elseif msg == '' or msg == 'config' or msg == 'options' then
-		self:ShowOptions()
-	elseif msg == 'version' then
-		self:Print(self.db.version)
-	else
-		self:Print('Commands (/cbt or /combuctor)\n- bank: Toggle bank\n- bags: Toggle inventory\n- options: Shows the options menu')
-	end
-end
-
-function Addon:Print(...)
-	return print('|cffFFBA00'.. ADDON .. '|r:', ...)
 end

@@ -1,8 +1,7 @@
 <Ui xmlns="http://www.blizzard.com/wow/ui/">
-	<Script file="item.lua"/>
-	<Script file="itemFrame.lua"/>
-	<Script file="bag.lua"/>
-	<Script file="money.lua"/>
+	<Include file="templates.xml"/>
+	<Include file="frame.xml"/>
+
 	<Script file="playerDropdown.lua"/>
 	<Script file="qualityFilterButton.lua"/>
 	<Script file="qualityFilter.lua"/>
@@ -10,5 +9,4 @@
 	<Script file="sideFilter.lua"/>
 	<Script file="bottomFilter.lua"/>
 	<Script file="frame.lua"/>
-	<Script file="tooltips.lua"/>
 </Ui>
