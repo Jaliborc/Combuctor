@@ -23,7 +23,6 @@ end
 function QualityFilter:New(parent)
 	local f = self:Bind(CreateFrame('Frame', nil, parent))
 	f:SetSize(FilterButton.SIZE * 7, FilterButton.SIZE)
-	f.selected = 0
 
 	f:AddQualityButton(0)
 	f:AddQualityButton(1)
@@ -52,22 +51,21 @@ end
 --[[ API ]]--
 
 function QualityFilter:SetQuality(flag)
-	self.selected = flag
+	self:GetProfile().filters.quality = flag
+	self:SendMessage(self:GetFrameID() .. '_FILTERS_CHANGED')
 	self:UpdateHighlight()
 end
 
 function QualityFilter:AddQuality(flag)
-	self.selected = self.selected + flag
-	self:UpdateHighlight()
+	self:SetQuality(self:GetQuality() + flag)
 end 
 
 function QualityFilter:RemoveQuality(flag)
-	self.selected = self.selected - flag
-	self:UpdateHighlight()
+	self:SetQuality(self:GetQuality() - flag)
 end
 
 function QualityFilter:GetQuality()
-	return self.selected
+	return self:GetProfile().filters.quality or 0
 end
 
 function QualityFilter:UpdateHighlight()

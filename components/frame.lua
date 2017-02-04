@@ -28,16 +28,13 @@ function Frame:New(id)
 	f.qualityFilter = Addon.QualityFilter:New(f)
 	f.qualityFilter:SetPoint('BOTTOMLEFT', 10, 4)
 
-	--[[
-	f.filter = {quality = 0}
-
-	f.sideFilter = Addon.SideFilter:New(f, f:IsSideFilterOnLeft())
+	f.sideFilter = Addon.SideFilter:New(f)
 	f.bottomFilter = Addon.BottomFilter:New(f)
 
-	f.itemFrame = Addon.ItemFrame:New(f, bags)
+	f.itemFrame = Addon.ItemFrame:New(f, self.Bags)
 	f.itemFrame:SetPoint('TOPLEFT', 10, -64)
 
-	f:SetWidth(settings.w or BASE_WIDTH)
+	--[[f:SetWidth(settings.w or BASE_WIDTH)
 	f:SetHeight(settings.h or BASE_HEIGHT)]]--
 
 	f:Hide()
@@ -108,6 +105,9 @@ function Frame:Update()
 		-- magic here
 		self:SetPoint('TOP')
 	end
+end
+
+function Frame:UpdateSize()
 end
 
 

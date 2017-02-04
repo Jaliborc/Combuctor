@@ -8,5 +8,7 @@
 	<Script file="sideFilterButton.lua"/>
 	<Script file="sideFilter.lua"/>
 	<Script file="bottomFilter.lua"/>
+
 	<Script file="frame.lua"/>
+	<Script file="inventory.lua"/>
 </Ui>
