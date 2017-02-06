@@ -8,10 +8,8 @@
 ## Version: 7.0.0
 
 libs\libs.xml
-
-common\localization\localization.xml
-common\core\core.xml
-common\components\components.xml
+common\Wildpants.xml
 
 components\components.xml
+style.xml
 main.lua

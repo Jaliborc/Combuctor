@@ -22,20 +22,23 @@ function Frame:New(id)
 	f.shownCount = 0
 	f.frameID = id
 
+	f.sortButton = Addon.SortButton:New(f)
+	f.sortButton:SetPoint('LEFT', f.searchBox, 'RIGHT', 9, -1)
+
+	f.bagToggle = Addon.BagToggle:New(f)
+	f.bagToggle:SetPoint('LEFT', f.sortButton, 'RIGHT', 7, 0)
+
 	f.moneyFrame = Addon.MoneyFrame:New(f)
 	f.moneyFrame:SetPoint('BOTTOMRIGHT', -8, 4)
 
 	f.qualityFilter = Addon.QualityFilter:New(f)
 	f.qualityFilter:SetPoint('BOTTOMLEFT', 10, 4)
 
-	f.sideFilter = Addon.SideFilter:New(f)
-	f.bottomFilter = Addon.BottomFilter:New(f)
+	--[[f.sideFilter = Addon.SideFilter:New(f)
+	f.bottomFilter = Addon.BottomFilter:New(f)--]]
 
 	f.itemFrame = Addon.ItemFrame:New(f, self.Bags)
 	f.itemFrame:SetPoint('TOPLEFT', 10, -64)
-
-	--[[f:SetWidth(settings.w or BASE_WIDTH)
-	f:SetHeight(settings.h or BASE_HEIGHT)]]--
 
 	f:Hide()
 	f:SetScript('OnShow', self.OnShow)
@@ -104,68 +107,20 @@ function Frame:Update()
 	if self:IsVisible() then
 		-- magic here
 		self:SetPoint('TOP')
+		self:UpdateTitle()
 	end
 end
 
+function Frame:UpdateTitle()
+	self.title:SetFormattedText(self.Title, self:GetPlayer())
+end
+
 function Frame:UpdateSize()
+	self.itemFrame:RequestLayout()
 end
 
 
 --[[ Components Frame Events ]]--
-
-function Frame:OnSortButtonEnter()
-	GameTooltip:SetOwner(self.sortButton)
-	GameTooltip:SetText(BAG_CLEANUP_BAGS, 1,1,1)
-
-	if self:IsBank() then
-		GameTooltip:AddLine(L.TipDepositReagents)
-		GameTooltip:AddLine(L.TipCleanBank)
-	else
-		GameTooltip:AddLine(L.TipCleanBags)
-	end
-
-	GameTooltip:Show()
-end
-
-function Frame:OnSortButtonClick(button)
-	if button == 'RightButton' then
-		DepositReagentBank()
-	else
-		SetSortBagsRightToLeft(true)
-
-		if self:IsBank() then
-			SortReagentBankBags()
-			SortBankBags()
-		else
-			SortBags()
-		end
-	end
-end
-
-function Frame:OnBagToggleEnter()
-	GameTooltip:SetOwner(self.bagToggle, 'ANCHOR_LEFT')
-	GameTooltip:SetText(L.TipBags, 1, 1, 1)
-	GameTooltip:AddLine(L.TipShowBags)
-
-	if self:IsBank() then
-		GameTooltip:AddLine(L.TipShowInventory)
-	else
-		GameTooltip:AddLine(L.TipShowBank)
-	end
-
-	GameTooltip:Show()
-end
-
-function Frame:OnBagToggleClick(button)
-	if button == 'LeftButton' then
-		_G[self.bagToggle:GetName() .. 'Icon']:SetTexCoord(0.075, 0.925, 0.075, 0.925)
-		self:ToggleBags()
-	elseif self:IsBank() then
-		Addon:ToggleFrame('inventory')
-	else
-		Addon:ToggleFrame('bank')
-	end
-end
 
 function Frame:OnPortraitEnter()
 	GameTooltip:SetOwner(self.portraitButton, 'ANCHOR_RIGHT')
@@ -184,6 +139,7 @@ end
 function Frame:SetPlayer(player)
 	self.player = player
 	self:SendMessage(self.frameID .. '_PLAYER_CHANGED')
+	self:UpdateTitle()
 end
 
 function Frame:GetPlayer()

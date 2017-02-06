@@ -1,4 +1,128 @@
 <Ui xmlns="http://www.blizzard.com/wow/ui/">
+	<Button name="CombuctorPortraitButtonTemplate" virtual="true">
+		<Size x="64" y="64"/>
+		<Anchors>
+			<Anchor point="TOPLEFT">
+				<Offset x="-8" y="8"/>
+			</Anchor>
+		</Anchors>
+
+		<Scripts>
+			<OnLoad>
+				self:RegisterForClicks("anyUp")
+				self.portrait = self:GetParent().portrait
+				self.portrait:ClearAllPoints()
+				self.portrait:SetPoint("CENTER", self)
+			</OnLoad>
+			<OnEvent>
+				if (self:IsShown() and arg1 == "player") then
+					SetPortraitTexture(self.portrait, arg1)
+				end
+			</OnEvent>
+			<OnShow>
+				SetPortraitTexture(self.portrait, "player")
+				self:RegisterEvent("UNIT_PORTRAIT_UPDATE")
+			</OnShow>
+			<OnHide>
+				self:UnregisterEvent("UNIT_PORTRAIT_UPDATE")
+			</OnHide>
+			<OnMouseDown>
+				self.portrait:SetSize(56, 56)
+				self.portrait:SetTexCoord(0.075, 0.925, 0.075, 0.925)
+			</OnMouseDown>
+			<OnMouseUp>
+				self.portrait:SetSize(62, 62)
+				self.portrait:SetTexCoord(0, 1, 0, 1)
+			</OnMouseUp>
+			<OnClick>
+				if Combuctor.TogglePlayerDropdown then
+					Combuctor:TogglePlayerDropdown(self, self:GetParent(), 15, 10)
+				end
+			</OnClick>
+			<OnEnter>
+				if Combuctor.TogglePlayerDropdown then
+					self:GetParent():OnPortraitEnter()
+				end
+			</OnEnter>
+			<OnLeave>
+				GameTooltip:Hide()
+			</OnLeave>
+		</Scripts>
+
+		<HighlightTexture alphaMode="ADD" file="Interface\Minimap\UI-Minimap-ZoomButton-Highlight">
+			<Size x="78" y="78"/>
+			<Anchors>
+				<Anchor point="CENTER"/>
+			</Anchors>
+		</HighlightTexture>
+	</Button>
+
+	<EditBox name="CombuctorSearchBoxTemplate" autoFocus="false" inherits="SearchBoxTemplate" virtual="true">
+		<Size x="0" y="20"/>
+
+		<Anchors>
+			<Anchor point="TOPLEFT">
+				<Offset x="70" y="-32"/>
+			</Anchor>
+			<Anchor point="TOPRIGHT">
+				<Offset x="-80" y="-32"/>
+			</Anchor>
+		</Anchors>
+
+		<Scripts>
+			<OnEnterPressed>
+				self:ClearFocus()
+			</OnEnterPressed>
+			<OnTextChanged>
+				local text = self:GetText()
+
+				if not self:HasFocus() then
+					SearchBoxTemplate_OnEditFocusLost(self)
+					self.Instructions:SetShown(text == '')
+				end
+
+				self:GetParent():OnSearchTextChanged(text ~= '' and text:lower() or nil)
+			</OnTextChanged>
+			<OnEditFocusLost>
+				self:HighlightText(0, 0)
+				self.Instructions:SetShown(self:GetText() == '')
+				SearchBoxTemplate_OnEditFocusLost(self)
+			</OnEditFocusLost>
+			<OnEditFocusGained>
+				self:HighlightText()
+				self.Instructions:Hide()
+				SearchBoxTemplate_OnEditFocusGained(self)
+			</OnEditFocusGained>
+		</Scripts>
+	</EditBox>
+
+	<Button name="CombuctorDragFrameTemplate" topLevel="true" virtual="true" text="TEXT">
+		<Size x="262" y="14"/>
+
+		<Scripts>
+			<OnLoad>
+				self:RegisterForDrag('LeftButton')
+				self:SetPoint('TOP', self:GetParent().TitleText)
+			</OnLoad>
+			<OnMouseDown>
+		        if self:GetParent().sets.position then
+		          self.isMoving = true
+		          self:GetParent():StartMoving()
+		        end
+			</OnMouseDown>
+			<OnMouseUp>
+				if self.isMoving then
+					self.isMoving = nil
+					self:GetParent():StopMovingOrSizing()
+					self:GetParent():SavePosition(self:GetParent():GetPoint())
+				end
+			</OnMouseUp>
+		</Scripts>
+
+		<NormalFont style="GameFontNormal"/>
+		<HighlightFont style="GameFontHighlight"/>
+	</Button>
+
 	<Frame name="CombuctorFrameTemplate" resizable="true" clampedToScreen="true" enableMouse="true" movable="true" topLevel="true" frameStrata="HIGH" parent="UIParent" hidden="true" inherits="ButtonFrameTemplate" virtual="true">
 		<Size x="300" y="400"/>
 
@@ -49,18 +173,6 @@
 			<Button parentKey="title" name="$parentTitle" inherits="CombuctorDragFrameTemplate"/>
 			<EditBox parentKey="searchBox" name="$parentSearchBox" inherits="CombuctorSearchBoxTemplate"/>
 			<Button parentKey="portraitButton" name="$parentPortraitButton" inherits="CombuctorPortraitButtonTemplate"/>
-			
-			<Button parentKey="sortButton" name="$parentSortButton" inherits="CombuctorSortButtonTemplate">
-				<Anchors>
-					<Anchor point="LEFT" relativeTo="$parentSearchBox" relativePoint="RIGHT" x="9" y="-1"/>
-				</Anchors>
-			</Button>
-
-			<Button parentKey="bagToggle" name="$parentBagToggle" inherits="CombuctorBagToggleTemplate">
-				<Anchors>
-					<Anchor point="LEFT" relativeTo="$parentSortButton" relativePoint="RIGHT" x="7"/>
-				</Anchors>
-			</Button>
 
 			<Button name="$parentResize">
 				<Size x="16" y="16"/>

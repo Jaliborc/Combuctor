@@ -1,14 +1,12 @@
 <Ui xmlns="http://www.blizzard.com/wow/ui/">
-	<Include file="templates.xml"/>
-	<Include file="frame.xml"/>
-
-	<Script file="playerDropdown.lua"/>
 	<Script file="qualityFilterButton.lua"/>
 	<Script file="qualityFilter.lua"/>
 	<Script file="sideFilterButton.lua"/>
 	<Script file="sideFilter.lua"/>
 	<Script file="bottomFilter.lua"/>
 
+	<Include file="frame.xml"/>
 	<Script file="frame.lua"/>
+	<Script file="bank.lua"/>
 	<Script file="inventory.lua"/>
 </Ui>

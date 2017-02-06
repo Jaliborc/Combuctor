@@ -23,6 +23,7 @@ end
 function QualityFilter:New(parent)
 	local f = self:Bind(CreateFrame('Frame', nil, parent))
 	f:SetSize(FilterButton.SIZE * 7, FilterButton.SIZE)
+	f.selection = 0
 
 	f:AddQualityButton(0)
 	f:AddQualityButton(1)
@@ -47,29 +48,29 @@ function QualityFilter:AddQualityButton(quality, color)
 	self.prev = button
 end
 
-
---[[ API ]]--
-
-function QualityFilter:SetQuality(flag)
-	self:GetProfile().filters.quality = flag
-	self:SendMessage(self:GetFrameID() .. '_FILTERS_CHANGED')
-	self:UpdateHighlight()
-end
-
-function QualityFilter:AddQuality(flag)
-	self:SetQuality(self:GetQuality() + flag)
-end 
-
-function QualityFilter:RemoveQuality(flag)
-	self:SetQuality(self:GetQuality() - flag)
-end
-
-function QualityFilter:GetQuality()
-	return self:GetProfile().filters.quality or 0
-end
-
 function QualityFilter:UpdateHighlight()
 	for i = 1, select('#', self:GetChildren()) do
 		select(i, self:GetChildren()):UpdateHighlight()
 	end
+end
+
+
+--[[ API ]]--
+
+function QualityFilter:SetQuality(flags)
+	self.selection = flags
+	self:SendMessage(self:GetFrameID() .. '_FILTERS_CHANGED')
+	self:UpdateHighlight()
+end
+
+function QualityFilter:AddQuality(flags)
+	self:SetQuality(self.selection + flags)
+end 
+
+function QualityFilter:RemoveQuality(flags)
+	self:SetQuality(self.selection - flags)
+end
+
+function QualityFilter:IsSelected(quality)
+	return bit.band(self.selection, self.Flags[quality] or 0) > 0
 end

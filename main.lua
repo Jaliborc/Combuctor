@@ -5,31 +5,18 @@
 
 local ADDON, Addon = ...
 _G[ADDON] = Addon
-Addon.frames = {}
 
 
 --[[ Startup ]]--
 
 function Addon:OnEnable()
 	self:StartupSettings()
-	self:RegisterEvents()
+	self:SetupAutoDisplay()
+	self:AddSlashCommands(ADDON:lower(), 'cbt')
 	self:HookTooltips()
-	self:HookDefaultDisplayFunctions()
 
 	self:CreateFrame('inventory')
 	self:CreateOptionsLoader()
-	self:AddSlashCommands(ADDON:lower(), 'cbt')
-end
-
-function Addon:CreateFrameLoader(module, method)
-	local addon = ADDON .. '_' .. module
-	if GetAddOnEnableState(UnitName('player'), addon) >= 2 then
-		_G[method] = function()
-			if LoadAddOn(addon) then
-				self:GetModule(module):OnOpen()
-			end
-		end
-	end
 end
 
 function Addon:CreateOptionsLoader()
@@ -49,32 +36,24 @@ function Addon:ShowOptions()
 end
 
 
---[[ Bank Display ]]--
+--[[ Item Frame ]]--
 
-function Addon:RegisterEvents()
-	self:RegisterEvent('BANKFRAME_CLOSED')
-	self:RegisterMessage('BANK_OPENED')
-	BankFrame:UnregisterAllEvents()
+function Addon.ItemFrame:LayoutTraits()
+	local profile = self:GetProfile()
+	local w = self:GetFrame():GetWidth() - 20
+
+	local buttonSpace = (37 + profile.spacing) * profile.itemScale
+	local emptySpace = w % buttonSpace
+
+	local numCollumns = floor(w / buttonSpace)
+	local fillScale = emptySpace / numCollumns / buttonSpace
+
+	return numCollumns, (37 + profile.spacing), profile.itemScale + fillScale
 end
 
-function Addon:BANK_OPENED()
-	if self:GetFrame('bank') then
-		self:GetFrame('bank'):SetPlayer(nil)
-	end
-	
-	self.Cache.AtBank = true
-	self:ShowFrame('bank')
+function Addon.ItemFrame:IsShowingItem(bag, slot)
+	local frame = self:GetFrame()
+	local icon, count, locked, quality, readable, lootable, link  = Addon.Cache:GetItemInfo(self:GetPlayer(), bag, slot)
 
-	if self.sets.displayBank then
-		self:ShowFrame('inventory')
-	end
-end
-
-function Addon:BANKFRAME_CLOSED()
-	self.Cache.AtBank = nil
-	self:HideFrame('bank')
-
-	if self.sets.closeBank then
-		self:HideFrame('inventory')
-	end
+	return frame.qualityFilter.selection == 0 or frame.qualityFilter:IsSelected(quality)
 end

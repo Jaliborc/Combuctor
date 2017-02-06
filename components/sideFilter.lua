@@ -10,87 +10,73 @@ local SideFilter = Addon:NewClass('SideFilter', 'Frame')
 
 --[[ Constructor ]]--
 
-function SideFilter:New(parent, reversed)
+function SideFilter:New(parent)
 	local f = self:Bind(CreateFrame('Frame', nil, parent))
 
-	--metatable magic for button creation on demand
-	f.buttons = setmetatable({}, {__index = function(t, k)
-		local b = FilterButton:New(f, f:Reversed())
-		t[k] = b
+	f:SetScript('OnShow', f.RegisterEvents)
+	f:SetScript('OnHide', f.UnregisterEvents)
+	f.buttons = setmetatable({}, {__index = function(t, k) -- button creation on demand
+		t[k] = FilterButton:New(f)
 
-    if k > 1 then
-      b:SetPoint('TOPLEFT', t[k-1], 'BOTTOMLEFT', 0, -17)
-    end
+    	if k > 1 then
+      		t[k]:SetPoint('TOPLEFT', t[k-1], 'BOTTOMLEFT', 0, -17)
+    	end
   
-		return b
+		return t[k]
 	end})
 
-	f:SetReversed(reversed)
 	return f
+end
+
+function SideFilter:RegisterEvents()
+	self:RegisterMessage('SETS_CHANGED', 'Update')
+	self:Update()
 end
 
 
 --[[ Update ]]--
 
-function SideFilter:UpdateFilters()
-	local numFilters = 0
-	local parent = self:GetParent()
+function SideFilter:Update()
+	self:UpdateButtons()
+	self:UpdateSide()
+end
 
-	for _,set in Combuctor('Sets'):GetParentSets() do
-		if parent:HasSet(set.name) then
-			numFilters = numFilters + 1
-			self.buttons[numFilters]:Set(set)
+function SideFilter:UpdateButtons()
+	local sets = self:GetProfile().sets
+	local i = 0
+
+	for _, id in ipairs(sets) do
+		local set = Addon.Sets:Get(id)
+		if set then
+			local button = self.buttons[i]
+			button:UpdateHighlight()
+			button:SetFilter(set)
+			button:Show()
+
+			i = i + 1
 		end
 	end
 
-	--show only used buttons
-	if numFilters > 1 then
-		for i = 1, numFilters do
-			self.buttons[i]:Show()
-		end
+	if i > 1 then -- if one filter, hide all
+		i = i + 1
+	end 
 
-		for i = numFilters + 1, #self.buttons do
-			self.buttons[i]:Hide()
-		end
+	for k = i, #self.buttons do
+		self.buttons[k]:Hide()
+	end
+end
 
-		self:UpdateHighlight()
-		self:Show()
-	--at most one filter active, hide all side buttons
+function SideFilter:UpdateSide()
+	local first = self.buttons[1]
+	first:ClearAllPoints()
+
+	if self:GetProfile().reversedTabs then
+ 		first:SetPoint('TOPRIGHT', self:GetParent(), 'TOPLEFT', 0, -80)
 	else
-		self:Hide()
+ 		first:SetPoint('TOPLEFT', self:GetParent(), 'TOPRIGHT', 0, -40)
 	end
-end
-
-function SideFilter:UpdateHighlight()
-	local category = self:GetParent():GetCategory()
-
-	for _,button in pairs(self.buttons) do
-		if button:IsShown() then
-			button:UpdateHighlight(category)
-		end
-	end
-end
-
-
---[[ Reversed ]]--
-
-function SideFilter:SetReversed(reversed)
-  local first = self.buttons[1]
-  first:ClearAllPoints()
-
-  if reversed then
-    first:SetPoint('TOPRIGHT', self:GetParent(), 'TOPLEFT', 0, -80)
-  else
-    first:SetPoint('TOPLEFT', self:GetParent(), 'TOPRIGHT', 0, -40)
-  end
 
 	for i, button in pairs(self.buttons) do
 		button:SetReversed(reversed)
 	end
-
-  self.reversed = reversed
-end
-
-function SideFilter:Reversed()
-	return self.reversed
 end
