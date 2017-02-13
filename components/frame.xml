@@ -41,7 +41,10 @@
 			</OnClick>
 			<OnEnter>
 				if Combuctor.TogglePlayerDropdown then
-					self:GetParent():OnPortraitEnter()
+					GameTooltip:SetOwner(self, 'ANCHOR_RIGHT')
+					GameTooltip:SetText(self:GetParent():GetPlayer(), 1, 1, 1)
+					GameTooltip:AddLine(LibStub('AceLocale-3.0'):GetLocale('Combuctor').TipChangePlayer)
+					GameTooltip:Show()
 				end
 			</OnEnter>
 			<OnLeave>
@@ -96,7 +99,7 @@
 		</Scripts>
 	</EditBox>
 
-	<Button name="CombuctorDragFrameTemplate" topLevel="true" virtual="true" text="TEXT">
+	<Button name="CombuctorDragFrameTemplate" virtual="true" text="TEXT">
 		<Size x="262" y="14"/>
 
 		<Scripts>

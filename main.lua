@@ -40,7 +40,7 @@ end
 
 function Addon.ItemFrame:LayoutTraits()
 	local profile = self:GetProfile()
-	local w = self:GetFrame():GetWidth() - 20
+	local w = self:GetFrame():GetWidth() - (profile.showBags and 59 or 23)
 
 	local buttonSpace = (37 + profile.spacing) * profile.itemScale
 	local emptySpace = w % buttonSpace

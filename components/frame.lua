@@ -37,8 +37,11 @@ function Frame:New(id)
 	--[[f.sideFilter = Addon.SideFilter:New(f)
 	f.bottomFilter = Addon.BottomFilter:New(f)--]]
 
+	f.bagFrame = Addon.BagFrame:New(f, 'TOP', 0, -36)
+	f.bagFrame:SetPoint('TOPRIGHT', -12, -66)
+
 	f.itemFrame = Addon.ItemFrame:New(f, self.Bags)
-	f.itemFrame:SetPoint('TOPLEFT', 10, -64)
+	f.itemFrame:SetPoint('TOPLEFT', 12, -66)
 
 	f:Hide()
 	f:SetScript('OnShow', self.OnShow)
@@ -81,6 +84,8 @@ end
 function Frame:OnShow()
 	PlaySound(self.OpenSound)
 	self:RegisterMessage('UPDATE_ALL', 'Update')
+	self:RegisterFrameMessage('PLAYER_CHANGED', 'UpdateTitle')
+	self:RegisterFrameMessage('BAG_FRAME_TOGGLED', 'UpdateItems')
 	self:Update()
 end
 
@@ -93,7 +98,7 @@ function Frame:OnHide()
 	end
 
 	if Addon.sets.resetPlayer then
-		self:SetPlayer(nil)
+		self.player = nil
 	end
 end
 
@@ -108,26 +113,21 @@ function Frame:Update()
 		-- magic here
 		self:SetPoint('TOP')
 		self:UpdateTitle()
+		self:UpdateItems()
 	end
 end
 
 function Frame:UpdateTitle()
 	self.title:SetFormattedText(self.Title, self:GetPlayer())
+	self.title:SetWidth(self.title:GetTextWidth())
 end
 
-function Frame:UpdateSize()
+function Frame:UpdateItems()
 	self.itemFrame:RequestLayout()
 end
 
 
 --[[ Components Frame Events ]]--
-
-function Frame:OnPortraitEnter()
-	GameTooltip:SetOwner(self.portraitButton, 'ANCHOR_RIGHT')
-	GameTooltip:SetText(self:GetPlayer(), 1, 1, 1)
-	GameTooltip:AddLine(L.TipChangePlayer)
-	GameTooltip:Show()
-end
 
 function Frame:OnSearchTextChanged(text)
 
@@ -136,22 +136,20 @@ end
 
 --[[ Shared ]]--
 
-function Frame:SetPlayer(player)
-	self.player = player
-	self:SendMessage(self.frameID .. '_PLAYER_CHANGED')
-	self:UpdateTitle()
-end
-
-function Frame:GetPlayer()
-	return self.player or UnitName('player')
-end
-
 function Frame:GetProfile()
 	return Addon:GetProfile(self.player)[self.frameID]
 end
 
 function Frame:IsCached()
 	return Addon:IsBagCached(self.player, self.Bags[1])
+end
+
+function Frame:GetPlayer()
+	return self.player or UnitName('player')
+end
+
+function Frame:GetFrameID()
+	return self.frameID
 end
 
 function Frame:IsBank()
