@@ -56,9 +56,9 @@ function Addon.ItemFrame:IsShowingItem(bag, slot)
 	local player = self:GetPlayer()
 	local icon, count, locked, quality, readable, lootable, link  = Addon.Cache:GetItemInfo(player, bag, slot)
 
-	local filter = Addon:GetSet(frame.sideFilter.selection)
+	local filter = Addon.Filters:Get(frame.sideFilter.selection)
 	if filter and filter.rule then
-		if not filter.rule(Addon:GetBagFamily(player, bag), link, count) then
+		if not filter.rule(link, count, Addon:GetBagFamily(player, bag)) then
 			return
 		end
 	end

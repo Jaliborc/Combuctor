@@ -1,66 +1,65 @@
 --[[
-	sets.lua
-		Methods for registering and acessing item sets.
+	filters.lua
+		Methods for registering and acessing item filters.
 		See ??? for details.
 --]]
 
 
 local ADDON, Addon = ...
-local Sets = {}
+local Filters = Addon:NewClass('Filters', 'Frame')
+Filters.registry = {}
 
 
---[[ Registry ]]--
+--[[ Public API ]]--
 
-function Addon:RegisterSet(id, icon, rule)
-	assert(id, 'No unique ID specified for set')
-	assert(icon, 'No icon specified for set')
+function Filters:New(id, name, icon, rule)
+	assert(id, 'No unique ID specified for filter')
 
-	local set = Sets[id] or {children = {}}
-	set.icon = icon
-	set.rule = rule
-	Sets[id] = set
+	local parent, id = self:SplitID(id)
+	local registry = self.registry
 
-	self:SendMessage('SETS_CHANGED')
+	if parent then
+		parent = self:Get(parent)
+		assert(parent, 'Specified parent filter is not know')
+		registry = parent.children
+	end
+
+	local filter = registry[id] or {children = {}}
+	filter.name = name or id
+	filter.icon = icon
+	filter.rule = rule
+	registry[id] = filter
+
+	self:SetScript('OnUpdate', self.BroadcastAddition)
 end
 
-function Addon:RegisterSubset(id, subid, rule)
-	assert(id, 'No set ID specified for subset')
-	assert(subid, 'No unique ID specified for subset')
-	assert(Sets[id], 'Specified set ID is not registered')
-
-	Sets[id].children[subid] = rule or true
-	
-	self:SendMessage('SETS_CHANGED')
-end
-
-function Addon:UnregisterSet(id, subid)
-	assert(id, 'No set ID specified for operation')
-
-	if subid then
-		assert(Sets[id], 'Specified set ID is not registered')
-		Sets[id].children[subid] = nil
+function Filters:Get(id)
+	local parent, id = self:SplitID(id)
+	if parent then
+		parent = self:Get(parent)
+		return parent and parent.children[id]
 	else
-		Sets[id] = nil
+		return self.registry[id]
 	end
+end
 
-	self:SendMessage('SETS_CHANGED')
+function Filters:Iterate()
+	return pairs(self.registry)
 end
 
 
---[[ Queries ]]--
+--[[ Additional Methods ]]--
 
-function Addon:GetSet(id, subid)
-	local set = id and Sets[id]
-	if subid then
-		return set and set.children[subid]
+function Filters:SplitID(id)
+	local parent, child = id:match('^(.+)/(.-)$')
+	if parent then
+		return parent, child
+	else
+		return nil, id
 	end
-	return set
 end
 
-function Addon:IterateSets(id)
-	if id then
-		assert(Sets[id], 'Specified set ID is not registered')
-		return pairs(Sets[id].children)
-	end
-	return pairs(Sets)
+function Filters:BroadcastAddition()
+	self:SetScript('OnUpdate', nil)
+	self:SendMessage('FILTERS_ADDED')
 end

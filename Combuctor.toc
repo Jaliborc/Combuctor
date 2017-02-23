@@ -12,5 +12,5 @@ common\Wildpants.xml
 
 components\components.xml
 style.xml
-sets.lua
+filters.lua
 main.lua

@@ -22,7 +22,7 @@ end
 
 function SideFilter:RegisterEvents()
 	self:RegisterMessage('UPDATE_ALL', 'Update')
-	self:RegisterMessage('SETS_CHANGED', 'UpdateContent')
+	self:RegisterMessage('FILTERS_ADDED', 'UpdateContent')
 	self:Update()
 end
 
@@ -35,27 +35,35 @@ function SideFilter:Update()
 end
 
 function SideFilter:UpdateContent()
-	local i = 0
+	local filters = self:GetProfile().filters
+	local i, k = 0, 1
 
-	for id, set in Addon:IterateSets() do
-		if i == 0 and not self.selection then -- default selection
-			self.selection = id
+	while filters[k] do
+		local id = filters[k]
+		local filter = Addon.Filters:Get(id)
+
+		if filter then
+			if i == 0 and not self.selection then -- default selection
+				self.selection = id
+			end
+
+			local button = self.buttons[i] or self.Button:New(self)
+			button:SetPoint('TOPLEFT', self.buttons[i-1], 'BOTTOMLEFT', 0, -17)
+			button:Setup(id, filter.icon, filter.name)
+
+			self.buttons[i] = button
+			i = i + 1
 		end
 
-		local button = self.buttons[i] or self.Button:New(self)
-		button:SetPoint('TOPLEFT', self.buttons[i-1], 'BOTTOMLEFT', 0, -17)
-		button:Setup(id, set.icon, set.name)
-
-		self.buttons[i] = button
-		i = i + 1
+		k = k + 1
 	end
 
 	if i > 1 then -- if one filter, hide all
 		i = i + 1
 	end 
 
-	for k = i, #self.buttons do
-		self.buttons[k]:Hide()
+	for j = i, #self.buttons do
+		self.buttons[j]:Hide()
 	end
 end
 
