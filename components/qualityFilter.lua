@@ -59,7 +59,7 @@ end
 
 function QualityFilter:SetQuality(flags)
 	self.selection = flags
-	self:SendMessage(self:GetFrameID() .. '_FILTERS_CHANGED')
+	self:SendFrameMessage('FILTERS_CHANGED')
 	self:UpdateHighlight()
 end
 

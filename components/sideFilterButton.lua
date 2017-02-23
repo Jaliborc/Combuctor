@@ -3,20 +3,20 @@
 		The elements of the side filter
 --]]
 
-local AddonName, Addon = ...
-local SideFilterButton = Addon:NewClass('SideFilterButton', 'CheckButton')
+local ADDON, Addon = ...
+local SideButton = Addon:NewClass('SideFilterButton', 'CheckButton')
 local id = 1
 
 
 --[[ Constructor ]]--
 
-function SideFilterButton:New(parent, reversed)
-	local b = self:Bind(CreateFrame('CheckButton', 'CombuctorSideButton' .. id, parent, 'CombuctorSideTabButtonTemplate'))
+function SideButton:New(parent)
+	local b = self:Bind(CreateFrame('CheckButton', ADDON .. 'SideFilterButton' .. id, parent, ADDON .. 'SideButtonTemplate'))
 	b:GetNormalTexture():SetTexCoord(0.06, 0.94, 0.06, 0.94)
+	b:SetScript('OnHide', b.UnregisterEvents)
 	b:SetScript('OnClick', b.OnClick)
 	b:SetScript('OnEnter', b.OnEnter)
 	b:SetScript('OnLeave', b.OnLeave)
-	b:SetReversed(reversed)
 
 	id = id + 1
 	return b
@@ -25,51 +25,50 @@ end
 	
 --[[ Frame Events ]]--
 
-function SideFilterButton:OnClick()
-	self:GetParent():GetParent():SetCategory(self.set.name)
+function SideButton:OnClick()
+	self:GetParent().selection = self.id
+	self:SendFrameMessage('FILTERS_CHANGED')
 end
 
-function SideFilterButton:OnEnter()
-	GameTooltip:SetOwner(self, 'ANCHOR_RIGHT')
-	GameTooltip:SetText(self.set.name)
+function SideButton:OnEnter()
+	if self:GetRight() > (GetScreenWidth() / 2) then
+		GameTooltip:SetOwner(self, 'ANCHOR_LEFT')
+	else
+		GameTooltip:SetOwner(self, 'ANCHOR_RIGHT')
+	end
+
+	GameTooltip:SetText(self.name)
 	GameTooltip:Show()
 end
 
-function SideFilterButton:OnLeave()
+function SideButton:OnLeave()
 	GameTooltip:Hide()
-end
-
-function SideFilterButton:Set(set)
-	self.set = set
-	self:SetNormalTexture(set.icon)
 end
 
 
 --[[ Update ]]--
 
-function SideFilterButton:UpdateHighlight(setName)
-	self:SetChecked(self.set.name == setName)
+function SideButton:Setup(id, icon, name)
+	self.id, self.name = id, name or id
+	self:RegisterFrameMessage('FILTERS_CHANGED', 'UpdateHighlight')
+	self:SetNormalTexture(icon)
+	self:UpdateOrientation()
+	self:UpdateHighlight()
+	self:Show()
 end
 
+function SideButton:UpdateOrientation()
+	self.border:ClearAllPoints()
 
---[[ Reversed ]]--
-
-function SideFilterButton:SetReversed(reversed)
-	local border = _G[self:GetName() .. 'Border']
-	border:ClearAllPoints()
-
-	if reversed then
-		border:SetTexCoord(1, 0, 0, 1)
-		border:SetPoint('TOPRIGHT', 3, 11)
+	if self:GetProfile().reversedTabs then
+		self.border:SetTexCoord(1, 0, 0, 1)
+		self.border:SetPoint('TOPRIGHT', 3, 11)
 	else
-		border:SetTexCoord(0, 1, 0, 1)
-		border:ClearAllPoints()
-		border:SetPoint('TOPLEFT', -3, 11)
+		self.border:SetTexCoord(0, 1, 0, 1)
+		self.border:SetPoint('TOPLEFT', -3, 11)
 	end
-
-  self.reversed = reversed
 end
 
-function SideFilterButton:Reversed()
-	return self.reversed
+function SideButton:UpdateHighlight()
+	self:SetChecked(self:GetParent().selection == self.id)
 end

@@ -34,8 +34,8 @@ function Frame:New(id)
 	f.qualityFilter = Addon.QualityFilter:New(f)
 	f.qualityFilter:SetPoint('BOTTOMLEFT', 10, 4)
 
-	--[[f.sideFilter = Addon.SideFilter:New(f)
-	f.bottomFilter = Addon.BottomFilter:New(f)--]]
+	f.sideFilter = Addon.SideFilter:New(f)
+	--f.bottomFilter = Addon.BottomFilter:New(f)
 
 	f.bagFrame = Addon.BagFrame:New(f, 'TOP', 0, -36)
 	f.bagFrame:SetPoint('TOPRIGHT', -12, -66)
