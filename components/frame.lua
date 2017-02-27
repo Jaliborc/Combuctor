@@ -46,6 +46,7 @@ function Frame:New(id)
 	f:Hide()
 	f:SetScript('OnShow', self.OnShow)
 	f:SetScript('OnHide', self.OnHide)
+	f:SetScript('OnSizeChanged', self.UpdateItems)
 	f:SetMinResize(BASE_WIDTH, BASE_HEIGHT)
 
 	tinsert(UISpecialFrames, f:GetName())

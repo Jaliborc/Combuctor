@@ -15,6 +15,7 @@ function SideFilter:New(parent)
 	f:SetScript('OnShow', f.RegisterEvents)
 	f:SetScript('OnHide', f.UnregisterEvents)
 	f.buttons = {[-1] = f}
+	f.selection = 'all'
 	f:SetSize(50, 30)
 
 	return f
@@ -35,35 +36,46 @@ function SideFilter:Update()
 end
 
 function SideFilter:UpdateContent()
-	local filters = self:GetProfile().filters
-	local i, k = 0, 1
+	self:FindFilters()
+	self:UpdateButtons()
+end
 
-	while filters[k] do
-		local id = filters[k]
-		local filter = Addon.Filters:Get(id)
+function SideFilter:FindFilters()
+	local profile = self:GetProfile()
+	local sorted = {}
 
-		if filter then
-			if i == 0 and not self.selection then -- default selection
-				self.selection = id
-			end
-
-			local button = self.buttons[i] or self.Button:New(self)
-			button:SetPoint('TOPLEFT', self.buttons[i-1], 'BOTTOMLEFT', 0, -17)
-			button:Setup(id, filter.icon, filter.name)
-
-			self.buttons[i] = button
-			i = i + 1
-		end
-
-		k = k + 1
+	for i, id in ipairs(profile.filters) do
+		sorted[id] = true
 	end
 
-	if i > 1 then -- if one filter, hide all
-		i = i + 1
+	for id, filter in Addon.Filters:Iterate() do
+		if not sorted[id] and not profile.hiddenFilters[id] then
+			tinsert(profile.filters, id)
+		end
+	end
+end
+
+function SideFilter:UpdateButtons()
+	local n = 0
+
+	for i, id in ipairs(self:GetProfile().filters) do
+		local filter = Addon.Filters:Get(id)
+		if filter then
+			local button = self.buttons[n] or self.Button:New(self)
+			button:SetPoint('TOPLEFT', self.buttons[n-1], 'BOTTOMLEFT', 0, -17)
+			button:Setup(id, filter.icon, filter.name)
+
+			self.buttons[n] = button
+			n = n + 1
+		end
+	end
+
+	if n > 1 then -- if one filter, hide all
+		n = n + 1
 	end 
 
-	for j = i, #self.buttons do
-		self.buttons[j]:Hide()
+	for k = n, #self.buttons do
+		self.buttons[k]:Hide()
 	end
 end
 
