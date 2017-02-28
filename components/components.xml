@@ -7,6 +7,4 @@
 
 	<Include file="frame.xml"/>
 	<Script file="frame.lua"/>
-	<Script file="bank.lua"/>
-	<Script file="inventory.lua"/>
 </Ui>

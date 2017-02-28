@@ -5,20 +5,13 @@
 
 local ADDON, Addon = ...
 local L = LibStub('AceLocale-3.0'):GetLocale(ADDON)
-local Frame = Addon:NewClass('Frame', 'Frame')
-Frame.OpenSound = 'igBackPackOpen'
-Frame.CloseSound = 'igBackPackClose'
-
-local BASE_WIDTH = 300
-local BASE_HEIGHT = 300
-local ITEM_FRAME_WIDTH_OFFSET = 278 - BASE_WIDTH
-local ITEM_FRAME_HEIGHT_OFFSET = 205 - BASE_HEIGHT
+local Frame = Addon.Frame
 
 
 --[[ Constructor ]]--
 
 function Frame:New(id)
-	local f = self:Bind(CreateFrame('Frame', 'CombuctorFrame' .. id, UIParent, ADDON .. 'FrameTemplate'))
+	local f = self:Bind(CreateFrame('Frame', ADDON .. 'Frame' .. id, UIParent, ADDON .. 'FrameTemplate'))
 	f.shownCount = 0
 	f.frameID = id
 
@@ -46,61 +39,32 @@ function Frame:New(id)
 	f:Hide()
 	f:SetScript('OnShow', self.OnShow)
 	f:SetScript('OnHide', self.OnHide)
-	f:SetScript('OnSizeChanged', self.UpdateItems)
-	f:SetMinResize(BASE_WIDTH, BASE_HEIGHT)
+	f:SetScript('OnSizeChanged', self.OnSizeChanged)
+	f:SetMinResize(300, 300)
 
 	tinsert(UISpecialFrames, f:GetName())
 	return f
 end
 
-
---[[ Visibility ]]--
-
-function Frame:UpdateShown()
-	if self:IsFrameShown() then
-		self:Show()
-	else
-		self:Hide()
-	end
-end
-
-function Frame:ShowFrame()
-	self.shownCount = self.shownCount + 1
-	self:Show()
-end
-
-function Frame:HideFrame(force) -- if a frame was manually opened, then it should only be closable manually
-	self.shownCount = self.shownCount - 1
-
-	if force or self.shownCount <= 0 then
-		self.shownCount = 0
-		self:Hide()
-	end
-end
-
-function Frame:IsFrameShown()
-	return self.shownCount > 0
-end
-
-function Frame:OnShow()
-	PlaySound(self.OpenSound)
+function Frame:RegisterMessages()
 	self:RegisterMessage('UPDATE_ALL', 'Update')
 	self:RegisterFrameMessage('PLAYER_CHANGED', 'UpdateTitle')
 	self:RegisterFrameMessage('BAG_FRAME_TOGGLED', 'UpdateItems')
-	self:Update()
 end
 
-function Frame:OnHide()
-	PlaySound(self.CloseSound)
-	self:UnregisterMessages()
 
-	if self:IsFrameShown() then
-		self:HideFrame()
-	end
+--[[ Frame Events ]]--
 
-	if Addon.sets.resetPlayer then
-		self.player = nil
-	end
+function Frame:OnSizeChanged()
+	local width, height = self:GetSize()
+
+	self.profile.width = width
+	self.profile.height = height
+	self:UpdateItems()
+end
+
+function Frame:OnSearchTextChanged(text)
+
 end
 
 
@@ -113,6 +77,8 @@ function Frame:Update()
 	if self:IsVisible() then
 		-- magic here
 		self:SetPoint('TOP')
+		self:SetSize(self.profile.width, self.profile.height)
+
 		self:UpdateTitle()
 		self:UpdateItems()
 	end
@@ -125,34 +91,4 @@ end
 
 function Frame:UpdateItems()
 	self.itemFrame:RequestLayout()
-end
-
-
---[[ Components Frame Events ]]--
-
-function Frame:OnSearchTextChanged(text)
-
-end
-
-
---[[ Shared ]]--
-
-function Frame:GetProfile()
-	return Addon:GetProfile(self.player)[self.frameID]
-end
-
-function Frame:IsCached()
-	return Addon:IsBagCached(self.player, self.Bags[1])
-end
-
-function Frame:GetPlayer()
-	return self.player or UnitName('player')
-end
-
-function Frame:GetFrameID()
-	return self.frameID
-end
-
-function Frame:IsBank()
-	return false
 end
