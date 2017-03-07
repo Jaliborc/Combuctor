@@ -1,6 +1,6 @@
 --[[
-	Quality Filter Button
-		The elements of the quality filter
+	qualityButton.lua
+		A radio button associated with an item quality
 --]]
 
 local AddonName, Addon = ...

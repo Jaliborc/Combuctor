@@ -1,108 +1,63 @@
 --[[
-	Tab Filters
-		Used to filter within categories
+	bottomFilter.lua
+		A list of tabs that shows the subrules of a ruleset
 --]]
 
-local AddonName, Addon = ...
-local BottomTab = Addon:NewClass('BottomTab', 'Button')
-
-function BottomTab:New(parent, id)
-	local tab = self:Bind(CreateFrame('Button', parent:GetName() .. 'Tab' .. id, parent, 'CombuctorFrameTabButtonTemplate'))
-	tab:SetScript('OnClick', self.OnClick)
-	tab:SetID(id)
-
-	return tab
-end
-
-function BottomTab:OnClick()
-	local frame = self:GetParent():GetParent()
-	if frame.selectedTab ~= self:GetID() then
-		PlaySound('igCharacterInfoTab')
-	end
-
-	frame:SetSubCategory(self.set.name)
-end
-
-function BottomTab:Set(set)
-	self.set = set
-	if set.icon then
-		self:SetFormattedText('|T%s:%d|t %s', set.icon, 16, set.name)
-	else
-		self:SetText(set.name)
-	end
-
-	PanelTemplates_TabResize(self, 0)
-	self:GetHighlightTexture():SetWidth(self:GetTextWidth() + 30)
-end
-
-function BottomTab:UpdateHighlight(setName)
-	if self.set.name == setName then
-		PanelTemplates_SetTab(self:GetParent(), self:GetID())
-	end
-end
-
-
---[[ Side Filter Object ]]--
-
+local ADDON, Addon = ...
 local BottomFilter = Addon:NewClass('BottomFilter', 'Frame')
+BottomFilter.Button = Addon.BottomTab
+
+
+--[[ Constructor ]]--
 
 function BottomFilter:New(parent)
-	local f = self:Bind(CreateFrame('Frame', parent:GetName() .. 'BottomFilter', parent))
+	local f = self:Bind(CreateFrame('Frame', nil, parent))
+	f.buttons = {[-1] = f}
+	f:SetSize(10, 30)
 
-	f.buttons = setmetatable({}, {__index = function(t, k)
-		local tab = BottomTab:New(f, k)
-
-		if k > 1 then
-			tab:SetPoint('LEFT', f.buttons[k-1], 'RIGHT', -16, 0)
-		else
-			tab:SetPoint('CENTER', parent, 'BOTTOMLEFT', 50, -14)
-		end
-
-		t[k] = tab
-		return tab
-	end})
+	f:RegisterFrameMessage('RULE_CHANGED', 'Update')
+	f:RegisterMessage('UPDATE_ALL', 'Update')
+	f:Update()
 
 	return f
 end
 
-function BottomFilter:UpdateFilters()
-	local numFilters = 0
-	local parent = self:GetParent()
 
-	for _,set in Addon('Sets'):GetChildSets(parent:GetCategory()) do
-		if parent:HasSubSet(set.name, set.parent) then
-			numFilters = numFilters + 1
-			self.buttons[numFilters]:Set(set)
+--[[ API ]]--
+
+function BottomFilter:Update()
+	local n = 0
+
+	for i, id in ipairs(self:GetRules()) do
+		local rule = Addon.Rules:Get(id)
+		if rule then
+			local button = self.buttons[n] or self.Button:New(self)
+			button:SetPoint('LEFT', self.buttons[n-1], 'RIGHT', -10, 0)
+			button:Setup(id, rule.name)
+
+			self.buttons[n] = button
+			n = n + 1
 		end
 	end
 
-	--show only used tabs
-	if numFilters > 1 then
-		for i = 1, numFilters do
-			self.buttons[i]:Show()
-		end
-
-		for i = numFilters + 1, #self.buttons do
-			self.buttons[i]:Hide()
-		end
-
-		PanelTemplates_SetNumTabs(self, numFilters)
-		self:UpdateHighlight()
-		self:Show()
-	--at most one filter active, hide all tabs
-	else
-		PanelTemplates_SetNumTabs(self, 0)
-		self:Hide()
+	if n == 1 then -- if one filter, hide all
+		n = 0
 	end
-	self:GetParent():UpdateClampInsets()
+
+	for k = n, #self.buttons do
+		self.buttons[k]:Hide()
+	end
 end
 
-function BottomFilter:UpdateHighlight()
-	local category = self:GetParent():GetSubCategory()
+function BottomFilter:GetRules()
+	local frame = self:GetFrame()
+	local rules = {}
 
-	for _,button in pairs(self.buttons) do
-		if button:IsShown() then
-			button:UpdateHighlight(category)
+	for i, id in ipairs(frame.profile.rules) do
+		if id:match(frame.rule .. '/.+') then
+			tinsert(rules, id)
 		end
 	end
+
+	return rules
 end

@@ -52,7 +52,7 @@
 		</Scripts>
 	</Button>
 
-	<CheckButton name="CombuctorSideButtonTemplate" virtual="true" hidden="true">
+	<CheckButton name="CombuctorSideTabTemplate" virtual="true" hidden="true">
 		<Size x="32" y="32"/>
 		<Layers>
 			<Layer level="BACKGROUND">
@@ -70,5 +70,5 @@
 		<HighlightTexture file="Interface\Buttons\ButtonHilight-Square" alphaMode="ADD"/>
 		<CheckedTexture file="Interface\Buttons\CheckButtonHilight" alphaMode="ADD"/>
 	</CheckButton>
-	<Button name="CombuctorBottomButtonTemplate" inherits="CharacterFrameTabButtonTemplate" virtual="true"></Button>
+	<Button name="CombuctorBottomTabTemplate" inherits="CharacterFrameTabButtonTemplate" virtual="true"></Button>
 </Ui>

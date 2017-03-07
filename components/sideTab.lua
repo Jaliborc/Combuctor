@@ -1,36 +1,44 @@
 --[[
-	Side Filter Button
-		The elements of the side filter
+	sideTab.lua
+		An icon tab, much alike a spellbook tab, to select item rulesets
 --]]
 
 local ADDON, Addon = ...
-local SideButton = Addon:NewClass('SideFilterButton', 'CheckButton')
-local id = 1
+local SideTab = Addon:NewClass('SideTab', 'CheckButton')
+SideTab.ID = 1
 
 
 --[[ Constructor ]]--
 
-function SideButton:New(parent)
-	local b = self:Bind(CreateFrame('CheckButton', ADDON .. 'SideFilterButton' .. id, parent, ADDON .. 'SideButtonTemplate'))
+function SideTab:New(parent)
+	local b = self:Bind(CreateFrame('CheckButton', ADDON .. 'SideTab' .. self.ID, parent, ADDON .. 'SideTabTemplate'))
 	b:GetNormalTexture():SetTexCoord(0.06, 0.94, 0.06, 0.94)
 	b:SetScript('OnHide', b.UnregisterEvents)
 	b:SetScript('OnClick', b.OnClick)
 	b:SetScript('OnEnter', b.OnEnter)
 	b:SetScript('OnLeave', b.OnLeave)
+	b:SetScript('OnShow', b.OnShow)
 
-	id = id + 1
+	self.ID = self.ID + 1
 	return b
 end
 	
 	
 --[[ Frame Events ]]--
 
-function SideButton:OnClick()
-	self:GetParent().selection = self.id
+function SideTab:OnShow()
+	self:RegisterFrameMessage('RULE_CHANGED', 'UpdateHighlight')
+	self:UpdateHighlight()
+end
+
+function SideTab:OnClick()
+	self:GetFrame().subrule = nil
+	self:GetFrame().rule = self.id
+	self:SendFrameMessage('RULE_CHANGED', self.id)
 	self:SendFrameMessage('FILTERS_CHANGED')
 end
 
-function SideButton:OnEnter()
+function SideTab:OnEnter()
 	if self:GetRight() > (GetScreenWidth() / 2) then
 		GameTooltip:SetOwner(self, 'ANCHOR_LEFT')
 	else
@@ -41,23 +49,25 @@ function SideButton:OnEnter()
 	GameTooltip:Show()
 end
 
-function SideButton:OnLeave()
+function SideTab:OnLeave()
 	GameTooltip:Hide()
 end
 
 
 --[[ Update ]]--
 
-function SideButton:Setup(id, icon, name)
+function SideTab:Setup(id, name, icon)
 	self.id, self.name = id, name or id
-	self:RegisterFrameMessage('FILTERS_CHANGED', 'UpdateHighlight')
 	self:SetNormalTexture(icon)
 	self:UpdateOrientation()
-	self:UpdateHighlight()
 	self:Show()
+
+	if not Addon.Rules:Get(self:GetFrame().rule) then
+		self:OnClick() -- if no valid selection so far, select
+	end
 end
 
-function SideButton:UpdateOrientation()
+function SideTab:UpdateOrientation()
 	self.border:ClearAllPoints()
 
 	if self:GetProfile().reversedTabs then
@@ -69,6 +79,6 @@ function SideButton:UpdateOrientation()
 	end
 end
 
-function SideButton:UpdateHighlight()
-	self:SetChecked(self:GetParent().selection == self.id)
+function SideTab:UpdateHighlight()
+	self:SetChecked(self:GetFrame().rule == self.id)
 end

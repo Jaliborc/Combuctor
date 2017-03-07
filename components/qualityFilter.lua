@@ -1,6 +1,6 @@
 --[[
-	Quality Filter 
-		Used for setting what quality of items to show
+	qualityFilter.lua 
+		A set of buttons to set what quality of items to show
 --]]
 
 local AddonName, Addon = ...
@@ -59,6 +59,7 @@ end
 
 function QualityFilter:SetQuality(flags)
 	self.selection = flags
+	self:SendFrameMessage('QUALITY_CHANGED')
 	self:SendFrameMessage('FILTERS_CHANGED')
 	self:UpdateHighlight()
 end

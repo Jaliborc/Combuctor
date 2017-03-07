@@ -1,8 +1,11 @@
 <Ui xmlns="http://www.blizzard.com/wow/ui/">
-	<Script file="qualityFilterButton.lua"/>
+	<Script file="qualityButton.lua"/>
 	<Script file="qualityFilter.lua"/>
-	<Script file="sideFilterButton.lua"/>
+
+	<Script file="sideTab.lua"/>
 	<Script file="sideFilter.lua"/>
+
+	<Script file="bottomTab.lua"/>
 	<Script file="bottomFilter.lua"/>
 
 	<Include file="frame.xml"/>

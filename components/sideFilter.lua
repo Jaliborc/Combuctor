@@ -1,69 +1,50 @@
 --[[
-	Side Filter
-		Used for setting what types of items to show
+	sideFilter.lua
+		A list of tabs for each item ruleset
 --]]
 
-local AddonName, Addon = ...
+local ADDON, Addon = ...
 local SideFilter = Addon:NewClass('SideFilter', 'Frame')
-SideFilter.Button = Addon.SideFilterButton
+SideFilter.Button = Addon.SideTab
 
 
 --[[ Constructor ]]--
 
 function SideFilter:New(parent)
 	local f = self:Bind(CreateFrame('Frame', nil, parent))
-	f:SetScript('OnShow', f.RegisterEvents)
-	f:SetScript('OnHide', f.UnregisterEvents)
 	f.buttons = {[-1] = f}
-	f.selection = 'all'
 	f:SetSize(50, 30)
+
+	f:RegisterMessage('RULES_LOADED', 'OnRulesLoaded')
+	f:RegisterMessage('UPDATE_ALL', 'Update')
+	f:FindNewRules()
+	f:Update()
 
 	return f
 end
 
-function SideFilter:RegisterEvents()
-	self:RegisterMessage('UPDATE_ALL', 'Update')
-	self:RegisterMessage('FILTERS_ADDED', 'UpdateContent')
-	self:Update()
+function SideFilter:OnRulesLoaded()
+	local rules = self:GetRules()
+	local count = #rules
+
+	self:FindNewRules()
+	if #rules > count then
+		self:Update()
+	end
 end
 
 
---[[ Update ]]--
+--[[ API ]]--
 
 function SideFilter:Update()
-	self:UpdateSide()
-	self:UpdateContent()
-end
-
-function SideFilter:UpdateContent()
-	self:FindFilters()
-	self:UpdateButtons()
-end
-
-function SideFilter:FindFilters()
-	local profile = self:GetProfile()
-	local sorted = {}
-
-	for i, id in ipairs(profile.filters) do
-		sorted[id] = true
-	end
-
-	for id, filter in Addon.Filters:Iterate() do
-		if not sorted[id] and not profile.hiddenFilters[id] then
-			tinsert(profile.filters, id)
-		end
-	end
-end
-
-function SideFilter:UpdateButtons()
 	local n = 0
 
-	for i, id in ipairs(self:GetProfile().filters) do
-		local filter = Addon.Filters:Get(id)
-		if filter then
+	for i, id in ipairs(self:GetRules()) do
+		local rule = Addon.Rules:Get(id)
+		if rule and rule.icon then
 			local button = self.buttons[n] or self.Button:New(self)
 			button:SetPoint('TOPLEFT', self.buttons[n-1], 'BOTTOMLEFT', 0, -17)
-			button:Setup(id, filter.icon, filter.name)
+			button:Setup(id, rule.name, rule.icon)
 
 			self.buttons[n] = button
 			n = n + 1
@@ -79,12 +60,21 @@ function SideFilter:UpdateButtons()
 	end
 end
 
-function SideFilter:UpdateSide()
-	self:ClearAllPoints()
+function SideFilter:FindNewRules()
+	local profile = self:GetFrame().profile
+	local sorted = {}
 
-	if self:GetProfile().reversedTabs then
- 		self:SetPoint('TOPRIGHT', self:GetParent(), 'TOPLEFT', 0, -40)
-	else
- 		self:SetPoint('TOPLEFT', self:GetParent(), 'TOPRIGHT', 0, 0)
+	for i, id in ipairs(profile.rules) do
+		sorted[id] = true
 	end
+
+	for id, filter in Addon.Rules:Iterate() do
+		if not sorted[id] and not profile.hiddenRules[id] then
+			tinsert(profile.rules, id)
+		end
+	end
+end
+
+function SideFilter:GetRules()
+	return self:GetFrame().profile.rules
 end
