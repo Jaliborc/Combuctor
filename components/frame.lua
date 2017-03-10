@@ -94,7 +94,7 @@ function Frame:UpdateSideFilter()
 	self.sideFilter:ClearAllPoints()
 
 	if self.profile.reversedTabs then
- 		self.sideFilter:SetPoint('TOPRIGHT', self, 'TOPLEFT', 0, -40)
+ 		self.sideFilter:SetPoint('TOPRIGHT', self, 'TOPLEFT', -24, -40)
 	else
  		self.sideFilter:SetPoint('TOPLEFT', self, 'TOPRIGHT')
 	end
