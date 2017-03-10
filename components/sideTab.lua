@@ -58,7 +58,7 @@ end
 
 function SideTab:Setup(id, name, icon)
 	self.id, self.name = id, name or id
-	self:SetNormalTexture(icon)
+	self:SetNormalTexture(icon or 'Interface/Icons/inv_misc_questionmark')
 	self:UpdateOrientation()
 	self:Show()
 

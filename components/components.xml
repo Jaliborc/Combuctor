@@ -3,10 +3,8 @@
 	<Script file="qualityFilter.lua"/>
 
 	<Script file="sideTab.lua"/>
-	<Script file="sideFilter.lua"/>
-
 	<Script file="bottomTab.lua"/>
-	<Script file="bottomFilter.lua"/>
+	<Script file="ruleFilter.lua"/>
 
 	<Include file="frame.xml"/>
 	<Script file="frame.lua"/>

@@ -36,7 +36,7 @@ function Addon:ShowOptions()
 end
 
 
---[[ Item Frame ]]--
+--[[ Custom Item Layout ]]--
 
 function Addon.ItemFrame:LayoutTraits()
 	local profile = self:GetProfile()
@@ -49,19 +49,4 @@ function Addon.ItemFrame:LayoutTraits()
 	local fillScale = emptySpace / numCollumns / buttonSpace
 
 	return numCollumns, (37 + profile.spacing), profile.itemScale + fillScale
-end
-
-function Addon.ItemFrame:IsShowingItem(bag, slot)
-	local frame = self:GetFrame()
-	local player = self:GetPlayer()
-	local icon, count, locked, quality, readable, lootable, link  = Addon.Cache:GetItemInfo(player, bag, slot)
-
-	local rule = Addon.Rules:Get(frame.subrule or frame.rule)
-	if rule and rule.func then
-		if not rule.func(link, count, Addon:GetBagFamily(player, bag)) then
-			return
-		end
-	end
-
-	return frame.qualityFilter.selection == 0 or frame.qualityFilter:IsSelected(quality)
 end

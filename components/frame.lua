@@ -14,6 +14,16 @@ function Frame:New(id)
 	local f = self:Bind(CreateFrame('Frame', ADDON .. 'Frame' .. id, UIParent, ADDON .. 'FrameTemplate'))
 	f.profile = Addon.profile[id]
 	f.frameID = id
+	f.quality = 0
+
+	f:Hide()
+	f:UpdateRules()
+	f:SetMinResize(300, 300)
+	f:SetSize(f.profile.width, f.profile.height)
+
+	f:SetScript('OnShow', self.OnShow)
+	f:SetScript('OnHide', self.OnHide)
+	f:SetScript('OnSizeChanged', self.OnSizeChanged)
 
 	f.sortButton = Addon.SortButton:New(f)
 	f.sortButton:SetPoint('LEFT', f.searchBox, 'RIGHT', 9, -1)
@@ -37,20 +47,13 @@ function Frame:New(id)
 	f.itemFrame = Addon.ItemFrame:New(f, self.Bags)
 	f.itemFrame:SetPoint('TOPLEFT', 12, -66)
 
-	f:Hide()
-	f:SetMinResize(300, 300)
-	f:SetSize(f.profile.width, f.profile.height)
-
-	f:SetScript('OnShow', self.OnShow)
-	f:SetScript('OnHide', self.OnHide)
-	f:SetScript('OnSizeChanged', self.OnSizeChanged)
-
 	tinsert(UISpecialFrames, f:GetName())
 	return f
 end
 
 function Frame:RegisterMessages()
 	self:RegisterMessage('UPDATE_ALL', 'Update')
+	self:RegisterMessage('RULES_LOADED', 'UpdateRules')
 	self:RegisterMessage('SEARCH_CHANGED', 'UpdateSearch')
 	self:RegisterFrameMessage('PLAYER_CHANGED', 'UpdateTitle')
 	self:RegisterFrameMessage('BAG_FRAME_TOGGLED', 'UpdateItems')
@@ -78,17 +81,13 @@ end
 
 function Frame:Update()
 	self:UpdateTitle()
-	self:UpdateSettings()
+	self:UpdateAppearance()
 	self:UpdateSideFilter()
 end
 
 function Frame:UpdateTitle()
 	self.titleText:SetFormattedText(self.Title, self:GetPlayer())
 	self.titleText:SetWidth(self.titleText:GetTextWidth())
-end
-
-function Frame:UpdateItems()
-	self.itemFrame:RequestLayout()
 end
 
 function Frame:UpdateSideFilter()
@@ -99,6 +98,10 @@ function Frame:UpdateSideFilter()
 	else
  		self.sideFilter:SetPoint('TOPLEFT', self, 'TOPRIGHT')
 	end
+end
+
+function Frame:UpdateItems()
+	self.itemFrame:RequestLayout()
 end
 
 function Frame:UpdateSearch()

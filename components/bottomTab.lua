@@ -4,7 +4,7 @@ BottomTab.ID = 1
 
 
 function BottomTab:New(parent)
-	local b = self:Bind(CreateFrame('Button', ADDON .. 'Bottomb' .. self.ID, parent, ADDON..'BottombTemplate'))
+	local b = self:Bind(CreateFrame('Button', ADDON .. 'BottomTab' .. self.ID, parent, ADDON..'BottomTabTemplate'))
 	b:HookScript('OnHide', b.UnregisterEvents)
 	b:HookScript('OnShow', b.OnShow)
 	b:SetScript('OnClick', b.OnClick)
@@ -29,6 +29,7 @@ function BottomTab:Setup(id, name)
 	self:SetText(name or id)
 	self:UpdateHighlight()
 	self:Show()
+	PanelTemplates_TabResize(self, 3)
 
 	if not Addon.Rules:Get(self:GetFrame().subrule) then
 		self:OnClick() -- if no valid selection so far, select

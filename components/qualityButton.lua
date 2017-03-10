@@ -3,75 +3,96 @@
 		A radio button associated with an item quality
 --]]
 
-local AddonName, Addon = ...
-local FilterButton = Addon:NewClass('QualityFilterButton', 'Checkbutton')
-FilterButton.SIZE = 18
+local ADDON, Addon = ...
+local QualityButton = Addon:NewClass('QualityButton', 'Checkbutton')
+QualityButton.SIZE = 18
+
+
+do
+	local flags = {}
+	for quality = 0, 7 do
+		flags[quality] = bit.lshift(1, quality)
+	end
+
+	flags[5] = flags[5] + flags[6]
+	QualityButton.Flags = flags
+end
 
 
 --[[ Constructor ]]--
 
-function FilterButton:Create(parent, quality, flag, qualityColor)
+function QualityButton:New(parent, quality, qualityColor)
 	local button = self:Bind(CreateFrame('Checkbutton', nil, parent, 'UIRadioButtonTemplate'))
+	local r, g, b = GetItemQualityColor(qualityColor)
+	local bg = button:CreateTexture(nil, 'ARTWORK', nil, 2)
+	bg:SetColorTexture(r, g, b)
+	bg:SetPoint('CENTER')
+	bg:SetSize(6,6)
+
+	button.bg = bg
+	button.quality = quality
+	button.qualityColor = qualityColor
+	button.flag = self.Flags[quality]
+
+	button:RegisterFrameMessage('QUALITY_CHANGED', 'UpdateHighlight')
 	button:SetScript('OnClick', self.OnClick)
 	button:SetScript('OnEnter', self.OnEnter)
 	button:SetScript('OnLeave', self.OnLeave)
-	button:SetSize(self.SIZE, self.SIZE)
-	button:SetCheckedTexture(nil)
 
-	local r, g, b = GetItemQualityColor(qualityColor)
 	button:GetNormalTexture():SetVertexColor(r, g, b)
 	button:GetHighlightTexture():SetDesaturated(true)
-	
-	local bg = button:CreateTexture(nil, 'BACKGROUND')
-	bg:SetTexture(r, g, b)
-	bg:SetPoint('CENTER')
-	bg:SetSize(8,8)
+	button:SetSize(self.SIZE, self.SIZE)
+	button:SetCheckedTexture(nil)
+	button:UpdateHighlight()
 
-	button.color = qualityColor
-	button.quality = quality
-	button.flag = flag
-	button.bg = bg
 	return button
 end
 
 
 --[[ Frame Events ]]--
 
-function FilterButton:OnClick()
-	local parent = self:GetParent()
-
-	if parent:IsSelected(self.quality) then
-		if IsModifierKeyDown() or parent.selection == self.flag then
-			parent:RemoveQuality(self.flag)
+function QualityButton:OnClick()
+	local frame = self:GetFrame()
+	if self:IsSelected() then
+		if IsModifierKeyDown() or frame.quality == self.flag then
+			frame.quality = frame.quality - self.flag
 		else
-			parent:SetQuality(self.flag)
+			frame.quality = self.flag
 		end
 	elseif IsModifierKeyDown() then
-		parent:AddQuality(self.flag)
+		frame.quality = frame.quality + self.flag
 	else
-		parent:SetQuality(self.flag)
+		frame.quality = self.flag
 	end
+
+	self:SendFrameMessage('QUALITY_CHANGED')
+	self:SendFrameMessage('FILTERS_CHANGED')
 end
 
-function FilterButton:OnEnter()
+function QualityButton:OnEnter()
 	GameTooltip:SetOwner(self, 'ANCHOR_RIGHT')
-	GameTooltip:SetText(_G[format('ITEM_QUALITY%d_DESC', self.quality)], GetItemQualityColor(self.color))
+	GameTooltip:SetText(_G['ITEM_QUALITY'..self.quality..'_DESC'], GetItemQualityColor(self.qualityColor))
 	GameTooltip:Show()
 end
 
-function FilterButton:OnLeave()
+function QualityButton:OnLeave()
 	GameTooltip:Hide()
 end
 
 
 --[[ Update ]]--
 
-function FilterButton:UpdateHighlight()
-	if self:GetParent():IsSelected(self.quality) then
+function QualityButton:UpdateHighlight()
+	if self:IsSelected() then
 		self:LockHighlight()
-		self.bg:SetVertexColor(.95, .95, .95)
+		self.bg:SetVertexColor(.25, .25, .25)
 	else
 		self:UnlockHighlight()
-		self.bg:SetVertexColor(.4, .4, .4)
+		self.bg:SetVertexColor(.15, .15, .15)
 	end
+end
+
+function QualityButton:IsSelected()
+	local frame = self:GetFrame()
+	return frame.quality > 0 and frame:IsShowingQuality(self.quality)
 end
