@@ -107,8 +107,9 @@
 				self:SetPoint('TOP', self:GetParent().TitleText)
 			</OnLoad>
 			<OnMouseDown>
-				if not Combuctor.sets.locked or IsAltKeyDown() then
-					self:GetParent():StartMoving()
+				local parent = self:GetParent()
+				if not parent.profile.managed and (not Combuctor.sets.locked or IsAltKeyDown()) then
+					parent:StartMoving()
 				end
 			</OnMouseDown>
 			<OnMouseUp>

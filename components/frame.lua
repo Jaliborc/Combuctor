@@ -17,9 +17,9 @@ function Frame:New(id)
 	f.quality = 0
 
 	f:Hide()
-	f:UpdateRules()
-	f:SetMinResize(300, 300)
+	f:SetClampedToScreen(true)
 	f:SetSize(f.profile.width, f.profile.height)
+	f:UpdateRules()
 
 	f:SetScript('OnShow', self.OnShow)
 	f:SetScript('OnHide', self.OnHide)
@@ -57,6 +57,8 @@ function Frame:RegisterMessages()
 	self:RegisterMessage('SEARCH_CHANGED', 'UpdateSearch')
 	self:RegisterFrameMessage('PLAYER_CHANGED', 'UpdateTitle')
 	self:RegisterFrameMessage('BAG_FRAME_TOGGLED', 'UpdateItems')
+	self:RegisterFrameMessage('ITEM_FRAME_RESIZED', 'UpdateSize')
+	self:RegisterFrameMessage('RULES_UPDATED', 'UpdateSize')
 	self:Update()
 end
 
@@ -83,6 +85,7 @@ function Frame:Update()
 	self:UpdateTitle()
 	self:UpdateAppearance()
 	self:UpdateSideFilter()
+	self:UpdateSize()
 end
 
 function Frame:UpdateTitle()
@@ -98,6 +101,16 @@ function Frame:UpdateSideFilter()
 	else
  		self.sideFilter:SetPoint('TOPLEFT', self, 'TOPRIGHT')
 	end
+end
+
+function Frame:UpdateSize()
+	local itemsHeight = self.itemFrame:GetHeight()
+	local bagsHeight =  self.bagFrame:GetHeight()
+	local rulesHeight = self.sideFilter.numButtons * 50 - (self.profile.reversedTabs and 10 or 50)
+	local minHeight = max(max(itemsHeight, bagsHeight), rulesHeight) + 100
+
+	self:SetHeight(max(self:GetHeight(), minHeight))
+	self:SetMinResize(300, minHeight)
 end
 
 function Frame:UpdateItems()

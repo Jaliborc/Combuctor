@@ -44,6 +44,7 @@ function RuleFilter:Update()
 	for k = n, #self.buttons do
 		self.buttons[k]:Hide()
 	end
+	self.numButtons = n
 end
 
 
