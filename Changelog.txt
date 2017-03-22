@@ -1,8 +1,15 @@
-==== 7.0.0
+#### 7.1.0 (beta)
+* Major update! The large majority of Combuctor now runs on the same code as Bagnon.
+** This will allow to bring all of the features of Bagnon into Combuctor.
+** This will also make Combuctor easier to keep up to date.
+** Settings had to be reset.
+** The API for registering item rulesets has been changed. New documentation and a legacy API translator will be up soon.
+
+#### 7.0.0
 * Updated for Legion.
 * Special thanks to Tuller and the community for updating the mod while I was away!
 
-#### 6.2.1
+##### 6.2.1
 * Fixed flash find bug
 
 #### 6.2
