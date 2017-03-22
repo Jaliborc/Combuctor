@@ -4,7 +4,7 @@
 ## Notes: Pants are a dangerous foe
 ## SavedVariables: Combuctor_Sets
 
-## OptionalDeps: BagBrother, ItemRack, Wardrobe, WoWUnit
+## OptionalDeps: BagBrother, WoWUnit
 ## Version: 7.1.0
 
 libs\libs.xml
@@ -13,3 +13,4 @@ common\Wildpants.xml
 components\components.xml
 style.xml
 main.lua
+legacy.lua
