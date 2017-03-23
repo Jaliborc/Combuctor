@@ -1,3 +1,6 @@
+##### 7.1.1 (beta)
+* Added support for the old ruleset API, such that existing plugins still work.
+
 #### 7.1.0 (beta)
 * Major update! The large majority of Combuctor now runs on the same code as Bagnon.
 ** This will allow to bring all of the features of Bagnon into Combuctor.

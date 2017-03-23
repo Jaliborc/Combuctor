@@ -5,7 +5,7 @@
 ## SavedVariables: Combuctor_Sets
 
 ## OptionalDeps: BagBrother, WoWUnit
-## Version: 7.1.0
+## Version: 7.1.1
 
 libs\libs.xml
 common\Wildpants.xml
