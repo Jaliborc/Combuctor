@@ -38,15 +38,29 @@ end
 
 --[[ Custom Item Layout ]]--
 
+local function bestFit(w, h, n)
+  local r, r2 = h/w, w/h
+
+  local px = ceil(sqrt(n*r2))
+  local py = ceil(sqrt(n*r))
+
+  local sx = ((floor(px*r) * px) < n) and h/ceil(px*r) or w/px
+  local sy = ((floor(py*r2) * py) < n) and w/ceil(py*r2) or h/py
+
+  return sx, sy
+end
+
 function Addon.ItemFrame:LayoutTraits()
-	local profile = self:GetProfile()
-	local w = self:GetFrame():GetWidth() - (profile.showBags and 59 or 23)
+	local w, h = self:GetFrame():GetSize()
+	w = w - (self:GetProfile().showBags and 59 or 23)
+	h = h - 100
 
-	local buttonSpace = (37 + profile.spacing) * profile.itemScale
-	local emptySpace = w % buttonSpace
+	local size = bestFit(w, h, self:NumButtons())
+	local cols = floor(w / size)
+	local scale = size / self:GetButtonSize()
 
-	local numCollumns = floor(w / buttonSpace)
-	local fillScale = emptySpace / numCollumns / buttonSpace
+	return cols, scale
+end
 
-	return numCollumns, (37 + profile.spacing), profile.itemScale + fillScale
+function Addon.ItemFrame:BagBreak()
 end
