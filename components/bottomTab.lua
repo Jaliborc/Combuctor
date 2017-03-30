@@ -1,3 +1,8 @@
+--[[
+	bottomTab.lua
+		A standard UIPanel tab to select item subrules
+--]]
+
 local ADDON, Addon = ...
 local BottomTab = Addon:NewClass('BottomTab', 'Button')
 BottomTab.ID = 1
