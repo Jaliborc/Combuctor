@@ -8,4 +8,5 @@
 
 	<Include file="frame.xml"/>
 	<Script file="frame.lua"/>
+	<Script file="itemFrame.lua"/>
 </Ui>

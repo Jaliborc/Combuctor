@@ -1,6 +1,7 @@
 --[[
 	legacy.lua
 		Emulates the old ruleset API to support outdated plugins
+		Do not implement new addons using this API
 --]]
 
 local ADDON, Addon = ...
