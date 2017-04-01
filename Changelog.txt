@@ -1,3 +1,17 @@
+##### 7.2.0 (beta)
+* Updated for WoW patch 7.2
+* New item layout that mimics more closely the behaviour of pre-7.1
+* New "options" slashcommand option
+* Minor internal changes
+
+##### 7.1.2 (beta)
+* Complete overhaul of the configuration menus!
+** Available options are now similar to the ones available in Bagnon.
+** New frame customization options.
+** New feature toggling options.
+** New color options.
+* Fixed issue with some UI elements in the bank frame.
+
 ##### 7.1.1 (beta)
 * Added support for the old ruleset API, such that existing plugins still work.
 

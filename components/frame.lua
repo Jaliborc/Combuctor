@@ -57,7 +57,6 @@ function Frame:RegisterMessages()
 	self:RegisterMessage('SEARCH_CHANGED', 'UpdateSearch')
 	self:RegisterFrameMessage('PLAYER_CHANGED', 'UpdateTitle')
 	self:RegisterFrameMessage('BAG_FRAME_TOGGLED', 'UpdateItems')
-	self:RegisterFrameMessage('ITEM_FRAME_RESIZED', 'UpdateSize')
 	self:RegisterFrameMessage('RULES_UPDATED', 'UpdateSize')
 	self:Update()
 end
@@ -104,10 +103,9 @@ function Frame:UpdateSideFilter()
 end
 
 function Frame:UpdateSize()
-	local itemsHeight = self.itemFrame:GetHeight()
 	local bagsHeight =  self.bagFrame:GetHeight()
 	local rulesHeight = self.sideFilter.numButtons * 50 - (self.profile.reversedTabs and 10 or 50)
-	local minHeight = max(max(itemsHeight, bagsHeight), rulesHeight) + 100
+	local minHeight = max(bagsHeight, rulesHeight) + 100
 
 	self:SetHeight(max(self:GetHeight(), minHeight))
 	self:SetMinResize(300, minHeight)

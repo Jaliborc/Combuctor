@@ -5,11 +5,12 @@
 ## SavedVariables: Combuctor_Sets
 
 ## OptionalDeps: BagBrother, WoWUnit
-## Version: 7.1.1
+## Version: 7.1.2
+
+main.lua
 
 common\Wildpants.xml
-
 components\components.xml
 style.xml
-main.lua
+
 legacy.lua
