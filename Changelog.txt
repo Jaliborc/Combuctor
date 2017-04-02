@@ -1,4 +1,4 @@
-##### 7.2.0 (beta)
+#### 7.2.0 (beta)
 * Updated for WoW patch 7.2
 * New item layout that mimics more closely the behaviour of pre-7.1
 * New "options" slashcommand option
@@ -6,10 +6,10 @@
 
 ##### 7.1.2 (beta)
 * Complete overhaul of the configuration menus!
-** Available options are now similar to the ones available in Bagnon.
-** New frame customization options.
-** New feature toggling options.
-** New color options.
+  - Available options are now similar to the ones available in Bagnon.
+  - New frame customization options.
+  - New feature toggling options.
+  - New color options.
 * Fixed issue with some UI elements in the bank frame.
 
 ##### 7.1.1 (beta)
@@ -17,10 +17,10 @@
 
 #### 7.1.0 (beta)
 * Major update! The large majority of Combuctor now runs on the same code as Bagnon.
-** This will allow to bring all of the features of Bagnon into Combuctor.
-** This will also make Combuctor easier to keep up to date.
-** Settings had to be reset.
-** The API for registering item rulesets has been changed. New documentation and a legacy API translator will be up soon.
+  - This will allow to bring all of the features of Bagnon into Combuctor.
+  - This will also make Combuctor easier to keep up to date.
+  - Settings had to be reset.
+  - The API for registering item rulesets has been changed. New documentation and a legacy API translator will be up soon.
 
 #### 7.0.0
 * Updated for Legion.
@@ -45,23 +45,23 @@
 * No longer displays warning messages when depositing non-reagents in the bank or when the reagent bank is full.
 * No longer causes cursor flickering at vendors.
 * The player dropdown list now displays all your connected realm characters.
-** The new class and race introduced in 6.0.10 should help to keep the list manageable for players with many characters.
-** Tooltips still only display players from the same faction (to keep tooltip sizes manageable) as only BOA accounts are sharable between these characters.
+  - The new class and race introduced in 6.0.10 should help to keep the list manageable for players with many characters.
+  - Tooltips still only display players from the same faction (to keep tooltip sizes manageable) as only BOA accounts are sharable between these characters.
 * Other minor bug fixes.
 
 ##### 6.0.4
 * Now supports all the Blizzard item sorting features, such as:
-** Ignoring bags for auto sort.
-** Setting bags to a specific type of loot.
+  - Ignoring bags for auto sort.
+  - Setting bags to a specific type of loot.
 * Bags now display the number of empy slots available.
 * Reagents now take priority in going to the reagent bank before other bag slots when depositing.
 * Items in the bank reagents slot are now properly accounted on item tooltips.
 * Changed item glow flashes:
-** Now are optional.
-** If enabled, stay for a limited period of time, but remains with a bolder glow than regular items until the bag is closed or mouse over.
+  - Now are optional.
+  - If enabled, stay for a limited period of time, but remains with a bolder glow than regular items until the bag is closed or mouse over.
 * Now the player dropdown list displays class colors and race icons. This should make it much easier to find players in long lists.
 * Now only characters from the same faction as yours will be displayed in the character list.
-** You must login again in your characters so that BagBrother can learn their factions!
+  - You must login again in your characters so that BagBrother can learn their factions!
 * Fixed issue preventing right clicking on the sort button to work at all.
 * More minor bugfixes.
 
@@ -96,8 +96,8 @@
 #### 5.3.0
 * Updated for patch Escalation.
 * Upgraded search engine, which means:
-** Smarter syntax and better search results.
-** Now items belonging to equipment sets are colored separately. Packed with ItemRack and Wardrobe support!
+  - Smarter syntax and better search results.
+  - Now items belonging to equipment sets are colored separately. Packed with ItemRack and Wardrobe support!
 * Fixed bug causing error message on rare login situations.
 
 #### 5.2.0
