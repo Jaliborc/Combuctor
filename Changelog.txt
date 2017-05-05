@@ -1,3 +1,6 @@
+#### 7.2.1
+* Tagging release
+
 #### 7.2.0 (beta)
 * Updated for WoW patch 7.2
 * New item layout that mimics more closely the behaviour of pre-7.1

@@ -16,14 +16,11 @@ function Frame:New(id)
 	f.frameID = id
 	f.quality = 0
 
-	f:Hide()
-	f:SetClampedToScreen(true)
 	f:SetSize(f.profile.width, f.profile.height)
-	f:UpdateRules()
-
+	f:SetScript('OnSizeChanged', self.OnSizeChanged)
 	f:SetScript('OnShow', self.OnShow)
 	f:SetScript('OnHide', self.OnHide)
-	f:SetScript('OnSizeChanged', self.OnSizeChanged)
+	f:UpdateRules()
 
 	f.sortButton = Addon.SortButton:New(f)
 	f.sortButton:SetPoint('LEFT', f.searchBox, 'RIGHT', 9, -1)

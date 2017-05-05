@@ -123,13 +123,13 @@
 		<HighlightFont style="GameFontHighlight"/>
 	</Button>
 
-	<Frame name="CombuctorFrameTemplate" resizable="true" clampedToScreen="true" enableMouse="true" movable="true" topLevel="true" frameStrata="HIGH" parent="UIParent" hidden="true" inherits="ButtonFrameTemplate" virtual="true">
+	<Frame name="CombuctorFrameTemplate" resizable="true" clampedToScreen="true" enableMouse="true" movable="true" topLevel="true" hidden="true" inherits="ButtonFrameTemplate" virtual="true">
 		<Size x="300" y="400"/>
 
 		<HitRectInsets>
 			<AbsInset left="0" right="35" top="0" bottom="75"/>
 		</HitRectInsets>
-		
+
 		<Layers>
 			<Layer level="OVERLAY">
 				<Texture inherits="UI-Frame-BtnDivMiddle"> <!-- Separator -->
@@ -140,7 +140,7 @@
 					</Anchors>
 				</Texture>
 			</Layer>
-		
+
 			<Layer level="ARTWORK">
 				<Texture file="Interface\MerchantFrame\UI-Merchant-BotLeft"> <!-- Left -->
 					<Size x="64" y="24"/>
@@ -149,7 +149,7 @@
 					</Anchors>
 					<TexCoords left="0.72" right="1" top="0.675" bottom=".754"/>
 				</Texture>
-				
+
 				<Texture file="Interface\MerchantFrame\UI-Merchant-BotRight">
 					<Size x="64" y="24"/>
 					<Anchors>
