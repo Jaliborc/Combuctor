@@ -5,6 +5,7 @@
 
 local ADDON, Addon = ...
 Addon.ItemScale = 1.6
+Addon.canSearch = true
 
 function Addon:OnEnable()
 	self:StartupSettings()
