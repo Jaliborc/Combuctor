@@ -1,3 +1,6 @@
+#### 7.2.2
+* Updated internal library (AceEvent) that reportedly was causing problems and preventing the program to load for users running other specific addons.
+
 #### 7.2.1
 * Tagging release
 
