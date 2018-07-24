@@ -35,14 +35,12 @@
 				self.portrait:SetTexCoord(0, 1, 0, 1)
 			</OnMouseUp>
 			<OnClick>
-				if Combuctor.TogglePlayerDropdown then
-					Combuctor:TogglePlayerDropdown(self, self:GetParent(), 15, 10)
-				end
+				Combuctor:ToggleOwnerDropdown(self, self:GetParent(), 15, 10)
 			</OnClick>
 			<OnEnter>
-				if Combuctor.TogglePlayerDropdown then
+				if Combuctor:MultipleOwnersFound() then
 					GameTooltip:SetOwner(self, 'ANCHOR_RIGHT')
-					GameTooltip:SetText(self:GetParent():GetPlayer(), 1, 1, 1)
+					GameTooltip:SetText(self:GetParent():GetOwner(), 1, 1, 1)
 					GameTooltip:AddLine(LibStub('AceLocale-3.0'):GetLocale('Combuctor').TipChangePlayer)
 					GameTooltip:Show()
 				end

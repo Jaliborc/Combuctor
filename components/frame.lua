@@ -20,7 +20,7 @@ function Frame:New(id)
 	f:SetScript('OnSizeChanged', self.OnSizeChanged)
 	f:SetScript('OnShow', self.OnShow)
 	f:SetScript('OnHide', self.OnHide)
-	f:UpdateRules()
+	f:FindRules()
 
 	f.sortButton = Addon.SortButton:New(f)
 	f.sortButton:SetPoint('LEFT', f.searchBox, 'RIGHT', 9, -1)
@@ -50,7 +50,7 @@ end
 
 function Frame:RegisterMessages()
 	self:RegisterMessage('UPDATE_ALL', 'Update')
-	self:RegisterMessage('RULES_LOADED', 'UpdateRules')
+	self:RegisterMessage('RULES_LOADED', 'FindRules')
 	self:RegisterMessage('SEARCH_CHANGED', 'UpdateSearch')
 	self:RegisterFrameMessage('PLAYER_CHANGED', 'UpdateTitle')
 	self:RegisterFrameMessage('BAG_FRAME_TOGGLED', 'UpdateItems')
@@ -85,7 +85,7 @@ function Frame:Update()
 end
 
 function Frame:UpdateTitle()
-	self.titleText:SetFormattedText(self.Title, self:GetPlayer())
+	self.titleText:SetFormattedText(self.Title, self:GetOwner())
 	self.titleText:SetWidth(self.titleText:GetTextWidth())
 end
 

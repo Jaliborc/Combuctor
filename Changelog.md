@@ -1,5 +1,25 @@
 #### 8.0
 * Updated for Battle for Azeroth
+* Another major internal update! Completely reworked the internal system for representing item data.
+  * The previous system, although more memory efficient, suffered from many problems. It would easily break with updates of the game. It required constant re-specification, making developing and maintaining plugins for other developers much harder.
+  * More importantly, the previous system was designed before the advent of Guild Banks. These were considered a set of bags controlled by the player character, which led to a whole set of issues. In the new system, this is no longer the case.
+* Visible changes:
+  * Guilds are now considered independent entities from player characters.
+  * Tooltip counts now display icons for each _owner_ and their portraits (characters and guilds are displayed separately).
+* Bugfixes:
+  * Now handles server names with spaces properly.
+  * Now handles the first 4 released allied races properly.
+  * Fixed issue with empty slots coloring according to bag types.
+  * Fixed issue with basic rulesets considering the reagent bank a normal bag.
+  * Fixed issue on realms that are not connected to other realms.
+  * Fixed issue on realms with hyphens on their names that caused other characters not to be browsable.
+  * Fixed multiple issues with character specific settings.
+  * Reset the character specific settings that were screwed up by the previous version.
+  * Fixed issue with deleting owner information.
+  * The money total tooltip now displays player icons just alike the tooltip counts.
+  * Fixed an issue when depositing items in the bank.
+  * Fixed an issue with the _owner_ icon generator.
+  * Added back _:GetItem_ API function of item buttons for legacy purposes (plugin support).
 
 #### 7.3
 * Updated for Shadow of Argus
