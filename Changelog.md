@@ -1,7 +1,13 @@
-#### 7.2.2
+#### 8.0
+* Updated for Battle for Azeroth
+
+#### 7.3
+* Updated for Shadow of Argus
+
+##### 7.2.2
 * Updated internal library (AceEvent) that reportedly was causing problems and preventing the program to load for users running other specific addons.
 
-#### 7.2.1
+##### 7.2.1
 * Tagging release
 
 #### 7.2.0 (beta)

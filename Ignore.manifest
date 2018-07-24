@@ -1,5 +1,9 @@
-libs/LibItemSearch-1.2/LibItemSearch-1.2.toc
-libs/LibItemSearch-1.2/README.markdown
-libs/LibItemCache-1.1/Caches/BagBrotherTests.lua
-libs/LibItemCache-1.1/Tests.lua
-libs/Unfit-1.0/Tests.lua
+common/libs/AceAddon-3.0/AceAddon-3.0.xml
+common/libs/AceEvent-3.0/AceEvent-3.0.xml
+common/libs/AceLocale-3.0/AceLocale-3.0.xml
+common/libs/CallbackHandler-1.0.xml
+common/libs/LibItemCache-1.1/Tests.lua
+common/libs/LibItemSearch-1.2/LibItemSearch-1.2.xml
+common/libs/LibItemSearch-1.2/LibItemSearch-1.2.toc
+common/libs/Unfit-1.0/Unfit-1.0.toc
+common/libs/Unfit-1.0/Tests.lua
