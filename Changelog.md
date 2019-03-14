@@ -1,3 +1,33 @@
+##### 8.1.0
+* Updated for World of Warcraft patch 8.1.5.
+* Now shows item count tooltips for singleton characters in a server
+* Now handles server names differently, which should fix server specific issues
+   * You might need to re-login on some characters for their data to show
+* Updated French and Russian localization.
+* Fixed issue with bag toggle button.
+* Fixed issue with splitting item stacks in the guild bank
+* Fixed issue with character specific settings
+* Fixed issue preventing Void Storage from working and that could also cause minor guild bank issues
+* Fixed "numbered string" internal bug
+
+##### 8.0.2
+* Fixed issue with auto display events.
+* Added display event for scrapping machines.
+* Added portrait icons for the remaining 4 allied races. Improved Nightborne and Goblin icons.
+* Items now display the azerite and artifact alternative border artwork.
+* Can now search for "azerite", "artifact" and "unusable" items. Keywords translated for the different locales.
+* Redesigned color options panel.
+* Fixed issue with disabling inventory or bag frames.
+* Added patron list in the configuration options. See patreon.com/jaliborc to learn how to join the list.
+* Fixed issue with double clicking the title bar.
+* Fixed issue with Void Storage.
+
+##### 8.0.1
+* Reduced tooltip count memory usage by about 80%.
+* Fixed issue with updating inventory and bank frames.
+* Fixed issue with properly marking the bank frame as "live" (not cached).
+* Fixed issue with Aggra server.
+
 #### 8.0
 * Updated for Battle for Azeroth
 * Another major internal update! Completely reworked the internal system for representing item data.
