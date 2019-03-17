@@ -1,3 +1,6 @@
+##### 8.1.1
+* Fixed bank automatic sorting issue.
+
 ##### 8.1.0
 * Updated for World of Warcraft patch 8.1.5.
 * Now shows item count tooltips for singleton characters in a server
