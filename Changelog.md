@@ -1,3 +1,6 @@
+##### 8.2.0
+* Updated for Rise of Azshara.
+
 ##### 8.1.1
 * Fixed bank automatic sorting issue.
 
