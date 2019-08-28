@@ -1,10 +1,19 @@
+##### 8.2.1
+* Now compatible with World of Warcraft classic servers.
+  * Same version can run both on retail and classic.
+  * Does not support keyring yet (don't have a character with a key).
+  * Added filters specific for classic servers.
+* Fixed an issue with subfilter selection.
+* Added option for quiver coloring.
+* Updated Ace libraries.
+
 ##### 8.2.0
 * Updated for Rise of Azshara.
 
 ##### 8.1.1
 * Fixed bank automatic sorting issue.
 
-##### 8.1.0
+#### 8.1.0
 * Updated for World of Warcraft patch 8.1.5.
 * Now shows item count tooltips for singleton characters in a server
 * Now handles server names differently, which should fix server specific issues
