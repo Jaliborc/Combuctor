@@ -11,6 +11,5 @@ main.lua
 
 common\Wildpants.xml
 components\components.xml
-style.xml
 
 legacy.lua
