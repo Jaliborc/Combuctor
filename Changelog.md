@@ -1,3 +1,25 @@
+##### 8.2.6
+* Fixed issue which occurred when all rulesets were disabled.
+
+##### 8.2.5
+* Fixed ordering issues with patron panel.
+* Started internal file organization change (make sure to update addon while wow isn't running).
+
+##### 8.2.4
+* Fixed issue with color settings.
+
+##### 8.2.3
+* Bag slots:
+  * Fixed bug with herb pouches in classic servers (thank you Denzer - Mirage EU).
+  * Ammo pouches now colored the same as quivers.
+  * Added option to color soul bags.
+  * Added soul bag bottom filter.
+* Character icons:
+  * Now shows racial and gender based icons for offline characters instead of the current character 3D model.
+
+##### 8.2.2
+* Fixed issue introduced last version which renamed the "All" options at each category.
+
 ##### 8.2.1
 * Now compatible with World of Warcraft classic servers.
   * Same version can run both on retail and classic.

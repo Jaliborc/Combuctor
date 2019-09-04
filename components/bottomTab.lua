@@ -31,7 +31,7 @@ end
 
 function BottomTab:Setup(id, name)
 	self.id = id
-	self:SetText(name or id)
+	self:SetText(id:find('/') and (name or id) or ALL)
 	self:UpdateHighlight()
 	self:Show()
 
