@@ -1,6 +1,9 @@
 name: tag
+
 on:
   push:
+    paths:
+      - Combuctor.toc
     branches:
       - master
 
