@@ -1,4 +1,5 @@
 name: tag
+
 on:
   push:
     branches:
