@@ -1,3 +1,19 @@
+##### 8.2.7
+* Can now sort items, even if the server doesn't support it:
+    * Bags and bank in classic.
+    * Void storage in retail.
+    * Sorting stops if entering combat.
+* Bugfixes:
+    * Tooltip counts now properly include items in the 1st bank slot.
+    * Fixed issue depositing items in the reagent bank.
+    * Fixed rare issue sorting the reagent bank.
+    * Fixed issue with button generation on classic servers, preventing frames from being disabled.
+* Localization:
+    * Updated Chinese locales.
+    * Changed how tooltip instructions are internally generated.
+* Other:
+    * Internally changed how some tasks are scheduled with new delay API.
+
 ##### 8.2.6
 * Fixed issue which occurred when all rulesets were disabled.
 
@@ -29,7 +45,7 @@
 * Added option for quiver coloring.
 * Updated Ace libraries.
 
-##### 8.2.0
+#### 8.2.0
 * Updated for Rise of Azshara.
 
 ##### 8.1.1
