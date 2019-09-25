@@ -1,8 +1,10 @@
 ##### 8.2.8
+* Removed _Heirloom_ item filter on classic servers.
 * Fixed 2 sorting bugs, causing sorting to stop or enter a loop on very specific conditions on classic servers.
 * Fixed issue with some container tooltips.
 * Fixed small visual bug.
-* Removed _Heirloom_ item filter on classic servers.
+* Fixed issue with Spanish, French, Italian, Portuguese and Russian localization.
+* Updated Chinese localization.
 
 ##### 8.2.7
 * Can now sort items, even if the server doesn't support it:
