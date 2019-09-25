@@ -1,5 +1,6 @@
 ##### 8.2.8
 * Fixed 2 sorting bugs, causing sorting to stop or enter a loop on very specific conditions on classic servers.
+* Fixed issue with some container tooltips.
 * Fixed small visual bug.
 * Removed _Heirloom_ item filter on classic servers.
 
