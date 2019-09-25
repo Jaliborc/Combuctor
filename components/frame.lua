@@ -23,7 +23,7 @@ function Frame:New(id)
 	f:FindRules()
 
 	f.ownerSelector = Addon.OwnerSelector:New(f)
-	f.ownerSelector:SetPoint('TOPLEFT', -3, 4)
+	f.ownerSelector:SetPoint('TOPLEFT', -4, 5)
 
 	f.bagToggle = Addon.BagToggle:New(f)
 	f.bagToggle:SetPoint('TOPRIGHT', -10, -27)

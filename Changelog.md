@@ -1,3 +1,8 @@
+##### 8.2.8
+* Fixed 2 sorting bugs, causing sorting to stop or enter a loop on very specific conditions on classic servers.
+* Fixed small visual bug.
+* Removed _Heirloom_ item filter on classic servers.
+
 ##### 8.2.7
 * Can now sort items, even if the server doesn't support it:
     * Bags and bank in classic.
