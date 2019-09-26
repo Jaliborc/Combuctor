@@ -1,3 +1,6 @@
+##### 8.2.9
+* Sorting now much faster in most situations.
+
 ##### 8.2.8
 * Removed _Heirloom_ item filter on classic servers.
 * Fixed 2 sorting bugs, causing sorting to stop or enter a loop on very specific conditions on classic servers.
