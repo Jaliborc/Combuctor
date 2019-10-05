@@ -1,3 +1,8 @@
+##### 8.2.10
+* Sorting now even faster in most situations.
+* Updated Korean localization (by chkmyid).
+* Updated Taiwanese localization (by kalvin807).
+
 ##### 8.2.9
 * Sorting now much faster in most situations.
 
