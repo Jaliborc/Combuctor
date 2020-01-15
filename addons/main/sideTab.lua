@@ -4,7 +4,7 @@
 --]]
 
 local ADDON, Addon = ...
-local SideTab = Addon:NewClass('SideTab', 'CheckButton')
+local SideTab = Addon.Tipped:NewClass('SideTab', 'CheckButton')
 SideTab.ID = 1
 
 

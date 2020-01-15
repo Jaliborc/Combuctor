@@ -4,7 +4,7 @@
 --]]
 
 local ADDON, Addon = ...
-local QualityButton = Addon:NewClass('QualityButton', 'Checkbutton')
+local QualityButton = Addon.Tipped:NewClass('QualityButton', 'Checkbutton')
 QualityButton.SIZE = 18
 
 

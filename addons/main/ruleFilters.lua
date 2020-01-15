@@ -4,7 +4,7 @@
 --]]
 
 local ADDON, Addon = ...
-local RuleFilter = Addon:NewClass('RuleFilter', 'Frame')
+local RuleFilter = Addon.Parented:NewClass('RuleFilter', 'Frame')
 
 function RuleFilter:New(parent)
 	local f = self:Bind(CreateFrame('Frame', nil, parent))
@@ -46,9 +46,9 @@ end
 
 --[[ Side Filter ]]--
 
-local SideFilter = Addon:NewClass('SideFilter', 'Frame', RuleFilter)
-SideFilter.Button = Addon.SideTab
+local SideFilter = Addon.RuleFilter:NewClass('SideFilter')
 SideFilter.X, SideFilter.Y = 0, -17
+SideFilter.Button = Addon.SideTab
 SideFilter.FromPoint = 'TOPLEFT'
 SideFilter.ToPoint = 'BOTTOMLEFT'
 
@@ -62,9 +62,9 @@ end
 
 --[[ Bottom Filter ]]--
 
-local BottomFilter = Addon:NewClass('BottomFilter', 'Frame', RuleFilter)
-BottomFilter.Button = Addon.BottomTab
+local BottomFilter = Addon.RuleFilter:NewClass('BottomFilter')
 BottomFilter.X, BottomFilter.Y = -10, 0
+BottomFilter.Button = Addon.BottomTab
 BottomFilter.FromPoint = 'LEFT'
 BottomFilter.ToPoint = 'RIGHT'
 

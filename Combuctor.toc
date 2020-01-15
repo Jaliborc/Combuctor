@@ -6,4 +6,4 @@
 ## SavedVariables: Combuctor_Sets
 ## Version: 8.2.10
 
-modules\main.xml
+addons\main\main.xml

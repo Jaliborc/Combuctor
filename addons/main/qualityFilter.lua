@@ -4,7 +4,7 @@
 --]]
 
 local ADDON, Addon = ...
-local QualityFilter = Addon:NewClass('QualityFilter', 'Frame')
+local QualityFilter = Addon.Parented:NewClass('QualityFilter', 'Frame')
 QualityFilter.Button = Addon.QualityButton
 
 

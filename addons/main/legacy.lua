@@ -8,6 +8,10 @@ local ADDON, Addon = ...
 local Legacy = Addon:NewModule('Sets')
 local Rules = Addon.Rules
 
+function Addon:GetModule(id)
+	return self[id]
+end
+
 local function adaptRule(rule, player, bag, slot, bagLink, itemLink, count)
 	local bagType, name, quality, ilvl, level, type, subType, equipSlot, _
 	if itemLink then

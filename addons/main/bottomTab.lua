@@ -4,7 +4,7 @@
 --]]
 
 local ADDON, Addon = ...
-local BottomTab = Addon:NewClass('BottomTab', 'Button')
+local BottomTab = Addon.Parented:NewClass('BottomTab', 'Button')
 BottomTab.ID = 1
 
 
