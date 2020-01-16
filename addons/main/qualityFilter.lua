@@ -11,7 +11,7 @@ QualityFilter.Button = Addon.QualityButton
 --[[ Constructor ]]--
 
 function QualityFilter:New(parent)
-	local f = self:Bind(CreateFrame('Frame', nil, parent))
+	local f = self:Super(QualityFilter):New(parent)
 	f:SetSize(self.Button.SIZE * (Addon.IsRetail and 7 or 6), self.Button.SIZE)
 	f:AddQualityButton(0)
 	f:AddQualityButton(1)

@@ -11,7 +11,7 @@ local Frame = Addon.Frame
 --[[ Constructor ]]--
 
 function Frame:New(id)
-	local f = self:Bind(CreateFrame('Frame', ADDON .. 'Frame' .. id, UIParent, ADDON .. 'FrameTemplate'))
+	local f = self:Super(Frame):New(UIParent)
 	f.profile = Addon.profile[id]
 	f.frameID = id
 	f.quality = 0
@@ -41,11 +41,11 @@ function Frame:New(id)
 	f.bottomFilter = Addon.BottomFilter:New(f)
 	f.bottomFilter:SetPoint('TOPLEFT', f, 'BOTTOMLEFT')
 
-	f.bagFrame = Addon.BagFrame:New(f, 'TOP', 0, -36)
-	f.bagFrame:SetPoint('TOPRIGHT', -12, -66)
+	f.bagGroup = Addon.BagGroup:New(f, 'TOP', 0, -36)
+	f.bagGroup:SetPoint('TOPRIGHT', -12, -66)
 
-	f.itemFrame = Addon.ItemFrame:New(f, self.Bags)
-	f.itemFrame:SetPoint('TOPLEFT', 12, -66)
+	f.itemGroup = Addon.ItemGroup:New(f, self.Bags)
+	f.itemGroup:SetPoint('TOPLEFT', 12, -66)
 
 	tinsert(UISpecialFrames, f:GetName())
 	return f
@@ -103,7 +103,7 @@ function Frame:UpdateSideFilter()
 end
 
 function Frame:UpdateSize()
-	local bagsHeight =  self.bagFrame:GetHeight()
+	local bagsHeight =  self.bagGroup:GetHeight()
 	local rulesHeight = self.sideFilter.numButtons * 50 - (self.profile.reversedTabs and 10 or 50)
 	local minHeight = max(bagsHeight, rulesHeight) + 100
 
@@ -112,7 +112,7 @@ function Frame:UpdateSize()
 end
 
 function Frame:UpdateItems()
-	self.itemFrame:RequestLayout()
+	self.itemGroup:RequestLayout()
 end
 
 function Frame:UpdateSearch()

@@ -4,17 +4,13 @@
 --]]
 
 local ADDON, Addon = ...
-local BottomTab = Addon.Parented:NewClass('BottomTab', 'Button')
-BottomTab.ID = 1
-
+local BottomTab = Addon.Parented:NewClass('BottomTab', 'Button', true, true)
 
 function BottomTab:New(parent)
-	local b = self:Bind(CreateFrame('Button', ADDON .. 'BottomTab' .. self.ID, parent, ADDON..'BottomTabTemplate'))
-	b:HookScript('OnHide', b.UnregisterSignals)
+	local b = self:Super(BottomTab):New(parent)
+	b:HookScript('OnHide', b.UnregisterAll)
 	b:HookScript('OnShow', b.OnShow)
 	b:SetScript('OnClick', b.OnClick)
-
-	self.ID = self.ID + 1
 	return b
 end
 

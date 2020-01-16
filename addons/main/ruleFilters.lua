@@ -7,14 +7,13 @@ local ADDON, Addon = ...
 local RuleFilter = Addon.Parented:NewClass('RuleFilter', 'Frame')
 
 function RuleFilter:New(parent)
-	local f = self:Bind(CreateFrame('Frame', nil, parent))
+	local f = self:Super(RuleFilter):New(parent)
 	f.buttons = {[0] = f}
 	f:SetSize(10, 30)
 	f:RegisterFrameSignal('RULES_UPDATED', 'Update')
 	f:RegisterSignal('UPDATE_ALL', 'Update')
 	f:Startup()
 	f:Update()
-
 	return f
 end
 
@@ -52,9 +51,7 @@ SideFilter.Button = Addon.SideTab
 SideFilter.FromPoint = 'TOPLEFT'
 SideFilter.ToPoint = 'BOTTOMLEFT'
 
-function SideFilter:Startup()
-end
-
+function SideFilter:Startup() end
 function SideFilter:IsShowning(rule)
 	return not rule.id:find('/')
 end

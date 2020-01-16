@@ -4,9 +4,8 @@
 --]]
 
 local ADDON, Addon = ...
-local QualityButton = Addon.Tipped:NewClass('QualityButton', 'Checkbutton')
+local QualityButton = Addon.Tipped:NewClass('QualityButton', 'Checkbutton', 'UIRadioButtonTemplate')
 QualityButton.SIZE = 18
-
 
 do
 	local flags = {}
@@ -22,30 +21,28 @@ end
 --[[ Constructor ]]--
 
 function QualityButton:New(parent, quality, qualityColor)
-	local button = self:Bind(CreateFrame('Checkbutton', nil, parent, 'UIRadioButtonTemplate'))
-	local r, g, b = GetItemQualityColor(qualityColor)
-	local bg = button:CreateTexture(nil, 'ARTWORK', nil, 2)
-	bg:SetColorTexture(r, g, b)
+	local R,G,B = GetItemQualityColor(qualityColor)
+	local b = self:Super(QualityButton):New(parent)
+	local bg = b:CreateTexture(nil, 'ARTWORK', nil, 2)
+	bg:SetColorTexture(R,G,B)
 	bg:SetPoint('CENTER')
 	bg:SetSize(6,6)
 
-	button.bg = bg
-	button.quality = quality
-	button.qualityColor = qualityColor
-	button.flag = self.Flags[quality]
+	b.bg = bg
+	b.quality = quality
+	b.qualityColor = qualityColor
+	b.flag = self.Flags[quality]
 
-	button:RegisterFrameSignal('QUALITY_CHANGED', 'UpdateHighlight')
-	button:SetScript('OnClick', self.OnClick)
-	button:SetScript('OnEnter', self.OnEnter)
-	button:SetScript('OnLeave', self.OnLeave)
-
-	button:GetNormalTexture():SetVertexColor(r, g, b)
-	button:GetHighlightTexture():SetDesaturated(true)
-	button:SetSize(self.SIZE, self.SIZE)
-	button:SetCheckedTexture(nil)
-	button:UpdateHighlight()
-
-	return button
+	b:RegisterFrameSignal('QUALITY_CHANGED', 'UpdateHighlight')
+	b:GetHighlightTexture():SetDesaturated(true)
+	b:GetNormalTexture():SetVertexColor(R,G,B)
+	b:SetScript('OnClick', self.OnClick)
+	b:SetScript('OnEnter', self.OnEnter)
+	b:SetScript('OnLeave', self.OnLeave)
+	b:SetSize(self.SIZE, self.SIZE)
+	b:SetCheckedTexture(nil)
+	b:UpdateHighlight()
+	return b
 end
 
 

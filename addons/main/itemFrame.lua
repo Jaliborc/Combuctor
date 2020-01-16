@@ -4,9 +4,9 @@
 --]]
 
 local ADDON, Addon = ...
-local ItemFrame = Addon.ItemFrame
+local ItemGroup = Addon.ItemGroup
 
-function ItemFrame:LayoutTraits()
+function ItemGroup:LayoutTraits()
 	local profile = self:GetProfile()
 
 	local n = self:NumButtons()
@@ -25,5 +25,5 @@ function ItemFrame:LayoutTraits()
 	return cols, scale
 end
 
-function ItemFrame:BagBreak()
+function ItemGroup:BagBreak()
 end

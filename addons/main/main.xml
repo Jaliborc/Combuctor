@@ -1,4 +1,6 @@
 <Ui>
+  <Script file="main.lua"/>
+
   <Include file="style.xml"/>
   <Include file="frame.xml"/>
   <Include file="..\..\common\Wildpants.xml"/>
@@ -12,5 +14,4 @@
 	<Script file="frame.lua"/>
 
   <Script file="legacy.lua"/>
-	<Script file="main.lua"/>
 </Ui>

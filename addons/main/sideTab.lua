@@ -4,16 +4,16 @@
 --]]
 
 local ADDON, Addon = ...
-local SideTab = Addon.Tipped:NewClass('SideTab', 'CheckButton')
+local SideTab = Addon.Tipped:NewClass('SideTab', 'CheckButton', true)
 SideTab.ID = 1
 
 
 --[[ Constructor ]]--
 
 function SideTab:New(parent)
-	local b = self:Bind(CreateFrame('CheckButton', ADDON .. 'SideTab' .. self.ID, parent, ADDON .. 'SideTabTemplate'))
+	local b = self:Super(SideTab):New(parent)
 	b:GetNormalTexture():SetTexCoord(0.06, 0.94, 0.06, 0.94)
-	b:SetScript('OnHide', b.UnregisterSignals)
+	b:SetScript('OnHide', b.UnregisterAll)
 	b:SetScript('OnClick', b.OnClick)
 	b:SetScript('OnEnter', b.OnEnter)
 	b:SetScript('OnLeave', b.OnLeave)
