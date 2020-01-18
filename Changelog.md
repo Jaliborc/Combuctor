@@ -1,3 +1,37 @@
+#### 8.3.1
+* All
+    * Fixed issues with rulesets.
+    * Fixed visual issue with ruleset configuration.
+    * Updated Chinese localization (by Adavak).
+    * Updated Korean localization (by chkid).
+* Retail
+    * Added recent races.
+    * Fixed issue making dropdowns unclickable.
+
+#### 8.3.0
+* Updated for Visions of Nzoth.
+* General
+    * New owner selection menu.
+    * New frame selection menu.
+    * New icons in interface options.
+    * Upgraded interface options color picker design.
+    * Now, if no plugins like `Combuctor Scrap` are installed, optionally marks sellable gray items with the default junk coin icon.
+    * Added some backwards compatibility for out of date plugins.
+    * Fixed issue with reappearing inactive widgets on scrollable menus.
+    * Fixed bug with data-broker display region.
+* Retail
+    * Now void storage and guild bank properly support _Flash Find_.
+    * Fixed multiple bugs with void storage.
+* Classic
+    * Added keyring.
+    * Added key sorting.
+* Internal changes
+    * Upgraded to Poncho-2.0 and Sushi-3.1.
+    * Reorganization of components shared functionality using Poncho-2.0 new features.
+    * Massive cleaning and standardizing of code into Ace-like modules using WildAddon-1.0.
+    * Moved internally used timer API to new library DelayMutex-1.0.
+    * No longer using taintable dropdown or static popup implementations.
+
 ##### 8.2.10
 * Sorting now even faster in most situations.
 * Updated Korean localization (by chkmyid).

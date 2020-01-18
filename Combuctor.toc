@@ -1,9 +1,9 @@
-## Interface: 11302
+## Interface: 11303
 ## Title: |cff5FC412Combuctor|r
 ## Author: Tuller & Jaliborc (João Cardoso)
 ## Notes: Single window displays for your inventory and bank
 ## OptionalDeps: BagBrother, WoWUnit
 ## SavedVariables: Combuctor_Sets
-## Version: 8.2.10
+## Version: 8.3.1
 
 addons\main\main.xml
