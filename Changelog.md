@@ -1,3 +1,8 @@
+#### 8.3.2
+* Retail: fixed issue with some allied race icons.
+* Retail: fixed tooltip issues with caged pets and keystones.
+* Retail: fixed search issue with champion/follower equipment.
+
 #### 8.3.1
 * All
     * Fixed issues with rulesets.
