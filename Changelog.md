@@ -1,3 +1,9 @@
+##### 9.0.1
+* Retail: fixed issue with junk icons.
+* Retail: fixed issue with tooltips in profession window.
+* Fixed issue hiding item slots introduced in Shadowlands.
+* Fixed visual update issue with bank slots after purchase.
+
 #### 9.0.0
 * Updated for Shadowlands.
 
