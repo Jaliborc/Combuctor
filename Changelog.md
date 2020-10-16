@@ -1,3 +1,6 @@
+##### 9.0.2
+* Added `Bag Break` option (was never implemented).
+
 ##### 9.0.1
 * Retail: fixed issue with junk icons.
 * Retail: fixed issue with tooltips in profession window.
