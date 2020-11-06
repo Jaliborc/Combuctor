@@ -1,3 +1,7 @@
+##### 9.0.3
+* Retail: Added heirloom quality filter.
+* Retail: Made equipment set highlight color more different from heirlooms.
+
 ##### 9.0.2
 * Added `Bag Break` option (was never implemented).
 
