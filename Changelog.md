@@ -1,6 +1,12 @@
 ##### 9.0.3
+* All: You can now search items by uncollected appearances.
+* All: Equipment set items will be sorted separately from normal equipment.
+* All: Now works with latest version of Pawn addon.
+* Retail: can now sort guild bank tabs.
+* Retail: improved search on unorthodox items (ex: pets).
 * Retail: Added heirloom quality filter.
 * Retail: Made equipment set highlight color more different from heirlooms.
+* Retail: added command-line only option to disable server side sorting for inventory (not release quality).
 
 ##### 9.0.2
 * Added `Bag Break` option (was never implemented).
