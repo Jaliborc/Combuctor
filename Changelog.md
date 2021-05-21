@@ -1,3 +1,8 @@
+##### 9.0.4
+* Burning Crusade: now compatible
+* All Classic: fixed keyring sorting issue (thanks to jazminite)
+* All: changed localization for the "Trade" filter (thanks to ork)
+
 ##### 9.0.3
 * All: You can now search items by uncollected appearances.
 * All: Equipment set items will be sorted separately from normal equipment.
