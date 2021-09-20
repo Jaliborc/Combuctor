@@ -1,3 +1,12 @@
+##### 9.1.1
+* TBC: Fixed profession items sorting issue.
+* TBC: Replaced guild bank icon that isn't available in these servers.
+* All: Changed default mining bag color to set it more apart from others.
+
+#### 9.1.0
+* Retail: updated for Chains of Domination
+* All: fixed bug with the addon key bindings (thank you hoshbad)
+
 ##### 9.0.4
 * Burning Crusade: now compatible
 * All Classic: fixed keyring sorting issue (thanks to jazminite)
