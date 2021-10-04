@@ -1,3 +1,8 @@
+##### 9.1.2
+* TBC: Fixed keyring sorting bug.
+* All: Multiple improvements to sort to avoid "Item Cannot go into that Container" errors.
+* All: Changed default engineering bag color to set it further apart from others.
+
 ##### 9.1.1
 * TBC: Fixed profession items sorting issue.
 * TBC: Replaced guild bank icon that isn't available in these servers.
