@@ -1,3 +1,6 @@
+##### 9.1.4
+* Burning Crusade: Fixed startup issue introduced in the latest patch.
+
 ##### 9.1.3
 * Retail: Updated for Shadowlands 9.1.5.
 * All: Removed use of deprecated client APIs.
