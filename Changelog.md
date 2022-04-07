@@ -1,3 +1,11 @@
+#### 9.2
+* Retail: Updated for Eternity's End
+* Classic: Fixed bug preventing splitting stacks on guild bank.
+
+##### 9.1.6
+* All: Fixed issue with authenticator extra slots.
+* Retail: Fixed issue with viewing Vulpera's inventory offline.
+
 ##### 9.1.4
 * Burning Crusade: Fixed startup issue introduced in the latest patch.
 
