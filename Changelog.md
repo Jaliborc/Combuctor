@@ -1,3 +1,6 @@
+##### 9.2.1
+* Classic: Updated for Wrath of the Lich King
+
 #### 9.2
 * Retail: Updated for Eternity's End
 * Classic: Fixed bug preventing splitting stacks on guild bank.
