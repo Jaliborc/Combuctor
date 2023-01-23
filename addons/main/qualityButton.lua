@@ -39,7 +39,7 @@ function QualityButton:New(parent, quality)
 	b:SetScript('OnEnter', self.OnEnter)
 	b:SetScript('OnLeave', self.OnLeave)
 	b:SetSize(self.SIZE, self.SIZE)
-	b:SetCheckedTexture(nil)
+	b:SetCheckedTexture("")
 	b:UpdateHighlight()
 	return b
 end

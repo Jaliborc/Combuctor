@@ -108,7 +108,7 @@ function Frame:UpdateSize()
 	local minHeight = max(bagsHeight, rulesHeight) + 100
 
 	self:SetHeight(max(self:GetHeight(), minHeight))
-	self:SetMinResize(300, minHeight)
+	self:SetResizeBounds(300, minHeight)
 end
 
 function Frame:UpdateItems()
