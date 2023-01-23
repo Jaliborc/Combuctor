@@ -3,7 +3,8 @@
 
   <Include file="style.xml"/>
   <Include file="frame.xml"/>
-  <Include file="..\..\common\Wildpants.xml"/>
+  <Include file="..\..\..\BagBrother\addons\core\core.xml"/>
+  <Include file="..\..\..\BagBrother\addons\cache\cache.xml"/>
 
 	<Script file="qualityButton.lua"/>
 	<Script file="qualityFilter.lua"/>
