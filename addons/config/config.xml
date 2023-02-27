@@ -1,4 +1,4 @@
 <Ui>
 	<Script file="config.lua"/>
-  <Include file="..\..\common\Wildpants_Config.xml"/>
+  <Include file="..\..\..\BagBrother\addons\config\config.xml"/>
 </Ui>
