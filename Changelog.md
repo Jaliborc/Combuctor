@@ -1,3 +1,6 @@
+### 12.0.19
+* __Hotfix:__ Fixed file loading mistake on retail servers introduced in the last build.
+
 ### 12.0.18
 * __Improvement:__  Updated addon list formatting for Classic realms.
 * __Bugfixes:__ 
