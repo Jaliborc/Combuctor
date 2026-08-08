@@ -14,6 +14,7 @@
 ## Version: 12.0.18
 
 templates\shared.xml
-templates\classic.xml
+templates\retail.xml [AllowLoadGameType mainline]
+templates\classic.xml [AllowLoadGameType classic]
 templates\finish.xml
 src\main.xml
