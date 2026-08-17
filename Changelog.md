@@ -1,3 +1,7 @@
+## 12.1
+* __Retail:__ Now compatibile with 12.1 servers. Opening banks might be less efficient, because Blizzard screwed the pooch.
+* Improved german localization (by _opatut_).
+
 ### 12.0.19
 * __Hotfix:__ Fixed file loading mistake on retail servers introduced in the last build.
 
@@ -7,7 +11,8 @@
   * Fixed blank gray Blizzard backpack button when inventory frame is disabled (by _lucienve_).
   * Fixed Blizzard backpack missing item slots when inventory frame is disabled.
   * Fixed specific instances of right-click item usage blocking related to banking (by _lucienve_).
-  * Resolved error message that could occur when addon Pawn is installed (by _lucienve_).
+  * Resolved error message thcd "C:\Users\Jaliborc\Files\Work\Addons\upmod"
+  * node cli at could occur when addon Pawn is installed (by _lucienve_).
   * Fixed wrong offline currency count for some warband currencies (by _lucienve_).
 
 ### 12.0.17

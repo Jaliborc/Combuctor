@@ -10,8 +10,8 @@
 ## X-Development: True
 ## Dependencies: BagBrother
 ## SavedVariables: Bagnonium_Sets
-## Interface: 120007, 50504, 40402, 30404, 20506, 11509
-## Version: 12.0.19
+## Interface: 120100, 50504, 40402, 30404, 20506, 11509
+## Version: 12.1
 
 templates\shared.xml
 templates\retail.xml [AllowLoadGameType mainline]
