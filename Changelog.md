@@ -1,6 +1,7 @@
 ### 12.1.1
+* __New Feature:__ Added option to reverse order of item stacks in sorting options (co-authored by _lucienve_).
+* Redesigned sorting options on retail, to make it clearer which settings are only available when using client sorting. 
 * Overall localization update (co-authored by _lucienve_).
-* Added option to reverse order of item stacks in sorting options (co-authored by _lucienve_).
 
 ## 12.1
 * __Retail:__ Now compatibile with 12.1 servers. Opening banks might be less efficient, because Blizzard screwed the pooch.
